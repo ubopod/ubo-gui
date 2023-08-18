@@ -7,26 +7,17 @@ Each item can optionally be styled differently.
 """
 from __future__ import annotations
 
-import os
-from typing import TYPE_CHECKING, Literal, Union
+from typing import TYPE_CHECKING, Union
 
-from headless_kivy_pi import HeadlessWidget, setup_headless
+from headless_kivy_pi import HeadlessWidget
+from kivy.app import Widget
+from kivy.core.window import ColorProperty, ListProperty, StringProperty
+from kivy.uix.screenmanager import Screen, ScreenManager
 from typing_extensions import Any, NotRequired, TypedDict, TypeGuard
-
-os.environ['KIVY_METRICS_DENSITY']= '1'
-os.environ['KIVY_NO_CONFIG'] = '1'
-os.environ['KIVY_NO_FILELOG'] = '1'
-
-setup_headless()
-
-from kivy.app import App, Widget  # noqa: I001,E402
-from kivy.core.window import (ColorProperty, Keyboard,  # noqa: E402
-                              ListProperty, StringProperty, Window, WindowBase)
-from kivy.uix.screenmanager import Screen, ScreenManager  # noqa: E402
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterator
-    Modifier = Literal['ctrl', 'alt', 'meta', 'shift']
+
 
 class Menu(TypedDict):
     """A class used to represent a menu.
@@ -52,6 +43,7 @@ class Menu(TypedDict):
     sub_heading: str
     items: list[Item]
 
+
 class BaseItem(TypedDict):
     """A class used to represent a menu item.
 
@@ -69,6 +61,7 @@ class BaseItem(TypedDict):
     label: str
     color: NotRequired[tuple[float, float, float, float]]
 
+
 class ActionItem(BaseItem):
     """A class used to represent an action menu item.
 
@@ -80,9 +73,11 @@ class ActionItem(BaseItem):
 
     action: Callable
 
+
 def is_action_item(item: Item) -> TypeGuard[ActionItem]:
     """Check whether the item is an `ActionItem` or not."""
     return 'action' in item
+
 
 class SubMenuItem(BaseItem):
     """A class used to represent a sub-menu menu item.
@@ -96,52 +91,22 @@ class SubMenuItem(BaseItem):
 
     sub_menu: Menu
 
+
 def is_sub_menu_item(item: Item) -> TypeGuard[SubMenuItem]:
     """Check whether the item is an `SubMenuItem` or not."""
     return 'sub_menu' in item
 
+
 Item = Union[ActionItem, SubMenuItem]
 
 PAGE_SIZE = 3
-MAIN_MENU: Menu = {
-    'title': 'Hello world',
-    'heading': 'Please choose an item',
-    'sub_heading': 'This is sub heading',
-    'items': [
-        {
-            'label': 'First Item',
-            'sub_menu': {
-                'title': 'Sub menu',
-                'heading': 'Please choose an item',
-                'sub_heading': 'This is sub heading',
-                'items': [
-                    {
-                        'label': 'Nested item',
-                        'action': lambda: print('Nested item selected'),
-                    },
-                ],
-            },
-        },
-        {
-            'label': 'Second Item',
-            'color': (1, 0, 1, 1),
-            'action': lambda: print('Second item selected'),
-        },
-        {
-            'label': 'Third Item',
-            'action': lambda: print('Third item selected'),
-        },
-        {
-            'label': 'Fourth Item',
-            'action': lambda: print('Fourth item selected'),
-        },
-    ],
-}
+
 
 def paginate(items: list[Item]) -> Iterator[list[Item]]:
     """Yield successive PAGE_SIZE-sized chunks from list."""
     for i in range(0, len(items), PAGE_SIZE):
         yield items[i:i + PAGE_SIZE]
+
 
 class ItemWidget(Widget):
     """Renders an `Item`."""
@@ -149,6 +114,7 @@ class ItemWidget(Widget):
     color = ColorProperty((1, 1, 1, 1))
     label = StringProperty()
     sub_menu = None
+
 
 class PageWidget(Screen):
     """renders a page of a `Menu`."""
@@ -173,6 +139,7 @@ class PageWidget(Screen):
         """
         super().__init__(**kwargs)
         self.items = items
+
 
 class MainWidget(ScreenManager, HeadlessWidget):
     """Screen manager."""
@@ -256,6 +223,8 @@ class MainWidget(ScreenManager, HeadlessWidget):
 
     def pop_menu(self: MainWidget) -> None:
         """Come up one level from of the menu stack."""
+        if len(self.menu_stack) == 0:
+            return
         self.set_current_menu(self.menu_stack.pop())
 
     def set_current_menu(self: MainWidget, menu: Menu) -> None:
@@ -271,48 +240,5 @@ class MainWidget(ScreenManager, HeadlessWidget):
         self.activate_low_fps_mode()
 
     def on_kv_post(self: MainWidget, _: Any) -> None:  # noqa: ANN401
-        """Create all pages when the kv file is parsed."""
-        self.set_current_menu(MAIN_MENU)
+        """Activate low fps mode when transition is done."""
         self.transition.on_complete = lambda: self.activate_low_fps_mode()
-
-
-class MenuApp(App):
-    """Menu application."""
-
-    root: MainWidget
-
-    def build(self: MenuApp) -> MainWidget:
-        """Build the app and initiate."""
-        Window.bind(on_keyboard=self.on_keyboard)
-        return self.root
-
-    def on_keyboard(
-        self: MenuApp,
-        _: WindowBase,
-        key: int,
-        _scancode: int,
-        _codepoint: str,
-        modifier: list[Modifier],
-    ) -> None:
-        """Handle keyboard events."""
-        if modifier == []:
-            if key == Keyboard.keycodes['up']:
-                self.root.go_to_previous_page()
-            elif key == Keyboard.keycodes['down']:
-                self.root.go_to_next_page()
-            elif key == Keyboard.keycodes['1']:
-                self.root.select(0)
-            elif key == Keyboard.keycodes['2']:
-                self.root.select(1)
-            elif key == Keyboard.keycodes['3']:
-                self.root.select(2)
-            elif key == Keyboard.keycodes['left']:
-                self.root.go_back()
-
-def main() -> None:
-    """Instantiate the `MenuApp` and run it."""
-    app = MenuApp()
-    app.run()
-
-if __name__ == '__main__':
-    main()

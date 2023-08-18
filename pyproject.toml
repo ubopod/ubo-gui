@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "headless-menu-pi"
+name = "ubo-gui"
 version = "0.1.0"
 description = ""
 authors = ["Sassan Haradji <sassanh@gmail.com>"]
-license = "MIT"
+license = "Apache-2.0"
 readme = "README.md"
-packages = [{ include = "src" }]
+packages = [{ include = "menu" }, { include = "notification" }]
 
 
 [[tool.poetry.source]]
@@ -20,7 +20,16 @@ priority = "primary"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.12"
-headless-kivy-pi = { git = "https://github.com/sassanh/headless-kivy-pi.git" }
+headless-kivy-pi = { path = "../headless-kivy/dist/headless_kivy_pi-0.2.2-py3-none-any.whl" }
+
+kivy = [
+  { version = "*", markers = "platform_machine == 'aarch64'", source = 'piwheels' },
+  { version = "*", markers = "platform_machine != 'aarch64'", source = 'PyPI' },
+]
+numpy = [
+  { version = "*", markers = "platform_machine == 'aarch64'", source = 'piwheels' },
+  { version = "*", markers = "platform_machine != 'aarch64'", source = 'PyPI' },
+]
 
 
 [build-system]
@@ -28,7 +37,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-main = "src.main:main"
+demo-menu = "menu.demo:main"
 
 [tool.ruff.flake8-quotes]
 docstring-quotes = "double"
