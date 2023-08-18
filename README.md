@@ -1,3 +1,3 @@
-# Headless menu for Raspberry Pi
+# Ubo GUI
 
-This project implements a general purpose, nested and paginated menu for Raspberry Pi using [headless-kivy-pi](https://github.com/sassanh/headless-kivy-pi)
+GUI manager for [Ubo Pod](https://github.com/ubopod)
