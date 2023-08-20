@@ -1,11 +1,15 @@
 [tool.poetry]
 name = "ubo-gui"
-version = "0.1.0"
+version = "0.2.0"
 description = ""
 authors = ["Sassan Haradji <sassanh@gmail.com>"]
 license = "Apache-2.0"
 readme = "README.md"
-packages = [{ include = "menu" }, { include = "notification" }]
+packages = [
+  { include = "app" },
+  { include = "menu" },
+  { include = "notification" },
+]
 
 
 [[tool.poetry.source]]
@@ -19,7 +23,7 @@ priority = "primary"
 
 
 [tool.poetry.dependencies]
-python = ">=3.9,<3.12"
+python = "^3.9"
 headless-kivy-pi = { path = "../headless-kivy/dist/headless_kivy_pi-0.2.2-py3-none-any.whl" }
 
 kivy = [
@@ -30,6 +34,22 @@ numpy = [
   { version = "*", markers = "platform_machine == 'aarch64'", source = 'piwheels' },
   { version = "*", markers = "platform_machine != 'aarch64'", source = 'PyPI' },
 ]
+cython = [
+  { version = "*", markers = "platform_machine == 'aarch64'", source = 'piwheels' },
+  { version = "*", markers = "platform_machine != 'aarch64'", source = 'PyPI' },
+]
+pillow = [
+  { version = "*", markers = "platform_machine == 'aarch64'", source = 'piwheels' },
+  { version = "*", markers = "platform_machine != 'aarch64'", source = 'PyPI' },
+]
+msgpack = [
+  { version = "*", markers = "platform_machine == 'aarch64'", source = 'piwheels' },
+  { version = "*", markers = "platform_machine != 'aarch64'", source = 'PyPI' },
+]
+pyyaml = [
+  { version = "*", markers = "platform_machine == 'aarch64'", source = 'piwheels' },
+  { version = "*", markers = "platform_machine != 'aarch64'", source = 'PyPI' },
+]
 
 
 [build-system]
@@ -37,7 +57,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-demo-menu = "menu.demo:main"
+demo-menu = "demo.menu:main"
 
 [tool.ruff.flake8-quotes]
 docstring-quotes = "double"

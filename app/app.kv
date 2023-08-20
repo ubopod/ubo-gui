@@ -1,0 +1,26 @@
+#:kivy 2.2.1
+
+<RootWidget>:
+  BoxLayout:
+    id: main_layout
+    size: root.size
+    pos: root.pos
+    orientation: 'vertical'
+
+    BoxLayout:
+      id: header_layout
+      size_hint: 1, None
+      height: dp(30)
+
+    BoxLayout:
+      id: central_layout
+      size_hint: 1, 1
+
+    BoxLayout:
+      id: footer_layout
+      size_hint: 1, None
+      height: dp(40)
+
+RootWidget:
+  size: root.size
+  pos: root.pos
