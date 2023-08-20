@@ -19,7 +19,7 @@ class RootWidget(HeadlessWidget):
 class UboApp(App):
     def build(self: UboApp) -> Widget | None:
         self.root: RootWidget = Builder.load_file(pathlib.Path(
-            __file__).parent.joinpath('app.kv').as_posix())
+            __file__).parent.joinpath('app.kv').resolve().as_posix())
 
         central_layout: BoxLayout = self.root.ids.central_layout
         if self.central:

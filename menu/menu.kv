@@ -1,32 +1,5 @@
 #:kivy 2.2.1
 
-<ItemWidget>:
-  height: dp(52)
-  canvas.before:
-    Color:
-      rgba: (1, 0, 0, 1) if root.label else (0, 0, 0, 0)
-
-    RoundedRectangle:
-      pos: self.pos
-      size: self.size[0] - dp(40), self.size[1]
-      radius: (0, 0), (60, 60), (60, 60), (0, 0)
-
-  BoxLayout:
-    size: root.size
-    pos: root.pos
-    orientation: 'horizontal'
-
-    Label:
-      size: root.size
-      padding: 20, 0, 0, 0
-      pos: root.pos
-      color: root.color
-      font_size: dp(18)
-      text: root.label
-      text_size: self.size
-      halign: 'left'
-      valign: 'middle'
-
 <NormalPageWidget>:
   BoxLayout:
     id: layout
@@ -35,20 +8,17 @@
 
     ItemWidget:
       id: first_item
-      label: root.items[0]['label'] if len(root.items) > 0 else ''
-      color: root.items[0]['color'] if len(root.items) > 0 and 'color' in root.items[0] else (1, 1, 1)
+      item: root.items[0] if len(root.items) > 0 else None
       size_hint: 1, None
 
     ItemWidget:
       id: second_item
-      label: root.items[1]['label'] if len(root.items) > 1 else ''
-      color: root.items[1]['color'] if len(root.items) > 1 and 'color' in root.items[1] else (1, 1, 1)
+      item: root.items[1] if len(root.items) > 1 else None
       size_hint: 1, None
 
     ItemWidget:
       id: third_item
-      label: root.items[2]['label'] if len(root.items) > 2 else ''
-      color: root.items[2]['color'] if len(root.items) > 2 and 'color' in root.items[2] else (1, 1, 1)
+      item: root.items[2] if len(root.items) > 2 else None
       size_hint: 1, None
 
 <HeaderPageWidget>:
@@ -87,8 +57,7 @@
 
     ItemWidget:
       id: first_item
-      label: root.items[0]['label'] if len(root.items) > 0 else ''
-      color: root.items[0]['color'] if len(root.items) > 0 and 'color' in root.items[0] else (1, 1, 1)
+      item: root.items[0] if len(root.items) > 0 else None
       size_hint: 1, None
 
 <MainWidget>:

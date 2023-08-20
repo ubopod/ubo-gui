@@ -9,98 +9,23 @@ from __future__ import annotations
 
 import pathlib
 import warnings
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from headless_kivy_pi import HeadlessWidget
-from kivy.app import Builder, Widget
-from kivy.core.window import ColorProperty, ListProperty, StringProperty
+from kivy.app import Builder
+from kivy.core.window import ListProperty, StringProperty
 from kivy.uix.screenmanager import Screen, ScreenManager
-from typing_extensions import Any, NotRequired, TypedDict, TypeGuard
+
+from menu.item_widget import ItemWidget  # noqa: F401
+from menu.types import is_action_item, is_sub_menu_item
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Iterator
+    from collections.abc import Iterator
 
+    from typing_extensions import Any
 
-class Menu(TypedDict):
-    """A class used to represent a menu.
+    from menu.types import Item, Menu
 
-    Attributes
-    ----------
-    title: str
-        Rendered on top of the menu in all pages.
-
-    heading: str
-        Rendered in the first page of the menu, stating the purpose of the menu and its
-    items.
-
-    sub_heading: str
-        Rendered beneath the heading in the first page of the menu with a smaller font.
-
-    items: List[Item]
-        List of the items of the menu
-    """
-
-    title: str
-    heading: str
-    sub_heading: str
-    items: list[Item]
-
-
-class BaseItem(TypedDict):
-    """A class used to represent a menu item.
-
-    Attributes
-    ----------
-    label: `str`
-        The label of the item.
-
-    color: `tuple` of `float`
-        The color in rgba format as a list of floats, the list should contain 4
-    elements: red, green, blue and alpha, each being a number in the range [0..1].
-    For example (0.5, 0, 0.5, 0.8) represents a semi transparent purple.
-    """
-
-    label: str
-    color: NotRequired[tuple[float, float, float, float]]
-    icon: NotRequired[str]
-
-
-class ActionItem(BaseItem):
-    """A class used to represent an action menu item.
-
-    Attributes
-    ----------
-    action: `Function`, optional
-        If provided, activating this item will call this function.
-    """
-
-    action: Callable
-
-
-def is_action_item(item: Item) -> TypeGuard[ActionItem]:
-    """Check whether the item is an `ActionItem` or not."""
-    return 'action' in item
-
-
-class SubMenuItem(BaseItem):
-    """A class used to represent a sub-menu menu item.
-
-    Attributes
-    ----------
-    sub_menu: `Menu`, optional
-        If provided, activating this item will open another menu, the description
-        described in this field.
-    """
-
-    sub_menu: Menu
-
-
-def is_sub_menu_item(item: Item) -> TypeGuard[SubMenuItem]:
-    """Check whether the item is an `SubMenuItem` or not."""
-    return 'sub_menu' in item
-
-
-Item = Union[ActionItem, SubMenuItem]
 
 PAGE_SIZE = 3
 
@@ -119,14 +44,6 @@ def paginate(items: list[Item], offset: int = 0) -> Iterator[list[Item]]:
     """
     for i in range(PAGE_SIZE-offset, len(items), PAGE_SIZE):
         yield items[i:i + PAGE_SIZE]
-
-
-class ItemWidget(Widget):
-    """Renders an `Item`."""
-
-    color = ColorProperty((1, 1, 1, 1))
-    label = StringProperty()
-    sub_menu = None
 
 
 class PageWidget(Screen):
@@ -334,4 +251,4 @@ class MenuWidget(ScreenManager):
 
 
 Builder.load_file(pathlib.Path(
-    __file__).parent.joinpath('menu.kv').as_posix())
+    __file__).parent.joinpath('menu.kv').resolve().as_posix())
