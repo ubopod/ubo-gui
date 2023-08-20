@@ -1,0 +1,44 @@
+#:kivy 2.2.1
+
+<ItemWidget>:
+  height: dp(52)
+  canvas.before:
+    Color:
+      rgba: root.background_color if root.label else (0, 0, 0, 0)
+
+    RoundedRectangle:
+      pos: self.pos
+      size: (self.size[0] - dp(40), self.size[1]) if root.label else (0, 0)
+      radius: (0, 0), (60, 60), (60, 60), (0, 0)
+
+  BoxLayout:
+    size: root.size
+    pos: root.pos
+    orientation: 'horizontal'
+    spacing: dp(8)
+
+    Widget:
+      width: 0
+      size_hint: None, 1
+
+    AnchorLayout:
+      width: svg.width
+      size_hint: None, 1
+
+      SvgWidget:
+        id: svg
+        source: root.icon_path if root.label else ''
+        size: self.parent.height - dp(20), self.parent.height - dp(20)
+        size_hint: None, None
+        color: 0, 1, 0, 1
+
+    Label:
+      size: root.size
+      pos: root.pos
+      color: root.color
+      font_size: dp(18)
+      text: root.label
+      text_size: self.size
+      size_hint: 1, 1
+      halign: 'left'
+      valign: 'middle'

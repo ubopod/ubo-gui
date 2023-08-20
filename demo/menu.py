@@ -34,6 +34,7 @@ MAIN_MENU: Menu = {
     'items': [
         {
             'label': 'First Item',
+            'icon': 'chevron-down',
             'sub_menu': {
                 'title': 'Nested',
                 'heading': 'Please choose',
@@ -50,7 +51,7 @@ MAIN_MENU: Menu = {
             'label': 'Second Item',
             'color': (1, 0, 1, 1),
             'action': lambda: print('Second item selected'),
-            'icon': 'account-cog',
+            'icon': 'chevron-up',
         },
         {
             'label': 'Third Item',
