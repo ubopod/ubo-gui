@@ -24,7 +24,7 @@ priority = "primary"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-headless-kivy-pi = { path = "../headless-kivy/dist/headless_kivy_pi-0.2.2-py3-none-any.whl" }
+headless-kivy-pi = {git = "https://github.com/sassanh/headless-kivy-pi.git"}
 
 kivy = [
   { version = "*", markers = "platform_machine == 'aarch64'", source = 'piwheels' },
