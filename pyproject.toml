@@ -24,32 +24,7 @@ priority = "primary"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-headless-kivy-pi = {git = "https://github.com/sassanh/headless-kivy-pi.git"}
-
-kivy = [
-  { version = "*", markers = "platform_machine == 'aarch64'", source = 'piwheels' },
-  { version = "*", markers = "platform_machine != 'aarch64'", source = 'PyPI' },
-]
-numpy = [
-  { version = "*", markers = "platform_machine == 'aarch64'", source = 'piwheels' },
-  { version = "*", markers = "platform_machine != 'aarch64'", source = 'PyPI' },
-]
-cython = [
-  { version = "*", markers = "platform_machine == 'aarch64'", source = 'piwheels' },
-  { version = "*", markers = "platform_machine != 'aarch64'", source = 'PyPI' },
-]
-pillow = [
-  { version = "*", markers = "platform_machine == 'aarch64'", source = 'piwheels' },
-  { version = "*", markers = "platform_machine != 'aarch64'", source = 'PyPI' },
-]
-msgpack = [
-  { version = "*", markers = "platform_machine == 'aarch64'", source = 'piwheels' },
-  { version = "*", markers = "platform_machine != 'aarch64'", source = 'PyPI' },
-]
-pyyaml = [
-  { version = "*", markers = "platform_machine == 'aarch64'", source = 'piwheels' },
-  { version = "*", markers = "platform_machine != 'aarch64'", source = 'PyPI' },
-]
+headless-kivy-pi = { git = "https://github.com/sassanh/headless-kivy-pi.git" }
 
 
 [build-system]
