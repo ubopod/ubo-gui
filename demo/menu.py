@@ -7,13 +7,11 @@ from typing import TYPE_CHECKING, Literal
 
 from headless_kivy_pi import setup_headless
 
-setup_headless()
-
-from app import UboApp  # noqa: E402
-
 os.environ['KIVY_METRICS_DENSITY']= '1'
 os.environ['KIVY_NO_CONFIG'] = '1'
 os.environ['KIVY_NO_FILELOG'] = '1'
+
+setup_headless()
 
 from kivy.core.window import (  # noqa: E402
     Keyboard,
@@ -21,6 +19,7 @@ from kivy.core.window import (  # noqa: E402
     WindowBase,
 )
 
+from app import UboApp  # noqa: E402
 from menu import MenuWidget  # noqa: E402
 
 if TYPE_CHECKING:
