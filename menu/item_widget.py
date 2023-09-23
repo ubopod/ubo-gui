@@ -4,10 +4,15 @@ from __future__ import annotations
 import pathlib
 from typing import TYPE_CHECKING
 
-from kivy.app import Builder, ObjectProperty, StringProperty, Widget
+from kivy.app import Builder, Widget
 from kivy.graphics import Color
 from kivy.graphics.svg import Svg
-from kivy.uix.label import ColorProperty
+from kivy.uix.label import (
+    BooleanProperty,
+    ColorProperty,
+    ObjectProperty,
+    StringProperty,
+)
 from kivy.uix.scatter import Scatter
 
 if TYPE_CHECKING:
@@ -64,6 +69,7 @@ class ItemWidget(Widget):
     icon_path = StringProperty()
     icon_fit_mode = StringProperty('contain')
     item = ObjectProperty()
+    is_short = BooleanProperty(False)
 
     def on_item(self: ItemWidget, instance: ItemWidget, value: Item):
         instance.label = value['label']
