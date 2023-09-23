@@ -65,7 +65,7 @@ class ItemWidget(Widget):
 
     label = StringProperty()
     color = ColorProperty((1, 1, 1, 1))
-    background_color = ColorProperty((1, 0, 0, 1))
+    background_color = ColorProperty((71 / 255, 185 / 255, 255 / 255, 1))
     icon_path = StringProperty()
     icon_fit_mode = StringProperty('contain')
     item = ObjectProperty()
