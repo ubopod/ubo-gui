@@ -13,11 +13,12 @@ from typing import TYPE_CHECKING
 
 from headless_kivy_pi import HeadlessWidget
 from kivy.app import Builder
-from kivy.core.window import ListProperty, StringProperty
-from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.core.window import StringProperty
+from kivy.uix.screenmanager import ScreenManager
 
 from menu.item_widget import ItemWidget  # noqa: F401
 from menu.types import is_action_item, is_sub_menu_item
+from page import PageWidget
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -46,52 +47,19 @@ def paginate(items: list[Item], offset: int = 0) -> Iterator[list[Item]]:
         yield items[i:i + PAGE_SIZE]
 
 
-class PageWidget(Screen):
-    """renders a page of a `Menu`."""
-
-    items = ListProperty([])
-
-    def __init__(
-        self: PageWidget,
-        items: list[Item],
-        **kwargs: Any,  # noqa: ANN401
-    ) -> None:
-        """Initialize a `MenuWidget`.
-
-        Parameters
-        ----------
-        items: `list` of `Item`
-            The items to be shown in this page
-
-        kwargs: Any
-            Stuff that will get directly passed to the `__init__` method of Kivy's
-        `Screen`.
-        """
-        super().__init__(**kwargs)
-        self.items = items
-
-    def get_item(self: PageWidget, index: int) -> Item | None:
-        if not 0 <= index < len(self.items):
-            msg = f"""index must be greater than or equal to 0 and less than {
-            len(self.items)}"""
-            warnings.warn(msg, ResourceWarning, stacklevel=1)
-            return None
-        return self.items[index]
-
-
-class NormalPageWidget(PageWidget):
+class NormalMenuPageWidget(PageWidget):
     """renders a normal page of a `Menu`."""
 
 
-class HeaderPageWidget(PageWidget):
+class HeaderMenuPageWidget(PageWidget):
     """renders a header page of a `Menu`."""
 
     heading = StringProperty()
     sub_heading = StringProperty()
 
     def __init__(
-        self: HeaderPageWidget,
-        items: list[Item],
+        self: HeaderMenuPageWidget,
+        item: Item,
         heading: str,
         sub_heading: str,
         **kwargs: Any,  # noqa: ANN401
@@ -113,11 +81,11 @@ class HeaderPageWidget(PageWidget):
             Stuff that will get directly passed to the `__init__` method of Kivy's
         `Screen`.
         """
-        super().__init__(items, **kwargs)
+        super().__init__([item], **kwargs)
         self.heading = heading
         self.sub_heading = sub_heading
 
-    def get_item(self: HeaderPageWidget, index: int) -> Item | None:
+    def get_item(self: HeaderMenuPageWidget, index: int) -> Item | None:
         if index != PAGE_SIZE - 1:
             warnings.warn('index must be 2', ResourceWarning, stacklevel=1)
             return None
@@ -212,22 +180,22 @@ class MenuWidget(ScreenManager):
         while len(self.pages) > 0:
             self.remove_widget(self.pages.pop())
         self.current_menu = menu
-        if self.current_menu['heading']:
-            first_page = HeaderPageWidget(
-                menu['items'],
+        if 'heading' in self.current_menu:
+            first_page = HeaderMenuPageWidget(
+                menu['items'][0],
                 menu['heading'],
                 menu['sub_heading'],
                 name='Page 0',
             )
         else:
-            first_page = NormalPageWidget(menu['items'], name='Page 0')
+            first_page = NormalMenuPageWidget(menu['items'][:3], name='Page 0')
         self.pages.append(first_page)
         self.add_widget(first_page)
 
         paginated_items = paginate(
-            menu['items'], 2 if menu['heading'] else 0)
+            menu['items'], 2 if 'heading' in menu else 0)
         for index, page_items in enumerate(paginated_items):
-            page = NormalPageWidget(page_items, name=f'Page {index + 1}')
+            page = NormalMenuPageWidget(page_items, name=f'Page {index + 1}')
             self.pages.append(page)
             self.add_widget(page)
         HeadlessWidget.activate_low_fps_mode()

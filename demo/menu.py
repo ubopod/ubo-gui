@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Literal
 
 from headless_kivy_pi import setup_headless
 
-os.environ['KIVY_METRICS_DENSITY']= '1'
+os.environ['KIVY_METRICS_DENSITY'] = '1'
 os.environ['KIVY_NO_CONFIG'] = '1'
 os.environ['KIVY_NO_FILELOG'] = '1'
 
@@ -23,6 +23,7 @@ from app import UboApp  # noqa: E402
 from menu import MenuWidget  # noqa: E402
 
 if TYPE_CHECKING:
+
     from menu import Menu
     Modifier = Literal['ctrl', 'alt', 'meta', 'shift']
 
@@ -72,7 +73,7 @@ class MenuApp(UboApp):
     """Menu application."""
 
     @cached_property
-    def central(self: MenuApp):
+    def central(self: MenuApp) -> MenuWidget:
         """Build the app and initiate."""
         Window.bind(on_keyboard=self.on_keyboard)
         root = MenuWidget()
@@ -90,7 +91,6 @@ class MenuApp(UboApp):
         """Handle keyboard events."""
         if modifier == []:
             if key == Keyboard.keycodes['up']:
-                self.root.title = '123'
                 self.central.go_to_previous_page()
             elif key == Keyboard.keycodes['down']:
                 self.central.go_to_next_page()
