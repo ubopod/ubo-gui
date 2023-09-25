@@ -23,8 +23,8 @@ from app import UboApp  # noqa: E402
 from menu import MenuWidget  # noqa: E402
 
 if TYPE_CHECKING:
-
     from menu import Menu
+    from menu.types import Item
     Modifier = Literal['ctrl', 'alt', 'meta', 'shift']
 
 MAIN_MENU: Menu = {
@@ -69,16 +69,49 @@ MAIN_MENU: Menu = {
 }
 
 
+def notifications_menu_items() -> list[Item]:
+    return []
+
+
+HOME_MENU: Menu = {
+    'items': [
+        {
+            'label': '',
+            'sub_menu': MAIN_MENU,
+            'icon': 'chevron-up',
+            'is_short': True,
+        },
+        {
+            'label': '',
+            'sub_menu': {
+                'items': notifications_menu_items,
+            },
+            'icon': 'chevron-up',
+            'is_short': True,
+        },
+        {
+            'label': 'Turn off',
+            'action': lambda: print('Turning off'),
+            'icon': 'chevron-up',
+            'is_short': True,
+        },
+    ],
+}
+
+
 class MenuApp(UboApp):
     """Menu application."""
+
+    def build(self: MenuApp):
+        Window.bind(on_keyboard=self.on_keyboard)
+        return super().build()
 
     @cached_property
     def central(self: MenuApp) -> MenuWidget:
         """Build the app and initiate."""
-        Window.bind(on_keyboard=self.on_keyboard)
-        root = MenuWidget()
-        root.set_current_menu(MAIN_MENU)
-        return root
+        menu_widget = MenuWidget()
+        menu_widget.set_current_menu(HOME_MENU)
+        return menu_widget
 
     def on_keyboard(
         self: MenuApp,
