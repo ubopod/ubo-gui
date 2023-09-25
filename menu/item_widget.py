@@ -73,6 +73,8 @@ class ItemWidget(Widget):
 
     def on_item(self: ItemWidget, instance: ItemWidget, value: Item):
         instance.label = value['label']
+        if 'is_short' in value:
+            instance.is_short = value['is_short']
         if 'color' in value:
             instance.color = value['color']
         if 'background_color' in value:

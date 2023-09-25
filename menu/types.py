@@ -96,6 +96,7 @@ class BaseItem(TypedDict):
     icon_path: NotRequired[str]
     icon_fit_mode: NotRequired[Literal[
         'scale-down', 'fill', 'contain', 'cover']]
+    is_short: NotRequired[bool]
 
 
 class ActionItem(BaseItem):
