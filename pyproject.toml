@@ -13,12 +13,12 @@ packages = [
 
 
 [[tool.poetry.source]]
-name = "piwheels"
-url = "https://www.piwheels.org/simple/"
+name = "PyPI"
 priority = "primary"
 
 [[tool.poetry.source]]
-name = "PyPI"
+name = "piwheels"
+url = "https://www.piwheels.org/simple/"
 priority = "primary"
 
 

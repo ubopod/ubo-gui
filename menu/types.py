@@ -1,15 +1,34 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal, Union
+from typing import Callable, Literal, Union
 
 from typing_extensions import NotRequired, TypedDict, TypeGuard
 
-if TYPE_CHECKING:
-    from collections.abc import Callable
 
-
-class Menu(TypedDict):
+class BaseMenu(TypedDict):
     """A class used to represent a menu.
+
+    Attributes
+    ----------
+    items: `list` of `Item`
+        List of the items of the menu
+    """
+
+    items: list[Item] | Callable[[], list[Item]]
+
+
+def menu_items(menu: Menu) -> list[Item]:
+    """Return items of the menu.
+
+    in case it's a function, the return value of the function is called.
+    """
+    return menu['items']() if\
+        callable(menu['items']) else\
+        menu['items']
+
+
+class HeadedMenu(BaseMenu):
+    """A class used to represent a headed menu.
 
     Attributes
     ----------
@@ -22,15 +41,28 @@ class Menu(TypedDict):
 
     sub_heading: `str`
         Rendered beneath the heading in the first page of the menu with a smaller font.
-
-    items: `list` of `Item`
-        List of the items of the menu
     """
 
     title: str
     heading: str
     sub_heading: str
-    items: list[Item]
+
+
+def is_headed_menu(menu: Menu) -> TypeGuard[ActionItem]:
+    """Check whether the menu is a `HeadedMenu` or not."""
+    return 'title' in menu and 'heading' in menu and 'sub_heading' in menu
+
+
+class HeadlessMenu(BaseMenu):
+    """A class used to represent a headless menu."""
+
+
+def is_headless_menu(menu: Menu) -> TypeGuard[ActionItem]:
+    """Check whether the menu is a `HeadedMenu` or not."""
+    return 'title' not in menu and 'heading' not in menu and 'sub_heading' not in menu
+
+
+Menu = Union[HeadedMenu, HeadlessMenu]
 
 
 def menu_items(menu: Menu) -> list[Item]:

@@ -4,11 +4,11 @@
   height: dp(52)
   canvas.before:
     Color:
-      rgba: root.background_color if root.label else (0, 0, 0, 0)
+      rgba: root.background_color if root.label is not None else (0, 0, 0, 0)
 
     RoundedRectangle:
       pos: self.pos
-      size: (dp(50) if self.is_short else self.size[0] - dp(40), self.size[1]) if root.label else (0, 0)
+      size: (dp(50) if self.is_short else self.size[0] - dp(40), self.size[1]) if root.label is not None else (0, 0)
       radius: (0, 0), (60, 60), (60, 60), (0, 0)
 
   BoxLayout:
@@ -18,7 +18,7 @@
     spacing: dp(8)
 
     Widget:
-      width: 0
+      width: 4
       size_hint: None, 1
 
     AnchorLayout:
@@ -27,8 +27,8 @@
 
       SvgWidget:
         id: svg
-        source: root.icon_path if root.label else ''
-        size: self.parent.height - dp(20), self.parent.height - dp(20)
+        source: root.icon_path if root.label is not None else ''
+        size: self.parent.height - dp(25), self.parent.height - dp(25)
         size_hint: None, None
 
     Label:

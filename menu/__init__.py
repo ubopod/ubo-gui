@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import pathlib
 import warnings
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from headless_kivy_pi import HeadlessWidget
 from kivy.app import Builder
@@ -17,7 +17,12 @@ from kivy.core.window import StringProperty
 from kivy.uix.screenmanager import ScreenManager
 
 from menu.item_widget import ItemWidget  # noqa: F401
-from menu.types import is_action_item, is_sub_menu_item, menu_items
+from menu.types import (
+    Item,
+    is_action_item,
+    is_sub_menu_item,
+    menu_items,
+)
 from page import PageWidget
 
 if TYPE_CHECKING:
@@ -194,8 +199,8 @@ class MenuWidget(ScreenManager):
         if 'heading' in self.current_menu:
             first_page = HeaderMenuPageWidget(
                 menu_items(menu)[0],
-                menu['heading'],
-                menu['sub_heading'],
+                cast(str, menu.get('heading', '')),
+                cast(str, menu.get('sub_heading', '')),
                 name='Page 0',
             )
         else:
