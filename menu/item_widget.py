@@ -63,6 +63,7 @@ class ItemWidget(Widget):
         https://kivy.org/doc/stable/api-kivy.uix.image.html#kivy.uix.image.Image.fit_mode
     """
 
+    is_set = BooleanProperty(False)
     label = StringProperty()
     color = ColorProperty((1, 1, 1, 1))
     background_color = ColorProperty((71 / 255, 185 / 255, 255 / 255, 1))
@@ -71,21 +72,25 @@ class ItemWidget(Widget):
     item = ObjectProperty()
     is_short = BooleanProperty(False)
 
-    def on_item(self: ItemWidget, instance: ItemWidget, value: Item):
-        instance.label = value['label']
-        if 'is_short' in value:
-            instance.is_short = value['is_short']
-        if 'color' in value:
-            instance.color = value['color']
-        if 'background_color' in value:
-            instance.background_color = value['background_color']
-        if 'icon_path' in value:
-            instance.icon_path = value['icon_path']
-        elif 'icon' in value:
-            instance.icon_path = pathlib.Path(
-                'assets', 'icons', value['icon'] + '.svg').resolve().as_posix()
-        if 'icon_fit_mode' in value:
-            instance.icon_fit_mode = value['icon_fit_mode']
+    def on_item(self: ItemWidget, instance: ItemWidget, value: Item | None):
+        if value is not None:
+            instance.is_set = True
+            instance.label = value['label']
+            if 'is_short' in value:
+                instance.is_short = value['is_short']
+            if 'color' in value:
+                instance.color = value['color']
+            if 'background_color' in value:
+                instance.background_color = value['background_color']
+            if 'icon_path' in value:
+                instance.icon_path = value['icon_path']
+            elif 'icon' in value:
+                instance.icon_path = pathlib.Path(
+                    'assets', 'icons', value['icon'] + '.svg').resolve().as_posix()
+            if 'icon_fit_mode' in value:
+                instance.icon_fit_mode = value['icon_fit_mode']
+        else:
+            instance.is_set = False
 
 
 Builder.load_file(pathlib.Path(
