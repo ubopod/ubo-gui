@@ -33,6 +33,16 @@ class Menu(TypedDict):
     items: list[Item]
 
 
+def menu_items(menu: Menu) -> list[Item]:
+    """Return items of the menu.
+
+    in case it's a function, the return value of the function is called.
+    """
+    return menu['items']() if\
+        callable(menu['items']) else\
+        menu['items']
+
+
 class BaseItem(TypedDict):
     """A class used to represent a menu item.
 

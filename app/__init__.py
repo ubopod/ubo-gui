@@ -21,6 +21,9 @@ class UboApp(App):
         self.root: RootWidget = Builder.load_file(pathlib.Path(
             __file__).parent.joinpath('app.kv').resolve().as_posix())
 
+        if self.root is None:
+            return None
+
         central_layout: BoxLayout = self.root.ids.central_layout
         if self.central:
             central_layout.add_widget(self.central)
