@@ -28,7 +28,7 @@ class SvgWidget(Scatter):
         self.redraw()
 
     def redraw(self: SvgWidget):
-        if self.source:
+        if self.source and self.canvas is not None:
             with self.canvas:
                 Color(self.color)
                 svg = Svg(self.source)

@@ -17,7 +17,7 @@ from kivy.core.window import StringProperty
 from kivy.uix.screenmanager import ScreenManager
 
 from menu.item_widget import ItemWidget  # noqa: F401
-from menu.types import is_action_item, is_sub_menu_item
+from menu.types import is_action_item, is_sub_menu_item, menu_items
 from page import PageWidget
 
 if TYPE_CHECKING:
@@ -25,7 +25,7 @@ if TYPE_CHECKING:
 
     from typing_extensions import Any
 
-    from menu.types import Item, Menu
+    from menu.types import Menu
 
 
 PAGE_SIZE = 3
@@ -107,12 +107,17 @@ class MenuWidget(ScreenManager):
         super().__init__(**kwargs)
         HeadlessWidget.activate_low_fps_mode()
 
+    @property
+    def current_menu_items(self) -> list[Item]:
+        """Items of the current menu."""
+        return menu_items(self.current_menu)
+
     def go_to_next_page(self: MenuWidget) -> None:
         """Go to the next page.
 
         If it is already the last page, rotate to the first page.
         """
-        if len(self.current_menu['items']) == 0:
+        if len(self.current_menu_items) == 0:
             return
         self.page_index += 1
         if self.page_index >= len(self.pages):
@@ -125,7 +130,7 @@ class MenuWidget(ScreenManager):
 
         If it is already the first page, rotate to the last page.
         """
-        if len(self.current_menu['items']) == 0:
+        if len(self.current_menu_items) == 0:
             return
         self.page_index -= 1
         if self.page_index < 0:
@@ -142,9 +147,15 @@ class MenuWidget(ScreenManager):
             An integer number, can only take values greater than or equal to zero and
             less than `PAGE_SIZE`
         """
+        if self.current_screen is None:
+            warnings.warn('`current_screen` is `None`',
+                          RuntimeWarning, stacklevel=1)
+            return
         current_page: PageWidget = self.current_screen
         item = current_page.get_item(index)
         if not item:
+            warnings.warn('Selected `item` is `None`',
+                          RuntimeWarning, stacklevel=1)
             return
         if is_action_item(item):
             item['action']()
@@ -182,18 +193,19 @@ class MenuWidget(ScreenManager):
         self.current_menu = menu
         if 'heading' in self.current_menu:
             first_page = HeaderMenuPageWidget(
-                menu['items'][0],
+                menu_items(menu)[0],
                 menu['heading'],
                 menu['sub_heading'],
                 name='Page 0',
             )
         else:
-            first_page = NormalMenuPageWidget(menu['items'][:3], name='Page 0')
+            first_page = NormalMenuPageWidget(
+                menu_items(menu)[:3], name='Page 0')
         self.pages.append(first_page)
         self.add_widget(first_page)
 
         paginated_items = paginate(
-            menu['items'], 2 if 'heading' in menu else 0)
+            menu_items(menu), 2 if 'heading' in menu else 0)
         for index, page_items in enumerate(paginated_items):
             page = NormalMenuPageWidget(page_items, name=f'Page {index + 1}')
             self.pages.append(page)
@@ -202,12 +214,12 @@ class MenuWidget(ScreenManager):
 
     def on_kv_post(self: MenuWidget, _: Any) -> None:  # noqa: ANN401
         """Activate low fps mode when transition is done."""
-        a = self.transition.on_progress
+        on_progress_ = self.transition.on_progress
 
-        def on_progress(progress):
-            self.transition.screen_out.opacity = (1 - progress)
-            self.transition.screen_in.opacity = progress
-            a(progress)
+        def on_progress(progression):
+            self.transition.screen_out.opacity = (1 - progression)
+            self.transition.screen_in.opacity = progression
+            on_progress_(progression)
 
         def on_complete():
             self.transition.screen_out.opacity = 0
