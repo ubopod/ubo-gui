@@ -32,8 +32,11 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-lint = "pyright -p pyproject.toml ."
 demo-menu = "demo.menu:main"
+
+[tool.poe.tasks]
+lint = "pyright -p pyproject.toml ."
+download_font.shell = "wget https://github.com/google/material-design-icons/raw/master/variablefont/MaterialSymbolsOutlined%5BFILL%2CGRAD%2Copsz%2Cwght%5D.ttf -O ./assets/fonts/MaterialSymbolsOutlined[FILL,GRAD,opsz,wght].ttf"
 
 [tool.ruff.flake8-quotes]
 docstring-quotes = "double"
