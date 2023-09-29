@@ -1,8 +1,11 @@
 from __future__ import annotations
 
-from typing import Callable, Literal, Union
+from typing import TYPE_CHECKING, Callable, Union
 
 from typing_extensions import NotRequired, TypedDict, TypeGuard
+
+if TYPE_CHECKING:
+    from kivy.app import Widget
 
 
 class BaseMenu(TypedDict):
@@ -10,21 +13,15 @@ class BaseMenu(TypedDict):
 
     Attributes
     ----------
+    title: `str`
+        Rendered on top of the menu in all pages.
+
     items: `list` of `Item`
         List of the items of the menu
     """
 
+    title: str
     items: list[Item] | Callable[[], list[Item]]
-
-
-def menu_items(menu: Menu) -> list[Item]:
-    """Return items of the menu.
-
-    in case it's a function, the return value of the function is called.
-    """
-    return menu['items']() if\
-        callable(menu['items']) else\
-        menu['items']
 
 
 class HeadedMenu(BaseMenu):
@@ -32,9 +29,6 @@ class HeadedMenu(BaseMenu):
 
     Attributes
     ----------
-    title: `str`
-        Rendered on top of the menu in all pages.
-
     heading: `str`
         Rendered in the first page of the menu, stating the purpose of the menu and its
     items.
@@ -43,14 +37,13 @@ class HeadedMenu(BaseMenu):
         Rendered beneath the heading in the first page of the menu with a smaller font.
     """
 
-    title: str
     heading: str
     sub_heading: str
 
 
 def is_headed_menu(menu: Menu) -> TypeGuard[ActionItem]:
     """Check whether the menu is a `HeadedMenu` or not."""
-    return 'title' in menu and 'heading' in menu and 'sub_heading' in menu
+    return 'heading' in menu and 'sub_heading' in menu
 
 
 class HeadlessMenu(BaseMenu):
@@ -59,7 +52,7 @@ class HeadlessMenu(BaseMenu):
 
 def is_headless_menu(menu: Menu) -> TypeGuard[ActionItem]:
     """Check whether the menu is a `HeadedMenu` or not."""
-    return 'title' not in menu and 'heading' not in menu and 'sub_heading' not in menu
+    return 'heading' not in menu and 'sub_heading' not in menu
 
 
 Menu = Union[HeadedMenu, HeadlessMenu]
@@ -83,19 +76,33 @@ class BaseItem(TypedDict):
     label: `str`
         The label of the item.
 
-    color: `tuple` of `float`
-        The color in rgba format as a list of floats, the list should contain 4
-    elements: red, green, blue and alpha, each being a number in the range [0..1].
-    For example (0.5, 0, 0.5, 0.8) represents a semi transparent purple.
+    color: `str` or `tuple` of `float`
+        The color by its name or in rgba format as a list of floats, the list should
+    contain 4 elements: red, green, blue and alpha, each being a number in the range
+    [0..1].
+        For example (0.5, 0, 0.5, 0.8) represents a semi transparent purple, or the
+    string 'yellow' represents color yellow.
+
+    background_color: `str` or `tuple` of `float`
+        The background color by color name or in rgba format as a list of floats, the
+    list should contain 4 elements red, green, blue and alpha, each being a number in
+    the range [0..1].
+        For example (0.5, 0, 0.5, 0.8) represents a semi transparent purple, or the
+    string 'yellow' represents color yellow.
+
+    icon: `str`
+        Name of a Material Symbols icon, check here for the complete list:
+    https://fonts.google.com/icons
+
+    is_short: `bool`
+        Whether the item should be rendered in short form or not. In short form only the
+    icon of the item is rendered and its label is hidden.
     """
 
     label: str
-    color: NotRequired[tuple[float, float, float, float]]
-    background_color: NotRequired[tuple[float, float, float, float]]
+    color: NotRequired[str | tuple[float, float, float, float]]
+    background_color: NotRequired[str | tuple[float, float, float, float]]
     icon: NotRequired[str]
-    icon_path: NotRequired[str]
-    icon_fit_mode: NotRequired[Literal[
-        'scale-down', 'fill', 'contain', 'cover']]
     is_short: NotRequired[bool]
 
 
@@ -104,7 +111,7 @@ class ActionItem(BaseItem):
 
     Attributes
     ----------
-    action: `Function`, optional
+    action: `Function`
         If provided, activating this item will call this function.
     """
 
@@ -116,12 +123,29 @@ def is_action_item(item: Item) -> TypeGuard[ActionItem]:
     return 'action' in item
 
 
+class ApplicationItem(BaseItem):
+    """A class used to represent an application menu item.
+
+    Attributes
+    ----------
+    application: `Widget`
+        If provided, activating this item will show this widget
+    """
+
+    application: Widget
+
+
+def is_application_item(item: Item) -> TypeGuard[ApplicationItem]:
+    """Check whether the item is an `ApplicationItem` or not."""
+    return 'application' in item
+
+
 class SubMenuItem(BaseItem):
     """A class used to represent a sub-menu menu item.
 
     Attributes
     ----------
-    sub_menu: `Menu`, optional
+    sub_menu: `Menu`
         If provided, activating this item will open another menu, the description
         described in this field.
     """
@@ -134,4 +158,4 @@ def is_sub_menu_item(item: Item) -> TypeGuard[SubMenuItem]:
     return 'sub_menu' in item
 
 
-Item = Union[ActionItem, SubMenuItem]
+Item = Union[ActionItem, SubMenuItem, ApplicationItem]

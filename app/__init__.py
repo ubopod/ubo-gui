@@ -6,7 +6,17 @@ from typing import TYPE_CHECKING
 
 from headless_kivy_pi import HeadlessWidget
 from kivy.app import App, Builder, StringProperty, Widget
+from kivy.core.text import LabelBase
 from kivy.uix.label import Label
+
+LabelBase.register(
+    name='material_symbols',
+    fn_regular=pathlib.Path(__file__).parent.parent.joinpath(
+        'assets',
+        'fonts',
+        'MaterialSymbolsOutlined[FILL,GRAD,opsz,wght].ttf',
+    ).resolve().as_posix(),
+)
 
 if TYPE_CHECKING:
     from kivy.uix.layout import BoxLayout
@@ -35,6 +45,12 @@ class UboApp(App):
         footer_layout: BoxLayout = self.root.ids.footer_layout
         if self.footer:
             footer_layout.add_widget(self.footer)
+
+        def title_callback(_: RootWidget, title: str):
+            if self.header is None:
+                return
+            self.header.text = title
+        self.root.bind(title=title_callback)
 
         return self.root
 

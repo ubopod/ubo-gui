@@ -69,12 +69,12 @@ class HeaderMenuPageWidget(PageWidget):
         sub_heading: str,
         **kwargs: Any,  # noqa: ANN401
     ) -> None:
-        """Initialize a `MenuWidget`.
+        """Initialize a `HeaderMenuPageWidget`.
 
         Parameters
         ----------
-        items: `list` of `Item`
-            The items to be shown in this page
+        item: `Item`
+            The item to be shown in this page
 
         heading: `str`
             The heading of the page
@@ -100,13 +100,14 @@ class HeaderMenuPageWidget(PageWidget):
 class MenuWidget(ScreenManager):
     """Paginated menu."""
 
+    title = StringProperty()
     page_index: int = 0
     pages: list[PageWidget]
     current_menu: Menu
     menu_stack: list[Menu]
 
     def __init__(self: MenuWidget, **kwargs: Any) -> None:  # noqa: ANN401
-        """Initialize a `MainWidget`."""
+        """Initialize a `MenuWidget`."""
         self.pages = []
         self.menu_stack = []
         super().__init__(**kwargs)
@@ -215,6 +216,7 @@ class MenuWidget(ScreenManager):
             page = NormalMenuPageWidget(page_items, name=f'Page {index + 1}')
             self.pages.append(page)
             self.add_widget(page)
+        self.title = menu['title']
         HeadlessWidget.activate_low_fps_mode()
 
     def on_kv_post(self: MenuWidget, _: Any) -> None:  # noqa: ANN401

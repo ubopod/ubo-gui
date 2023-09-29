@@ -167,4 +167,5 @@ poetry.toml
 # ruff
 .ruff_cache/
 
+/assets/
 .DS_Store

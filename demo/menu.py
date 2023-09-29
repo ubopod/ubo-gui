@@ -27,43 +27,48 @@ if TYPE_CHECKING:
     from menu.types import Item
     Modifier = Literal['ctrl', 'alt', 'meta', 'shift']
 
+SETTINGS_MENU: Menu = {
+    'title': 'Settings',
+    'heading': 'Please choose',
+    'sub_heading': 'This is sub heading',
+    'items': [
+        {
+            'label': 'WiFi',
+            'action': lambda: print('WiFi'),
+            'icon': 'wifi',
+        },
+        {
+            'label': 'Bluetooth',
+            'action': lambda: print('Bluetooth'),
+            'icon': 'bluetooth',
+        },
+        {
+            'label': 'Audio',
+            'action': lambda: print('Audio'),
+            'icon': 'volume_up',
+        },
+    ],
+}
+
 MAIN_MENU: Menu = {
-    'title': 'UBO',
+    'title': 'Main',
     'heading': 'What are you going to do?',
     'sub_heading': 'Choose from the options',
     'items': [
         {
-            'label': 'First Item',
-            'icon': 'chevron-down',
-            'sub_menu': {
-                'title': 'Nested',
-                'heading': 'Please choose',
-                'sub_heading': 'This is sub heading',
-                'items': [
-                    {
-                        'label': 'Nested item',
-                        'action': lambda: print('Nested item selected'),
-                    },
-                ],
-            },
+            'label': 'Settings',
+            'icon': 'settings',
+            'sub_menu': SETTINGS_MENU,
         },
         {
-            'label': 'Second Item',
-            'color': (1, 0, 1, 1),
-            'action': lambda: print('Second item selected'),
-            'icon': 'chevron-up',
+            'label': 'Apps',
+            'action': lambda: print('Apps'),
+            'icon': 'apps',
         },
         {
-            'label': 'Third Item',
-            'action': lambda: print('Third item selected'),
-        },
-        {
-            'label': 'Fourth Item',
-            'action': lambda: print('Fourth item selected'),
-        },
-        {
-            'label': 'Fifth Item',
-            'action': lambda: print('Fifth item selected'),
+            'label': 'About',
+            'action': lambda: print('About'),
+            'icon': 'info',
         },
     ],
 }
@@ -74,25 +79,28 @@ def notifications_menu_items() -> list[Item]:
 
 
 HOME_MENU: Menu = {
+    'title': 'Dashboard',
     'items': [
         {
             'label': '',
             'sub_menu': MAIN_MENU,
-            'icon': 'chevron-up',
+            'icon': 'menu',
             'is_short': True,
         },
         {
             'label': '',
             'sub_menu': {
+                'title': 'Notifications',
                 'items': notifications_menu_items,
             },
-            'icon': 'chevron-up',
+            'color': 'yellow',
+            'icon': 'info',
             'is_short': True,
         },
         {
             'label': 'Turn off',
             'action': lambda: print('Turning off'),
-            'icon': 'chevron-up',
+            'icon': 'power_settings_new',
             'is_short': True,
         },
     ],
@@ -111,6 +119,10 @@ class MenuApp(UboApp):
         """Build the app and initiate."""
         menu_widget = MenuWidget()
         menu_widget.set_current_menu(HOME_MENU)
+
+        def title_callback(_: MenuWidget, title: str):
+            self.root.title = title
+        menu_widget.bind(title=title_callback)
         return menu_widget
 
     def on_keyboard(
