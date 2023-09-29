@@ -27,6 +27,9 @@ python = "^3.9"
 headless-kivy-pi = { git = "https://github.com/sassanh/headless-kivy-pi.git" }
 
 
+[tool.poetry.group.development.dependencies]
+poethepoet = "^0.23.0"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
@@ -36,7 +39,7 @@ demo-menu = "demo.menu:main"
 
 [tool.poe.tasks]
 lint = "pyright -p pyproject.toml ."
-download_font.shell = "wget https://github.com/google/material-design-icons/raw/master/variablefont/MaterialSymbolsOutlined%5BFILL%2CGRAD%2Copsz%2Cwght%5D.ttf -O ./assets/fonts/MaterialSymbolsOutlined[FILL,GRAD,opsz,wght].ttf"
+download_font.shell = "mkdir -p assets/fonts; wget https://github.com/google/material-design-icons/raw/master/variablefont/MaterialSymbolsOutlined%5BFILL%2CGRAD%2Copsz%2Cwght%5D.ttf -O ./assets/fonts/MaterialSymbolsOutlined[FILL,GRAD,opsz,wght].ttf"
 
 [tool.ruff.flake8-quotes]
 docstring-quotes = "double"
