@@ -7,8 +7,7 @@ description = "CircuitPython APIs for non-CircuitPython versions of Python such 
 optional = false
 python-versions = ">=3.7.0"
 files = [
-    {file = "Adafruit-Blinka-8.22.4.tar.gz", hash = "sha256:2cc5e301439a0381b7cf8149fba8ab9c9b329eebf20322642f53411009d2c1bb"},
-    {file = "Adafruit_Blinka-8.22.4-py3-none-any.whl", hash = "sha256:555ff3414ca776b18db85d5e75bba049f689c1d8c863bb6230e1ddde6efbefc8"},
+    {file = "Adafruit_Blinka-8.22.4-py3-none-any.whl", hash = "sha256:ba3d71258b6aecdc8584c49c81fa569b7e6c2cf4c860a386a34420d8c22f32b9"},
 ]
 
 [package.dependencies]
@@ -16,6 +15,14 @@ adafruit-circuitpython-typing = "*"
 Adafruit-PlatformDetect = ">=3.52.0"
 Adafruit-PureIO = ">=1.1.7"
 pyftdi = ">=0.40.0"
+"RPi.GPIO" = "*"
+rpi-ws281x = ">=4.0.0"
+sysv-ipc = ">=1.1.0"
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
 
 [[package]]
 name = "adafruit-circuitpython-aw9523"
@@ -176,6 +183,26 @@ url = "https://www.piwheels.org/simple"
 reference = "piwheels"
 
 [[package]]
+name = "cython"
+version = "3.0.2"
+description = "The Cython compiler for writing C extensions in the Python language."
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+files = [
+    {file = "Cython-3.0.2-cp311-cp311-linux_armv6l.whl", hash = "sha256:51f49f76649ce269a3f6ac0e3c6d5866afa3755383f74859520007e0940405ad"},
+    {file = "Cython-3.0.2-cp311-cp311-linux_armv7l.whl", hash = "sha256:51f49f76649ce269a3f6ac0e3c6d5866afa3755383f74859520007e0940405ad"},
+    {file = "Cython-3.0.2-cp37-cp37m-linux_armv6l.whl", hash = "sha256:4e8b6e57b202dd0017dffbfa8de4eef09af00dc3cf39611e85fadc811bd72766"},
+    {file = "Cython-3.0.2-cp37-cp37m-linux_armv7l.whl", hash = "sha256:4e8b6e57b202dd0017dffbfa8de4eef09af00dc3cf39611e85fadc811bd72766"},
+    {file = "Cython-3.0.2-cp39-cp39-linux_armv6l.whl", hash = "sha256:529613e694967c775ebe73ff260e3a90e373b141fdd14b2f13c16b50029654c8"},
+    {file = "Cython-3.0.2-cp39-cp39-linux_armv7l.whl", hash = "sha256:529613e694967c775ebe73ff260e3a90e373b141fdd14b2f13c16b50029654c8"},
+]
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
 name = "docutils"
 version = "0.20.1"
 description = "Docutils -- Python Documentation Utilities"
@@ -210,7 +237,7 @@ typing-extensions = "^4.7.1"
 type = "git"
 url = "https://github.com/sassanh/headless-kivy-pi.git"
 reference = "HEAD"
-resolved_reference = "04dc299c1f9dba17440a045cb4837bed69463c6a"
+resolved_reference = "f55f07e2dff330fe8ce2ef86f98ef3a43f2f01f2"
 
 [[package]]
 name = "idna"
@@ -423,6 +450,41 @@ url = "https://www.piwheels.org/simple"
 reference = "piwheels"
 
 [[package]]
+name = "pyobjc-core"
+version = "10.0"
+description = "Python<->ObjC Interoperability Module"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "pyobjc-core-10.0.tar.gz", hash = "sha256:3dd0a7b3acd7e0b8ffd3f5331b29a3aaebe79a03323e61efeece38627a6020b3"},
+    {file = "pyobjc_core-10.0-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:61ea5112a672d21b5b0ed945778707c655b17c400672aef144705674c4b95499"},
+    {file = "pyobjc_core-10.0-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:99b72cda4593e0c66037b25a178f2bcc6efffb6d5d9dcd477ecca859a1f9ae8e"},
+    {file = "pyobjc_core-10.0-cp312-cp312-macosx_10_9_universal2.whl", hash = "sha256:2843ca32e86a01ccee67d7ad82a325ddd72d754929d1f2c0d96bc8741dc9af09"},
+    {file = "pyobjc_core-10.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:a886b9d2a93210cab4ae72601ab005ca6f627fa2f0cc62c43c03ef1405067a11"},
+    {file = "pyobjc_core-10.0-cp38-cp38-macosx_11_0_universal2.whl", hash = "sha256:166666b5c380a49e8aa1ad1dda978c581e29a00703d82203216f3c65a3f397a4"},
+    {file = "pyobjc_core-10.0-cp39-cp39-macosx_10_9_universal2.whl", hash = "sha256:198a0360f64e4c0148eed07b42d1de0545f56c498c356d1d5524422bb3352907"},
+]
+
+[[package]]
+name = "pyobjc-framework-cocoa"
+version = "10.0"
+description = "Wrappers for the Cocoa frameworks on macOS"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "pyobjc-framework-Cocoa-10.0.tar.gz", hash = "sha256:723421eff4f59e4ca9a9bb8ec6dafbc0f778141236fa85a49fdd86732d58a74c"},
+    {file = "pyobjc_framework_Cocoa-10.0-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:80c22a8fc7f085746d9cd222adeca8fe6790e3e6ad7eed5fc70b32aa87c10adb"},
+    {file = "pyobjc_framework_Cocoa-10.0-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:0187cba228976a45f41116c74aab079b64bacb3ffc3c886a4bd8e472bf9be581"},
+    {file = "pyobjc_framework_Cocoa-10.0-cp312-cp312-macosx_10_9_universal2.whl", hash = "sha256:a81dabdc40268591e3196087388e680c6570fed1b521df9b04733cb3ece0414e"},
+    {file = "pyobjc_framework_Cocoa-10.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:0a23db9ab99e338e1d8a268d873cc15408f78cec9946308393ca2241820c18b8"},
+    {file = "pyobjc_framework_Cocoa-10.0-cp38-cp38-macosx_11_0_universal2.whl", hash = "sha256:a3c66fe56a5156a818fbf056c589f8140a5fdb1dcb1f1075cb34d3755474d900"},
+    {file = "pyobjc_framework_Cocoa-10.0-cp39-cp39-macosx_10_9_universal2.whl", hash = "sha256:bf9020e85ead569021b15272dcd90207aab6c754093f520b11d4210a2efbdd06"},
+]
+
+[package.dependencies]
+pyobjc-core = ">=10.0"
+
+[[package]]
 name = "pypiwin32"
 version = "223"
 description = ""
@@ -522,6 +584,81 @@ url = "https://www.piwheels.org/simple"
 reference = "piwheels"
 
 [[package]]
+name = "rpi-gpio"
+version = "0.7.1"
+description = "A module to control Raspberry Pi GPIO channels"
+optional = false
+python-versions = "*"
+files = [
+    {file = "RPi.GPIO-0.7.1-cp35-cp35m-linux_armv6l.whl", hash = "sha256:5073d1972727cfad38a1a42f02da91dc41f137679290aa804ab6c410168347ac"},
+    {file = "RPi.GPIO-0.7.1-cp35-cp35m-linux_armv7l.whl", hash = "sha256:5073d1972727cfad38a1a42f02da91dc41f137679290aa804ab6c410168347ac"},
+    {file = "RPi.GPIO-0.7.1-cp37-cp37m-linux_armv6l.whl", hash = "sha256:e5dfec2c4ccb7dbe9eef3dfc76a3b04121fc62d77fd8fbe1a8e841468a1b0c4c"},
+    {file = "RPi.GPIO-0.7.1-cp37-cp37m-linux_armv7l.whl", hash = "sha256:e5dfec2c4ccb7dbe9eef3dfc76a3b04121fc62d77fd8fbe1a8e841468a1b0c4c"},
+    {file = "RPi.GPIO-0.7.1-cp39-cp39-linux_armv6l.whl", hash = "sha256:231f6142c25975a7e39b96faf4905f05f97dba6809e8c5f0d58f284b35b4b821"},
+    {file = "RPi.GPIO-0.7.1-cp39-cp39-linux_armv7l.whl", hash = "sha256:231f6142c25975a7e39b96faf4905f05f97dba6809e8c5f0d58f284b35b4b821"},
+]
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "rpi-ws281x"
+version = "5.0.0"
+description = "Userspace Raspberry Pi PWM/PCM/SPI library for SK6812 and WS281X LEDs."
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "rpi_ws281x-5.0.0-cp37-cp37m-linux_armv6l.whl", hash = "sha256:2d9d8cb8f54bf68c1935a9b466aef8960f2e4aec4328057c0a9e59fc8eaad187"},
+    {file = "rpi_ws281x-5.0.0-cp37-cp37m-linux_armv7l.whl", hash = "sha256:2d9d8cb8f54bf68c1935a9b466aef8960f2e4aec4328057c0a9e59fc8eaad187"},
+    {file = "rpi_ws281x-5.0.0-cp39-cp39-linux_armv6l.whl", hash = "sha256:3c4af921dda22a393e42793e799823918e7d7a5bb71e50e885c22769ffa00c73"},
+    {file = "rpi_ws281x-5.0.0-cp39-cp39-linux_armv7l.whl", hash = "sha256:3c4af921dda22a393e42793e799823918e7d7a5bb71e50e885c22769ffa00c73"},
+]
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "screeninfo"
+version = "0.8.1"
+description = "Fetch location and size of physical screens."
+optional = false
+python-versions = ">=3.6.2,<4.0.0"
+files = [
+    {file = "screeninfo-0.8.1-py3-none-any.whl", hash = "sha256:1d5c100d6cf2b65ebde6c112be395693f953ed25377187f75fdf5a0ac5587b31"},
+]
+
+[package.dependencies]
+Cython = {version = "*", markers = "sys_platform == \"darwin\""}
+pyobjc-framework-Cocoa = {version = "*", markers = "sys_platform == \"darwin\""}
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "sysv-ipc"
+version = "1.1.0"
+description = "System V IPC primitives (semaphores, shared memory and message queues) for Python"
+optional = false
+python-versions = "*"
+files = [
+    {file = "sysv_ipc-1.1.0-cp37-cp37m-linux_armv6l.whl", hash = "sha256:3cc523ce39338200c0ad7735c48267a26735690977b4eb4879bd8e10b4e7a82d"},
+    {file = "sysv_ipc-1.1.0-cp37-cp37m-linux_armv7l.whl", hash = "sha256:3cc523ce39338200c0ad7735c48267a26735690977b4eb4879bd8e10b4e7a82d"},
+    {file = "sysv_ipc-1.1.0-cp39-cp39-linux_armv6l.whl", hash = "sha256:0ef1f4360d0c4e353f63d43743911c060881ebf920c95ec8adfa4fcbf58955da"},
+    {file = "sysv_ipc-1.1.0-cp39-cp39-linux_armv7l.whl", hash = "sha256:0ef1f4360d0c4e353f63d43743911c060881ebf920c95ec8adfa4fcbf58955da"},
+]
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
 name = "tomli"
 version = "2.0.1"
 description = "A lil' TOML parser"
@@ -571,4 +708,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "8c07b4ba10f84b34a7e3d5000b81734a811cd13edc6c99c0c8e02ea05d0db818"
+content-hash = "f985268698d500bc3d00f08a0263d9eb81a45df3158af2e4793f60d7754d0a3b"

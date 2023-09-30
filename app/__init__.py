@@ -46,12 +46,6 @@ class UboApp(App):
         if self.footer:
             footer_layout.add_widget(self.footer)
 
-        def title_callback(_: RootWidget, title: str):
-            if self.header is None:
-                return
-            self.header.text = title
-        self.root.bind(title=title_callback)
-
         return self.root
 
     @cached_property
@@ -60,7 +54,13 @@ class UboApp(App):
 
     @cached_property
     def header(self: UboApp) -> Widget | None:
-        return Label(text=self.root.title)
+        header_label = Label(text=self.root.title)
+
+        def title_callback(_: RootWidget, title: str):
+            header_label.text = title
+        self.root.bind(title=title_callback)
+
+        return header_label
 
     @cached_property
     def footer(self: UboApp) -> Widget | None:

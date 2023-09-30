@@ -23,6 +23,8 @@ from app import UboApp  # noqa: E402
 from menu import MenuWidget  # noqa: E402
 
 if TYPE_CHECKING:
+    from kivy.app import Widget
+
     from menu import Menu
     from menu.types import Item
     Modifier = Literal['ctrl', 'alt', 'meta', 'shift']
@@ -110,7 +112,7 @@ HOME_MENU: Menu = {
 class MenuApp(UboApp):
     """Menu application."""
 
-    def build(self: MenuApp):
+    def build(self: MenuApp) -> Widget | None:
         Window.bind(on_keyboard=self.on_keyboard)
         return super().build()
 
