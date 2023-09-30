@@ -7,33 +7,31 @@ Each item can optionally be styled differently.
 """
 from __future__ import annotations
 
-import pathlib
 import warnings
 from typing import TYPE_CHECKING, cast
 
 from headless_kivy_pi import HeadlessWidget
-from kivy.app import Builder
 from kivy.core.window import StringProperty
 from kivy.uix.screenmanager import ScreenManager
 
+from menu.constants import PAGE_SIZE
+from menu.header_menu_page_widget import HeaderMenuPageWidget
 from menu.item_widget import ItemWidget  # noqa: F401
+from menu.normal_menu_page_widget import NormalMenuPageWidget
 from menu.types import (
     Item,
     is_action_item,
     is_sub_menu_item,
     menu_items,
 )
-from page import PageWidget
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
+    from page import PageWidget
     from typing_extensions import Any
 
     from menu.types import Menu
-
-
-PAGE_SIZE = 3
 
 
 def paginate(items: list[Item], offset: int = 0) -> Iterator[list[Item]]:
@@ -50,51 +48,6 @@ def paginate(items: list[Item], offset: int = 0) -> Iterator[list[Item]]:
     """
     for i in range(PAGE_SIZE-offset, len(items), PAGE_SIZE):
         yield items[i:i + PAGE_SIZE]
-
-
-class NormalMenuPageWidget(PageWidget):
-    """renders a normal page of a `Menu`."""
-
-
-class HeaderMenuPageWidget(PageWidget):
-    """renders a header page of a `Menu`."""
-
-    heading = StringProperty()
-    sub_heading = StringProperty()
-
-    def __init__(
-        self: HeaderMenuPageWidget,
-        item: Item,
-        heading: str,
-        sub_heading: str,
-        **kwargs: Any,  # noqa: ANN401
-    ) -> None:
-        """Initialize a `HeaderMenuPageWidget`.
-
-        Parameters
-        ----------
-        item: `Item`
-            The item to be shown in this page
-
-        heading: `str`
-            The heading of the page
-
-        sub_heading: `str`
-            The sub-heading of the page
-
-        kwargs: Any
-            Stuff that will get directly passed to the `__init__` method of Kivy's
-        `Screen`.
-        """
-        super().__init__([item], **kwargs)
-        self.heading = heading
-        self.sub_heading = sub_heading
-
-    def get_item(self: HeaderMenuPageWidget, index: int) -> Item | None:
-        if index != PAGE_SIZE - 1:
-            warnings.warn('index must be 2', ResourceWarning, stacklevel=1)
-            return None
-        return self.items[index - 2]
 
 
 class MenuWidget(ScreenManager):
@@ -235,7 +188,3 @@ class MenuWidget(ScreenManager):
 
         self.transition.on_progress = on_progress
         self.transition.on_complete = on_complete
-
-
-Builder.load_file(pathlib.Path(
-    __file__).parent.joinpath('menu.kv').resolve().as_posix())

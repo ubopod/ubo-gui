@@ -6,9 +6,10 @@ authors = ["Sassan Haradji <sassanh@gmail.com>"]
 license = "Apache-2.0"
 readme = "README.md"
 packages = [
-  { include = "app" },
-  { include = "menu" },
-  { include = "notification" },
+  { include = "app", from = "src" },
+  { include = "menu", from = "src" },
+  { include = "notification", from = "src" },
+  { include = "page", from = "src" },
 ]
 
 

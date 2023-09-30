@@ -9,13 +9,12 @@ from kivy.app import App, Builder, StringProperty, Widget
 from kivy.core.text import LabelBase
 from kivy.uix.label import Label
 
+from src import FONTS_PATH
+
 LabelBase.register(
     name='material_symbols',
-    fn_regular=pathlib.Path(__file__).parent.parent.joinpath(
-        'assets',
-        'fonts',
-        'MaterialSymbolsOutlined[FILL,GRAD,opsz,wght].ttf',
-    ).resolve().as_posix(),
+    fn_regular=FONTS_PATH.joinpath(
+        'MaterialSymbolsOutlined[FILL,GRAD,opsz,wght].ttf').resolve().as_posix(),
 )
 
 if TYPE_CHECKING:
