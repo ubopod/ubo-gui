@@ -20,7 +20,12 @@ poetry add headless-kivy-pi@git+https://github.com/sassanh/ubo-gui.git
 
 ## 🚀 Usage
 
-Checkout [the menu demo](./demo/menu.py) to see a sample usage.
+Checkout [the menu demo](./demo/menu.py) to see a sample usage. You can run it with this command:
+
+```sh
+poetry install --with demo # You also need `--with development` if you want to run it on a non-raspberry machine
+poetry run demo-menu
+```
 
 ## ⚒️ Contribution
 
@@ -44,6 +49,12 @@ Also be aware of [this issue](https://github.com/python-poetry/poetry/issues/191
 
 ```sh
 PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring poetry install
+```
+
+You can run linter over whole codebase by running this command:
+
+```sh
+poetry run poe lint
 ```
 
 ### ⚠️ Important Note
