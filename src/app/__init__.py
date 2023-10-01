@@ -18,7 +18,7 @@ LabelBase.register(
 )
 
 if TYPE_CHECKING:
-    from kivy.uix.layout import BoxLayout
+    from kivy.uix.boxlayout import BoxLayout
 
 
 class RootWidget(HeadlessWidget):

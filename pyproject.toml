@@ -7,9 +7,11 @@ license = "Apache-2.0"
 readme = "README.md"
 packages = [
   { include = "app", from = "src" },
+  { include = "gauge", from = "src" },
   { include = "menu", from = "src" },
   { include = "notification", from = "src" },
   { include = "page", from = "src" },
+  { include = "volume", from = "src" },
 ]
 
 
@@ -31,6 +33,10 @@ headless-kivy-pi = { git = "https://github.com/sassanh/headless-kivy-pi.git" }
 [tool.poetry.group.development.dependencies]
 poethepoet = "^0.23.0"
 screeninfo = "^0.8.1"
+
+
+[tool.poetry.group.demo.dependencies]
+psutil = "^5.9.5"
 
 [build-system]
 requires = ["poetry-core"]

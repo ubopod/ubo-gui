@@ -1,0 +1,49 @@
+#:kivy 2.2.1
+
+<GaugeWidget>:
+  _size: (self.width, self.width) if self.width < (self.height - dp(24)) * 2 else ((self.height - dp(24)) * 2, (self.height - dp(24)) * 2)
+  _pos: self.pos[0] + (self.width - self._size[0]) / 2, self.pos[1] + dp(24) - (self.height - dp(24)) + (self.height - dp(24) - self._size[1] / 2) / 2
+
+  canvas.before:
+    Color:
+      rgba: self.background_color
+
+    Ellipse:
+      pos: root._pos
+      size: root._size
+      angle_start: -90
+      angle_end: 90
+
+    Color:
+      rgba: self.fill_color
+
+    Ellipse:
+      pos: root._pos
+      size: root._size
+      angle_start: 270
+      angle_end: 270 + (self.value - self.min_value) / (self.max_value - self.min_value) * 180
+
+    Color:
+      rgba: 0, 0, 0, 1
+
+    Ellipse:
+      pos: root._pos[0] + root._size[0] / 4, root._pos[1] + root._size[1] / 4
+      size: root._size[0] / 2, root._size[1] / 2
+      angle_start: -90
+      angle_end: 90
+
+
+  BoxLayout:
+    pos: root.pos
+    size: root.size
+    orientation: 'vertical'
+
+    Widget:
+      size_hint: 1, 1
+
+    Label:
+      font_size: dp(12)
+      text: root.label
+      size_hint: 1, None
+      height: dp(24)
+      halign: 'center'

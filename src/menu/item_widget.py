@@ -4,6 +4,7 @@ from __future__ import annotations
 import pathlib
 from typing import TYPE_CHECKING
 
+from constants import PRIMARY_COLOR
 from kivy.app import Builder, Widget
 from kivy.uix.label import (
     BooleanProperty,
@@ -37,7 +38,7 @@ class ItemWidget(Widget):
     is_set = BooleanProperty(False)
     label = StringProperty()
     color = ColorProperty((1, 1, 1, 1))
-    background_color = ColorProperty((71 / 255, 185 / 255, 255 / 255, 1))
+    background_color = ColorProperty(PRIMARY_COLOR)
     icon = StringProperty()
     is_short = BooleanProperty(False)
     item = ObjectProperty()

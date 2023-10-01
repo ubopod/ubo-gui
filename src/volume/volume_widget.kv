@@ -1,0 +1,40 @@
+#:kivy 2.2.1
+
+<VolumeWidget>:
+  canvas.before:
+    Color:
+      rgba: self.background_color
+
+    RoundedRectangle:
+      pos: self.pos[0] + (self.width - 50) / 2, self.pos[1]
+      size: 50, self.height
+      radius: (10, 10), (10, 10), (10, 10), (10, 10)
+
+    Color:
+      rgba: self.fill_color
+
+    RoundedRectangle:
+      pos: self.pos[0] + (self.width - 50) / 2, self.pos[1]
+      size: 50, self.height * self.value / 100
+      radius: (10, 10), (10, 10), (10, 10), (10, 10)
+
+  BoxLayout:
+    size: root.size
+    pos: root.pos
+    orientation: 'vertical'
+    spacing: dp(8)
+
+    Label:
+      font_name: 'material_symbols'
+      text: 'volume_up'
+      size_hint: 1, None
+      height: dp(24)
+
+    Widget:
+      size_hint: 0, 1
+
+    Label:
+      font_name: 'material_symbols'
+      text: 'volume_down'
+      size_hint: 1, None
+      height: dp(24)
