@@ -11,9 +11,8 @@ import warnings
 from typing import TYPE_CHECKING, cast
 
 from headless_kivy_pi import HeadlessWidget
-from kivy.core.window import StringProperty
+from kivy.properties import NumericProperty, StringProperty
 from kivy.uix.screenmanager import ScreenManager
-
 from menu.constants import PAGE_SIZE
 from menu.header_menu_page_widget import HeaderMenuPageWidget
 from menu.item_widget import ItemWidget  # noqa: F401
@@ -28,10 +27,9 @@ from menu.types import (
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
+    from menu.types import Menu
     from page import PageWidget
     from typing_extensions import Any
-
-    from menu.types import Menu
 
 
 def paginate(items: list[Item], offset: int = 0) -> Iterator[list[Item]]:
@@ -54,7 +52,8 @@ class MenuWidget(ScreenManager):
     """Paginated menu."""
 
     title = StringProperty()
-    page_index: int = 0
+    page_index = NumericProperty(0)
+    depth = NumericProperty(0)
     pages: list[PageWidget]
     current_menu: Menu
     menu_stack: list[Menu]
@@ -67,7 +66,12 @@ class MenuWidget(ScreenManager):
         HeadlessWidget.activate_low_fps_mode()
 
     @property
-    def current_menu_items(self) -> list[Item]:
+    def current_depth(self: MenuWidget) -> int:
+        """Depth of current menu in menu tree."""
+        return len(self.menu_stack)
+
+    @property
+    def current_menu_items(self: MenuWidget) -> list[Item]:
         """Items of the current menu."""
         return menu_items(self.current_menu)
 
@@ -137,12 +141,14 @@ class MenuWidget(ScreenManager):
         """Go one level deeper in the menu stack."""
         self.menu_stack.append(self.current_menu)
         self.set_current_menu(menu)
+        self.depth = self.current_depth
 
     def pop_menu(self: MenuWidget) -> None:
         """Come up one level from of the menu stack."""
         if len(self.menu_stack) == 0:
             return
         self.set_current_menu(self.menu_stack.pop())
+        self.depth = self.current_depth
 
     def set_current_menu(self: MenuWidget, menu: Menu) -> None:
         """Set the `current_menu` and create its pages."""
