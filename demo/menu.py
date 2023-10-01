@@ -1,6 +1,7 @@
 """Demo of ubo-menu widget."""
 from __future__ import annotations
 
+import datetime
 import os
 from functools import cached_property
 from threading import Thread
@@ -8,7 +9,9 @@ from typing import TYPE_CHECKING, Literal
 
 from gauge import GaugeWidget
 from headless_kivy_pi import setup_headless
+from kivy.app import Widget
 from kivy.base import Clock
+from kivy.metrics import dp
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from volume import VolumeWidget
@@ -28,7 +31,6 @@ from kivy.core.window import (  # noqa: E402
 from menu import MenuWidget  # noqa: E402
 
 if TYPE_CHECKING:
-    from kivy.app import Widget
     from menu import Menu
     from menu.types import Item
     Modifier = Literal['ctrl', 'alt', 'meta', 'shift']
@@ -140,10 +142,10 @@ class MenuApp(UboApp):
 
         value = [0]
 
-        def set_value(_dt: float):
+        def set_value(_dt: float) -> None:
             gauge.value = value[0]
 
-        def calculate_value():
+        def calculate_value() -> None:
             value[0] = psutil.cpu_percent(interval=1, percpu=False)
             Clock.schedule_once(set_value)
 
@@ -163,12 +165,33 @@ class MenuApp(UboApp):
             label='RAM',
         )
 
-        def set_value(_dt: int):
+        def set_value(_dt: int) -> None:
             gauge.value = psutil.virtual_memory().percent
 
         Clock.schedule_interval(set_value, 1)
 
         return gauge
+
+    @cached_property
+    def clock_widget(self: MenuApp) -> Label:
+        clock = Label(font_size=dp(20))
+        local_timzone = datetime.datetime.now(
+            datetime.timezone.utc).astimezone().tzinfo
+
+        def now() -> datetime.datetime:
+            return datetime.datetime.now(local_timzone)
+
+        def set_value(_dt: int) -> None:
+            clock.text = now().strftime('%H:%M')
+
+        set_value(0)
+
+        def initialize(_dt: int) -> None:
+            Clock.schedule_interval(set_value, 60)
+
+        Clock.schedule_once(initialize, 60 - now().second + 1)
+
+        return clock
 
     @cached_property
     def central(self: MenuApp) -> Widget:
@@ -178,7 +201,7 @@ class MenuApp(UboApp):
         horizontal_layout.add_widget(self.menu_widget)
 
         central_column = BoxLayout(
-            orientation='vertical', spacing=24, padding=24)
+            orientation='vertical', spacing=dp(12), padding=dp(16))
         central_column.add_widget(self.cpu_gauge)
         central_column.add_widget(self.ram_gauge)
         central_column.size_hint = (1, 1)
@@ -189,18 +212,16 @@ class MenuApp(UboApp):
         right_column.size_hint = (None, 1)
         horizontal_layout.add_widget(right_column)
 
-        def handle_depth_change(_instance: Widget, depth: int):
+        def handle_depth_change(_instance: Widget, depth: int) -> None:
             if depth == 0:
                 self.menu_widget.size_hint = (None, 1)
                 self.menu_widget.width = 100
                 central_column.size_hint = (1, 1)
                 right_column.size_hint = (None, 1)
-                horizontal_layout._trigger_layout()
             else:
                 self.menu_widget.size_hint = (1, 1)
                 central_column.size_hint = (0, 1)
                 right_column.size_hint = (0, 1)
-                horizontal_layout._trigger_layout()
 
         self.menu_widget.bind(depth=handle_depth_change)
 
@@ -208,14 +229,54 @@ class MenuApp(UboApp):
 
     @cached_property
     def footer(self: MenuApp) -> Widget:
-        layout = BoxLayout(orientation='horizontal')
-        [layout.add_widget(Label(
-            text=icon,
+        layout = BoxLayout()
+
+        normal_footer_layout = BoxLayout(
+            orientation='horizontal', spacing=0, padding=0)
+        normal_footer_layout.add_widget(Label(
+            text='reply',
             font_name='material_symbols',
-            font_size=36,
+            font_size=dp(20),
             font_features='fill=1',
-        )) for icon in ['camera', 'lan', 'mic_off', 'bluetooth', 'wifi_off']]
-        layout.children[-1].color = 'green'
+            size_hint=(None, 1),
+        ))
+        normal_footer_layout.add_widget(Widget(size_hint=(1, 1)))
+
+        home_footer_layout = BoxLayout(
+            orientation='horizontal', spacing=0, padding=0)
+        home_footer_layout.add_widget(
+            Widget(size_hint=(None, 1), width=dp(16)))
+        home_footer_layout.add_widget(self.clock_widget)
+        home_footer_layout.add_widget(Widget(size_hint=(1, 1)))
+
+        for icon in ['camera', 'lan', 'mic_off', 'bluetooth', 'wifi_off']:
+            label = Label(
+                text=icon,
+                font_name='material_symbols',
+                font_size=dp(20),
+                font_features='fill=1',
+                size_hint=(.5, 1),
+            )
+            home_footer_layout.add_widget(label)
+            if icon == 'camera':
+                label.color = 'green'
+
+        home_footer_layout.add_widget(
+            Widget(size_hint=(None, 1), width=dp(16)))
+
+        def handle_depth_change(_instance: Widget, depth: int) -> None:
+            if depth == 0:
+                if normal_footer_layout in layout.children:
+                    layout.remove_widget(normal_footer_layout)
+                    layout.add_widget(home_footer_layout)
+            elif home_footer_layout in layout.children:
+                layout.remove_widget(home_footer_layout)
+                layout.add_widget(normal_footer_layout)
+
+        self.menu_widget.bind(depth=handle_depth_change)
+
+        layout.add_widget(home_footer_layout)
+
         return layout
 
     def on_keyboard(
