@@ -198,6 +198,7 @@ class MenuApp(UboApp):
         horizontal_layout = BoxLayout()
 
         self.menu_widget.size_hint = (None, 1)
+        self.menu_widget.width = dp(50)
         horizontal_layout.add_widget(self.menu_widget)
 
         central_column = BoxLayout(
@@ -215,7 +216,7 @@ class MenuApp(UboApp):
         def handle_depth_change(_instance: Widget, depth: int) -> None:
             if depth == 0:
                 self.menu_widget.size_hint = (None, 1)
-                self.menu_widget.width = 100
+                self.menu_widget.width = dp(50)
                 central_column.size_hint = (1, 1)
                 right_column.size_hint = (None, 1)
             else:

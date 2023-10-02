@@ -6,16 +6,16 @@
       rgba: self.background_color
 
     RoundedRectangle:
-      pos: self.pos[0] + (self.width - 50) / 2, self.pos[1]
-      size: 50, self.height
+      pos: self.pos[0] + (self.width - dp(25)) / 2, self.pos[1]
+      size: dp(25), self.height
       radius: (10, 10), (10, 10), (10, 10), (10, 10)
 
     Color:
       rgba: self.fill_color
 
     RoundedRectangle:
-      pos: self.pos[0] + (self.width - 50) / 2, self.pos[1]
-      size: 50, self.height * self.value / 100
+      pos: self.pos[0] + (self.width - dp(25)) / 2, self.pos[1]
+      size: dp(25), self.height * self.value / 100
       radius: (10, 10), (10, 10), (10, 10), (10, 10)
 
   BoxLayout:
