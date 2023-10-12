@@ -7,16 +7,15 @@ from kivy.core.window import ListProperty
 from kivy.uix.screenmanager import Screen
 
 if TYPE_CHECKING:
-    from typing_extensions import Any
-
     from menu.types import Item
+    from typing_extensions import Any
 
 
 MAX_ITEMS = 3
 
 
 class PageWidget(Screen):
-    """renders a page of a `Menu`."""
+    """renders a page."""
 
     items = ListProperty([])
 
@@ -25,7 +24,7 @@ class PageWidget(Screen):
         items: list[Item],
         **kwargs: Any,  # noqa: ANN401
     ) -> None:
-        """Initialize a `MenuWidget`.
+        """Initialize a `PageWidget`.
 
         Parameters
         ----------

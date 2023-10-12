@@ -11,6 +11,7 @@ packages = [
   { include = "menu", from = "src" },
   { include = "notification", from = "src" },
   { include = "page", from = "src" },
+  { include = "prompt", from = "src" },
   { include = "volume", from = "src" },
 ]
 
