@@ -18,23 +18,20 @@
       size: dp(25), self.height * self.value / 100
       radius: (10, 10), (10, 10), (10, 10), (10, 10)
 
-  BoxLayout:
-    size: root.size
-    pos: root.pos
-    orientation: 'vertical'
-    spacing: dp(8)
+  orientation: 'vertical'
+  spacing: dp(8)
 
-    Label:
-      font_name: 'material_symbols'
-      text: 'volume_up'
-      size_hint: 1, None
-      height: dp(24)
+  Label:
+    font_name: 'material_symbols'
+    text: 'volume_up'
+    size_hint: 1, None
+    height: dp(24)
 
-    Widget:
-      size_hint: 0, 1
+  Widget:
+    size_hint: 0, 1
 
-    Label:
-      font_name: 'material_symbols'
-      text: 'volume_down'
-      size_hint: 1, None
-      height: dp(24)
+  Label:
+    font_name: 'material_symbols'
+    text: 'volume_down'
+    size_hint: 1, None
+    height: dp(24)

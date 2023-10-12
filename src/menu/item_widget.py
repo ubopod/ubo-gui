@@ -5,7 +5,8 @@ import pathlib
 from typing import TYPE_CHECKING
 
 from constants import PRIMARY_COLOR
-from kivy.app import Builder, Widget
+from kivy.app import Builder
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import (
     BooleanProperty,
     ColorProperty,
@@ -17,7 +18,7 @@ if TYPE_CHECKING:
     from . import Item
 
 
-class ItemWidget(Widget):
+class ItemWidget(BoxLayout):
     """Renders an `Item`.
 
     Attributes

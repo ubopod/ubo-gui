@@ -5,9 +5,8 @@ import warnings
 from typing import TYPE_CHECKING, Any
 
 from kivy.app import Builder, StringProperty
-from page import PageWidget
-
 from menu.constants import PAGE_SIZE
+from page import PageWidget
 
 if TYPE_CHECKING:
     from menu.types import Item

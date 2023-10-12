@@ -2,11 +2,12 @@ from __future__ import annotations
 
 import pathlib
 
-from kivy.app import Builder, Widget
+from kivy.app import Builder
 from kivy.properties import ColorProperty, ListProperty, NumericProperty, StringProperty
+from kivy.uix.boxlayout import BoxLayout
 
 
-class GaugeWidget(Widget):
+class GaugeWidget(BoxLayout):
     value = NumericProperty(50)
     min_value = NumericProperty(0)
     max_value = NumericProperty(100)
