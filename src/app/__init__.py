@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 from headless_kivy_pi import HeadlessWidget
 from kivy.app import App, Builder, StringProperty, Widget
 from kivy.core.text import LabelBase
+from kivy.metrics import dp
 from kivy.uix.label import Label
 
 from src import FONTS_PATH
@@ -22,7 +23,7 @@ if TYPE_CHECKING:
 
 
 class RootWidget(HeadlessWidget):
-    title = StringProperty('UBO')
+    title = StringProperty('UBO', allownone=True)
 
 
 class UboApp(App):
@@ -56,7 +57,13 @@ class UboApp(App):
         header_label = Label(text=self.root.title)
 
         def title_callback(_: RootWidget, title: str):
-            header_label.text = title
+            header_layout: BoxLayout = self.root.ids.header_layout
+            if title is not None:
+                header_label.text = title
+                header_layout.height = dp(30)
+            else:
+                header_label.text = ''
+                header_layout.height = 0
         self.root.bind(title=title_callback)
 
         return header_label

@@ -29,11 +29,29 @@ from kivy.core.window import (  # noqa: E402
     WindowBase,
 )
 from menu import MenuWidget  # noqa: E402
+from prompt import PromptWidget  # noqa: E402
 
 if TYPE_CHECKING:
     from menu import Menu
     from menu.types import Item
     Modifier = Literal['ctrl', 'alt', 'meta', 'shift']
+
+
+class WifiPrompt(PromptWidget):
+    icon = 'wifi_off'
+    title = 'Not Connected'
+    first_option_label = 'Add'
+    first_option_icon = 'add'
+
+    def first_option_callback(self: WifiPrompt):
+        return print('Add')
+
+    second_option_label = 'Forget'
+    second_option_icon = 'delete'
+
+    def second_option_callback(self: WifiPrompt):
+        return print('Forget')
+
 
 SETTINGS_MENU: Menu = {
     'title': 'Settings',
@@ -42,7 +60,7 @@ SETTINGS_MENU: Menu = {
     'items': [
         {
             'label': 'WiFi',
-            'action': lambda: print('WiFi'),
+            'application': WifiPrompt,
             'icon': 'wifi',
         },
         {
