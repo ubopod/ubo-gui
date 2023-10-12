@@ -7,6 +7,7 @@ Each item can optionally be styled differently.
 """
 from __future__ import annotations
 
+import uuid
 import warnings
 from typing import TYPE_CHECKING, cast
 
@@ -20,6 +21,7 @@ from menu.normal_menu_page_widget import NormalMenuPageWidget
 from menu.types import (
     Item,
     is_action_item,
+    is_application_item,
     is_sub_menu_item,
     menu_items,
 )
@@ -51,11 +53,12 @@ def paginate(items: list[Item], offset: int = 0) -> Iterator[list[Item]]:
 class MenuWidget(ScreenManager):
     """Paginated menu."""
 
-    title = StringProperty()
+    title = StringProperty(allownone=True)
     page_index = NumericProperty(0)
     depth = NumericProperty(0)
     pages: list[PageWidget]
     current_menu: Menu
+    current_application: PageWidget | None = None
     menu_stack: list[Menu]
 
     def __init__(self: MenuWidget, **kwargs: Any) -> None:  # noqa: ANN401
@@ -122,12 +125,26 @@ class MenuWidget(ScreenManager):
             return
         if is_action_item(item):
             item['action']()
-        if is_sub_menu_item(item):
+        elif is_sub_menu_item(item):
             self.push_menu(item['sub_menu'])
+        elif is_application_item(item):
+            self.current_application = item['application'](
+                name=uuid.uuid4().hex)
+            self.pages.append(self.current_application)
+            self.add_widget(self.current_application)
+            self.transition.direction = 'left'
+            self.current = self.current_application.name
+            self.title = None
 
     def go_back(self: MenuWidget) -> None:
         """Go back to the previous menu."""
-        self.pop_menu()
+        self.transition.direction = 'right'
+        if self.current_application:
+            self.pages.remove(self.current_application)
+            self.remove_widget(self.current_application)
+            self.current_application = None
+        else:
+            self.pop_menu()
 
     def update(self: MenuWidget) -> None:
         """Activate the transition from the previously active page to the current page.
@@ -135,17 +152,18 @@ class MenuWidget(ScreenManager):
         Activate high fps mode to render the animation in high fps
         """
         HeadlessWidget.activate_high_fps_mode()
-        self.current = f'Page {self.page_index}'
+        self.current = f'Page {self.current_depth} {self.page_index}'
 
     def push_menu(self: MenuWidget, menu: Menu) -> None:
         """Go one level deeper in the menu stack."""
+        self.transition.direction = 'left'
         self.menu_stack.append(self.current_menu)
         self.set_current_menu(menu)
         self.depth = self.current_depth
 
     def pop_menu(self: MenuWidget) -> None:
         """Come up one level from of the menu stack."""
-        if len(self.menu_stack) == 0:
+        if self.current_depth == 0:
             return
         self.set_current_menu(self.menu_stack.pop())
         self.depth = self.current_depth
@@ -161,21 +179,23 @@ class MenuWidget(ScreenManager):
                 menu_items(menu)[0],
                 cast(str, menu.get('heading', '')),
                 cast(str, menu.get('sub_heading', '')),
-                name='Page 0',
+                name=f'Page {self.current_depth} 0',
             )
         else:
             first_page = NormalMenuPageWidget(
-                menu_items(menu)[:3], name='Page 0')
+                menu_items(menu)[:3], name=f'Page {self.current_depth} 0')
         self.pages.append(first_page)
         self.add_widget(first_page)
 
         paginated_items = paginate(
             menu_items(menu), 2 if 'heading' in menu else 0)
         for index, page_items in enumerate(paginated_items):
-            page = NormalMenuPageWidget(page_items, name=f'Page {index + 1}')
+            page = NormalMenuPageWidget(
+                page_items, name=f'Page {self.current_depth} {index + 1}')
             self.pages.append(page)
             self.add_widget(page)
         self.title = menu['title']
+        self.current = f'Page {self.current_depth} 0'
         HeadlessWidget.activate_low_fps_mode()
 
     def on_kv_post(self: MenuWidget, _: Any) -> None:  # noqa: ANN401
