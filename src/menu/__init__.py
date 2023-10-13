@@ -24,6 +24,7 @@ from menu.types import (
     is_application_item,
     is_sub_menu_item,
     menu_items,
+    menu_title,
 )
 
 if TYPE_CHECKING:
@@ -57,7 +58,7 @@ class MenuWidget(ScreenManager):
     page_index = NumericProperty(0)
     depth = NumericProperty(0)
     pages: list[PageWidget]
-    current_menu: Menu
+    current_menu: Menu = None
     current_application: PageWidget | None = None
     menu_stack: list[Menu]
 
@@ -128,21 +129,27 @@ class MenuWidget(ScreenManager):
         elif is_sub_menu_item(item):
             self.push_menu(item['sub_menu'])
         elif is_application_item(item):
-            self.current_application = item['application'](
-                name=uuid.uuid4().hex)
-            self.pages.append(self.current_application)
-            self.add_widget(self.current_application)
-            self.transition.direction = 'left'
-            self.current = self.current_application.name
-            self.title = None
+            self.open_application(item['application'](name=uuid.uuid4().hex))
+
+    def open_application(self: MenuWidget, application: PageWidget) -> None:
+        """Open an application."""
+        HeadlessWidget.activate_high_fps_mode()
+        self.current_application = application
+        self.pages.append(self.current_application)
+        self.add_widget(self.current_application)
+        self.transition.direction = 'left'
+        self.current = self.current_application.name
+        self.title = self.current_application.title if hasattr(
+            self.current_application, 'title') else None
+        self.current_application.bind(on_close=lambda _: self.go_back())
 
     def go_back(self: MenuWidget) -> None:
         """Go back to the previous menu."""
         self.transition.direction = 'right'
         if self.current_application:
-            self.pages.remove(self.current_application)
-            self.remove_widget(self.current_application)
+            HeadlessWidget.activate_high_fps_mode()
             self.current_application = None
+            self.set_current_menu(self.current_menu)
         else:
             self.pop_menu()
 
@@ -173,7 +180,9 @@ class MenuWidget(ScreenManager):
         HeadlessWidget.activate_high_fps_mode()
         while len(self.pages) > 0:
             self.remove_widget(self.pages.pop())
+
         self.current_menu = menu
+
         if 'heading' in self.current_menu:
             first_page = HeaderMenuPageWidget(
                 menu_items(menu)[0],
@@ -194,7 +203,7 @@ class MenuWidget(ScreenManager):
                 page_items, name=f'Page {self.current_depth} {index + 1}')
             self.pages.append(page)
             self.add_widget(page)
-        self.title = menu['title']
+        self.title = menu_title(menu)
         self.current = f'Page {self.current_depth} 0'
         HeadlessWidget.activate_low_fps_mode()
 

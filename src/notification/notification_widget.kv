@@ -1,0 +1,55 @@
+#:kivy 2.2.1
+
+<NotificationWidget>:
+  BoxLayout:
+    orientation: 'horizontal'
+
+    BoxLayout:
+      orientation: 'vertical'
+      size_hint: None, 1
+
+      ItemWidget:
+        id: first_item
+        item: root.items[0] if len(root.items) > 0 else None
+        size_hint: 1, None
+
+    BoxLayout:
+      orientation: 'vertical'
+
+      Label:
+        padding: dp(50), 0, dp(50), 0
+        text: root.heading
+        text_size: self.size
+        halign: 'center'
+        valign: 'bottom'
+        color: root.color
+        size_hint: 1, None
+        height: dp(50)
+        font_size: dp(35)
+        text: root.notification.icon
+        font_name: 'material_symbols'
+
+      Label:
+        font_size: dp(15)
+        text: root.notification.title
+        size_hint: 1, None
+        height: dp(24)
+        halign: 'center'
+
+      Widget:
+        size_hint: 1, None
+        height: dp(12)
+
+      Label:
+        font_size: dp(15)
+        text: root.notification.content
+        text_size: self.size
+        size_hint: 1, None
+        halign: 'center'
+
+      Widget:
+        size_hint: 1, 1
+
+    Widget:
+      size_hint: None, 1
+      width: dp(40)

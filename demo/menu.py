@@ -29,28 +29,66 @@ from kivy.core.window import (  # noqa: E402
     WindowBase,
 )
 from menu import MenuWidget  # noqa: E402
+from notification import (  # noqa: E402
+    Importance,
+    notification_manager,
+)
 from prompt import PromptWidget  # noqa: E402
 
 if TYPE_CHECKING:
     from menu import Menu
-    from menu.types import Item
     Modifier = Literal['ctrl', 'alt', 'meta', 'shift']
+
+notification_manager.notify(
+    title='Low priority',
+    content='Something happened but it is not important',
+    importance=Importance.LOW,
+    sender='demo',
+)
+notification_manager.notify(
+    title='Medium priority',
+    content='Something happened and it is somehow important',
+    importance=Importance.MEDIUM,
+    sender='demo',
+)
+notification_manager.notify(
+    title='High priority',
+    content='Something happened and it is important',
+    importance=Importance.HIGH,
+    sender='demo',
+)
+notification_manager.notify(
+    title='Critical priority',
+    content='Something happened and it is critically important',
+    importance=Importance.CRITICAL,
+    sender='demo',
+)
 
 
 class WifiPrompt(PromptWidget):
     icon = 'wifi_off'
-    title = 'Not Connected'
+    prompt = 'Not Connected'
     first_option_label = 'Add'
     first_option_icon = 'add'
 
     def first_option_callback(self: WifiPrompt):
-        return print('Add')
+        notification_manager.notify(
+            title='Wifi added',
+            content='This Wifi network has been added',
+            icon='wifi',
+            sender='Wifi',
+        )
 
     second_option_label = 'Forget'
     second_option_icon = 'delete'
 
     def second_option_callback(self: WifiPrompt):
-        return print('Forget')
+        notification_manager.notify(
+            title='Wifi forgot',
+            content='This Wifi network is forgotten',
+            importance=Importance.CRITICAL,
+            sender='Wifi',
+        )
 
 
 SETTINGS_MENU: Menu = {
@@ -100,10 +138,6 @@ MAIN_MENU: Menu = {
 }
 
 
-def notifications_menu_items() -> list[Item]:
-    return []
-
-
 HOME_MENU: Menu = {
     'title': 'Dashboard',
     'items': [
@@ -116,8 +150,8 @@ HOME_MENU: Menu = {
         {
             'label': '',
             'sub_menu': {
-                'title': 'Notifications',
-                'items': notifications_menu_items,
+                'title': lambda: f'Notifications ({notification_manager.unread_count})',
+                'items': notification_manager.menu_items,
             },
             'color': 'yellow',
             'icon': 'info',
