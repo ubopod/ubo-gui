@@ -16,7 +16,7 @@ PROMPT_OPTIONS = 2
 
 class PromptWidget(PageWidget):
     icon = StringProperty()
-    title = StringProperty()
+    prompt = StringProperty()
     first_option_label = StringProperty()
     first_option_icon = StringProperty()
     first_option_callback = ObjectProperty()
@@ -46,7 +46,7 @@ class PromptWidget(PageWidget):
 
     def get_item(self: PromptWidget, index: int) -> Item | None:
         if not 1 <= index <= PROMPT_OPTIONS:
-            warnings.warn('index must be either 2 or 3',
+            warnings.warn('index must be either 1 or 2',
                           ResourceWarning, stacklevel=1)
             return None
         return self.items[index - 1]

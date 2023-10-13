@@ -11,11 +11,13 @@ if TYPE_CHECKING:
     from typing_extensions import Any
 
 
-MAX_ITEMS = 3
+PAGE_MAX_ITEMS = 3
 
 
 class PageWidget(Screen):
     """renders a page."""
+
+    __events__ = ('on_close', )
 
     items = ListProperty([])
 
@@ -35,11 +37,11 @@ class PageWidget(Screen):
             Stuff that will get directly passed to the `__init__` method of Kivy's
         `Screen`.
         """
-        if len(items) > MAX_ITEMS:
-            msg = f'`Page` is initialized with more than `MAX_ITEMS`={MAX_ITEMS} items'
+        if len(items) > PAGE_MAX_ITEMS:
+            msg = f'`Page` is initialized with more than `MAX_ITEMS`={PAGE_MAX_ITEMS} items'
             raise ValueError(msg)
-        super().__init__(**kwargs)
         self.items = items
+        super().__init__(**kwargs)
 
     def get_item(self: PageWidget, index: int) -> Item | None:
         if not 0 <= index < len(self.items):
@@ -48,3 +50,6 @@ class PageWidget(Screen):
             warnings.warn(msg, ResourceWarning, stacklevel=1)
             return None
         return self.items[index]
+
+    def on_close(self: PageWidget) -> None:
+        pass

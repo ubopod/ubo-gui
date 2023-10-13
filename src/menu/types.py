@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Callable, Union
 from typing_extensions import NotRequired, TypedDict, TypeGuard
 
 if TYPE_CHECKING:
-    from kivy.app import Widget
+    from page import PageWidget
 
 
 class BaseMenu(TypedDict):
@@ -14,13 +14,15 @@ class BaseMenu(TypedDict):
     Attributes
     ----------
     title: `str`
-        Rendered on top of the menu in all pages.
+        Rendered on top of the menu in all pages. Optionally it can be a callable
+    returning the title.
 
     items: `list` of `Item`
-        List of the items of the menu
+        List of the items of the menu. Optionally it can be a callable returning the
+    list of items
     """
 
-    title: str
+    title: str | Callable[[], str]
     items: list[Item] | Callable[[], list[Item]]
 
 
@@ -66,6 +68,16 @@ def menu_items(menu: Menu) -> list[Item]:
     return menu['items']() if\
         callable(menu['items']) else\
         menu['items']
+
+
+def menu_title(menu: Menu) -> str:
+    """Return items of the menu.
+
+    in case it's a function, the return value of the function is called.
+    """
+    return menu['title']() if\
+        callable(menu['title']) else\
+        menu['title']
 
 
 class BaseItem(TypedDict):
@@ -128,11 +140,11 @@ class ApplicationItem(BaseItem):
 
     Attributes
     ----------
-    application: `Widget`
+    application: `PageWidget`
         If provided, activating this item will show this widget
     """
 
-    application: Widget
+    application: PageWidget
 
 
 def is_application_item(item: Item) -> TypeGuard[ApplicationItem]:
