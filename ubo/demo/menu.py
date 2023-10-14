@@ -7,14 +7,15 @@ from functools import cached_property
 from threading import Thread
 from typing import TYPE_CHECKING, Literal
 
-from gauge import GaugeWidget
 from headless_kivy_pi import setup_headless
 from kivy.app import Widget
 from kivy.base import Clock
 from kivy.metrics import dp
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
-from volume import VolumeWidget
+
+from ubo.gauge import GaugeWidget
+from ubo.volume import VolumeWidget
 
 os.environ['KIVY_METRICS_DENSITY'] = '1'
 os.environ['KIVY_NO_CONFIG'] = '1'
@@ -22,18 +23,19 @@ os.environ['KIVY_NO_FILELOG'] = '1'
 
 setup_headless()
 
-from app import UboApp  # noqa: E402
 from kivy.core.window import (  # noqa: E402
     Keyboard,
     Window,
     WindowBase,
 )
-from menu import MenuWidget  # noqa: E402
-from notification import (  # noqa: E402
+
+from ubo.app import UboApp  # noqa: E402
+from ubo.menu import MenuWidget  # noqa: E402
+from ubo.notification import (  # noqa: E402
     Importance,
     notification_manager,
 )
-from prompt import PromptWidget  # noqa: E402
+from ubo.prompt import PromptWidget  # noqa: E402
 
 if TYPE_CHECKING:
     from menu import Menu

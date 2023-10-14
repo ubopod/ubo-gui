@@ -5,11 +5,13 @@ import warnings
 from typing import TYPE_CHECKING, Any
 
 from kivy.app import Builder, StringProperty
-from menu.constants import PAGE_SIZE
-from page import PageWidget
+
+from ubo.page import PageWidget
+
+from .constants import PAGE_SIZE
 
 if TYPE_CHECKING:
-    from menu.types import Item
+    from .types import Item
 
 
 class HeaderMenuPageWidget(PageWidget):

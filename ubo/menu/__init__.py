@@ -14,11 +14,12 @@ from typing import TYPE_CHECKING, cast
 from headless_kivy_pi import HeadlessWidget
 from kivy.properties import NumericProperty, StringProperty
 from kivy.uix.screenmanager import ScreenManager
-from menu.constants import PAGE_SIZE
-from menu.header_menu_page_widget import HeaderMenuPageWidget
-from menu.item_widget import ItemWidget  # noqa: F401
-from menu.normal_menu_page_widget import NormalMenuPageWidget
-from menu.types import (
+
+from .constants import PAGE_SIZE
+from .header_menu_page_widget import HeaderMenuPageWidget
+from .item_widget import ItemWidget  # noqa: F401
+from .normal_menu_page_widget import NormalMenuPageWidget
+from .types import (
     Item,
     is_action_item,
     is_application_item,
