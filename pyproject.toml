@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ubo-gui"
-version = "0.2.1"
+version = "0.2.2"
 description = ""
 authors = ["Sassan Haradji <sassanh@gmail.com>"]
 license = "Apache-2.0"
@@ -28,7 +28,7 @@ priority = "primary"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-headless-kivy-pi = { git = "https://github.com/sassanh/headless-kivy-pi.git" }
+headless-kivy-pi = "^0.3.0"
 
 
 [tool.poetry.group.development.dependencies]

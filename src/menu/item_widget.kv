@@ -9,7 +9,7 @@
     RoundedRectangle:
       pos: self.pos
       size: (dp(50) if self.is_short else self.size[0] - dp(40), self.size[1]) if root.is_set else (0, 0)
-      radius: (0, 0), (60, 60), (60, 60), (0, 0)
+      radius: (0, 0), (dp(26), dp(26)), (dp(26), dp(26)), (0, 0)
 
   orientation: 'horizontal'
   spacing: dp(8)

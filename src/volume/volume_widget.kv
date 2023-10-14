@@ -8,7 +8,7 @@
     RoundedRectangle:
       pos: self.pos[0] + (self.width - dp(25)) / 2, self.pos[1]
       size: dp(25), self.height
-      radius: (10, 10), (10, 10), (10, 10), (10, 10)
+      radius: (dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5))
 
     Color:
       rgba: self.fill_color
@@ -16,7 +16,7 @@
     RoundedRectangle:
       pos: self.pos[0] + (self.width - dp(25)) / 2, self.pos[1]
       size: dp(25), self.height * self.value / 100
-      radius: (10, 10), (10, 10), (10, 10), (10, 10)
+      radius: (dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5))
 
   orientation: 'vertical'
   spacing: dp(8)
