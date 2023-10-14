@@ -6,10 +6,11 @@ from typing import TYPE_CHECKING, Any
 
 from kivy.app import Builder
 from kivy.properties import ObjectProperty, StringProperty
-from page import PageWidget
+
+from ubo.page import PageWidget
 
 if TYPE_CHECKING:
-    from menu.types import Item
+    from ubo.menu.types import Item
 
 PROMPT_OPTIONS = 2
 

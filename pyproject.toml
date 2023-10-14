@@ -1,19 +1,11 @@
 [tool.poetry]
 name = "ubo-gui"
-version = "0.2.2"
+version = "0.2.3"
 description = ""
 authors = ["Sassan Haradji <sassanh@gmail.com>"]
 license = "Apache-2.0"
 readme = "README.md"
-packages = [
-  { include = "app", from = "src" },
-  { include = "gauge", from = "src" },
-  { include = "menu", from = "src" },
-  { include = "notification", from = "src" },
-  { include = "page", from = "src" },
-  { include = "prompt", from = "src" },
-  { include = "volume", from = "src" },
-]
+packages = [{ include = "ubo" }]
 
 
 [[tool.poetry.source]]
@@ -44,7 +36,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-demo-menu = "demo.menu:main"
+demo-menu = "ubo.demo.menu:main"
 
 [tool.poe.tasks]
 lint = "pyright -p pyproject.toml ."

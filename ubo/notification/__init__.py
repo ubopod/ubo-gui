@@ -10,11 +10,13 @@ from typing import TYPE_CHECKING, Callable
 from kivy.app import Builder
 from kivy.event import EventDispatcher
 from kivy.properties import ColorProperty, ObjectProperty, StringProperty
-from page import PAGE_MAX_ITEMS, PageWidget
+
+from ubo.page import PAGE_MAX_ITEMS, PageWidget
 
 if TYPE_CHECKING:
-    from menu.types import Item
     from typing_extensions import Any
+
+    from ubo.menu.types import Item
 
 
 class Importance(Enum):

@@ -4,7 +4,6 @@ from __future__ import annotations
 import pathlib
 from typing import TYPE_CHECKING
 
-from constants import PRIMARY_COLOR
 from kivy.app import Builder
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import (
@@ -13,6 +12,8 @@ from kivy.uix.label import (
     ObjectProperty,
     StringProperty,
 )
+
+from ubo.constants import PRIMARY_COLOR
 
 if TYPE_CHECKING:
     from . import Item
