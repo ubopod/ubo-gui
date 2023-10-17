@@ -1,0 +1,10 @@
+#:kivy 2.2.1
+
+<Scrollbar>:
+  canvas.before:
+    Color:
+      rgba: self.bar_color
+
+    Rectangle:
+      pos: root.x + dp(10), root.y
+      size: dp(10), root.height
