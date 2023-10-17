@@ -1,0 +1,19 @@
+#:kivy 2.2.1
+
+<MenuWidget>:
+  orientation: 'horizontal'
+  
+  ScreenManager:
+    id: screen_manager
+    size_hint: 1, 1
+
+  Slider:
+    min: 0
+    max: len(root.pages) - 1
+    value: len(root.pages) - 1 - root.page_index
+    orientation: 'vertical'
+    size_hint: (None, 1) if len(root.pages) > 1 else (None, None)
+    width: dp(30) if len(root.pages) > 1 else 0
+    height: 0
+    opacity: 1 if len(root.pages) > 1 else 0
+    disabled: len(root.pages) <= 1
