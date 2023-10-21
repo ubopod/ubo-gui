@@ -15,6 +15,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 
 from ubo.gauge import GaugeWidget
+from ubo.keypad import ButtonName, ButtonStatus, Keypad
 from ubo.volume import VolumeWidget
 
 os.environ['KIVY_METRICS_DENSITY'] = '1'
@@ -43,7 +44,8 @@ if TYPE_CHECKING:
 
 notification_manager.notify(
     title='Low priority',
-    content='Something happened but it is not important',
+    content='Something happened but it is not important and this content is very long'
+    'since we need a very long content to check the scrollability of the widget',
     importance=Importance.LOW,
     sender='demo',
 )
@@ -169,7 +171,7 @@ HOME_MENU: Menu = {
 }
 
 
-class MenuApp(UboApp):
+class MenuApp(UboApp, Keypad):
     """Menu application."""
 
     def build(self: MenuApp) -> Widget | None:
@@ -356,6 +358,28 @@ class MenuApp(UboApp):
                 self.menu_widget.select(2)
             elif key == Keyboard.keycodes['left']:
                 self.menu_widget.go_back()
+
+    def on_button_event(
+        self: MenuApp,
+        button_pressed: ButtonName,
+        button_status: ButtonStatus,
+    ) -> None:
+        if button_status == 'pressed':
+            if button_pressed == ButtonName.UP:
+                Clock.schedule_once(
+                    lambda dt: self.menu_widget.go_to_previous_page(), -1)
+            elif button_pressed == ButtonName.DOWN:
+                Clock.schedule_once(
+                    lambda dt: self.menu_widget.go_to_next_page(), -1)
+            elif button_pressed == ButtonName.TOP_LEFT:
+                Clock.schedule_once(lambda dt: self.menu_widget.select(0), -1)
+            elif button_pressed == ButtonName.MIDDLE_LEFT:
+                Clock.schedule_once(lambda dt: self.menu_widget.select(1), -1)
+            elif button_pressed == ButtonName.BOTTOM_LEFT:
+                Clock.schedule_once(lambda dt: self.menu_widget.select(2), -1)
+            elif button_pressed == ButtonName.BACK:
+                Clock.schedule_once(lambda dt: self.menu_widget.go_back(), -1)
+        self.root.reset_fps_control_queue()
 
 
 def main() -> None:
