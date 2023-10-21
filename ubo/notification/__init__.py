@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Callable
 
 from kivy.app import Builder
 from kivy.event import EventDispatcher
+from kivy.metrics import dp
 from kivy.properties import ColorProperty, ObjectProperty, StringProperty
 
 from ubo.page import PAGE_MAX_ITEMS, PageWidget
@@ -198,11 +199,17 @@ class NotificationWidget(PageWidget):
             'is_short': True,
         }], **kwargs)
 
-    def get_item(self: NotificationWidget, index: int) -> Item | None:
+    def go_down(self: NotificationWidget) -> None:
+        self.ids.slider.animated_value -= dp(50)
+
+    def go_up(self: NotificationWidget) -> None:
+        self.ids.slider.animated_value += dp(50)
+
+    def select(self: NotificationWidget, index: int) -> Item | None:
         if index != PAGE_MAX_ITEMS - 1:
             warnings.warn('index must be 2', ResourceWarning, stacklevel=1)
             return None
-        return self.items[index - 2]
+        self.items[index - 2]['action']()
 
 
 Builder.load_file(pathlib.Path(

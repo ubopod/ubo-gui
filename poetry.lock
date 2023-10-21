@@ -204,17 +204,17 @@ reference = "piwheels"
 
 [[package]]
 name = "cython"
-version = "3.0.3"
+version = "3.0.4"
 description = "The Cython compiler for writing C extensions in the Python language."
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 files = [
-    {file = "Cython-3.0.3-cp311-cp311-linux_armv6l.whl", hash = "sha256:9ff79382d2d8be60f7532b0a3eb6ccdf17491573123083229170d43512093a11"},
-    {file = "Cython-3.0.3-cp311-cp311-linux_armv7l.whl", hash = "sha256:9ff79382d2d8be60f7532b0a3eb6ccdf17491573123083229170d43512093a11"},
-    {file = "Cython-3.0.3-cp37-cp37m-linux_armv6l.whl", hash = "sha256:a5f51d7813b235c612355af9c8ea61b9f09e5f9d682fed7eccc677c7edd24091"},
-    {file = "Cython-3.0.3-cp37-cp37m-linux_armv7l.whl", hash = "sha256:a5f51d7813b235c612355af9c8ea61b9f09e5f9d682fed7eccc677c7edd24091"},
-    {file = "Cython-3.0.3-cp39-cp39-linux_armv6l.whl", hash = "sha256:2012c36aec7678286c9a42bb20b1923879868521bd936901239c6c95f0c382b2"},
-    {file = "Cython-3.0.3-cp39-cp39-linux_armv7l.whl", hash = "sha256:2012c36aec7678286c9a42bb20b1923879868521bd936901239c6c95f0c382b2"},
+    {file = "Cython-3.0.4-cp311-cp311-linux_armv6l.whl", hash = "sha256:306830f8e9665fef5f09e062a86aab0db1855cc77aff3c1e59dbf7b84556f553"},
+    {file = "Cython-3.0.4-cp311-cp311-linux_armv7l.whl", hash = "sha256:306830f8e9665fef5f09e062a86aab0db1855cc77aff3c1e59dbf7b84556f553"},
+    {file = "Cython-3.0.4-cp37-cp37m-linux_armv6l.whl", hash = "sha256:deeadc4f4bdd60c01eadb038912b66b9e3768d8dfa93b3b4b878d7bccad04757"},
+    {file = "Cython-3.0.4-cp37-cp37m-linux_armv7l.whl", hash = "sha256:deeadc4f4bdd60c01eadb038912b66b9e3768d8dfa93b3b4b878d7bccad04757"},
+    {file = "Cython-3.0.4-cp39-cp39-linux_armv6l.whl", hash = "sha256:0989b7f1530b84adbf657dc8fd12ac7ddb8aff2b4c8b9ce050b00fb623ec1958"},
+    {file = "Cython-3.0.4-cp39-cp39-linux_armv7l.whl", hash = "sha256:0989b7f1530b84adbf657dc8fd12ac7ddb8aff2b4c8b9ce050b00fb623ec1958"},
 ]
 
 [package.source]
@@ -239,13 +239,13 @@ reference = "piwheels"
 
 [[package]]
 name = "headless-kivy-pi"
-version = "0.3.3"
+version = "0.3.5"
 description = ""
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "headless_kivy_pi-0.3.3-py3-none-any.whl", hash = "sha256:1f4cf1b3db449969027df3eed718bd23dff1523d5e13b7f81dfc6ff2440f9df4"},
-    {file = "headless_kivy_pi-0.3.3.tar.gz", hash = "sha256:11f697035c7ce1975f40709420350bd54b86c551c73294995ca8c720b7a823f3"},
+    {file = "headless_kivy_pi-0.3.5-py3-none-any.whl", hash = "sha256:5a6e8e8ed009912e0e6b62b6b6a91ef52c902ea883ebdbcdb2a1986015c5667f"},
+    {file = "headless_kivy_pi-0.3.5.tar.gz", hash = "sha256:a59cb1ccbb21934c1ce8ae8c94cb98f427a94690fe7ed02939411b2454ed8ef1"},
 ]
 
 [package.dependencies]
@@ -434,17 +434,17 @@ reference = "piwheels"
 
 [[package]]
 name = "psutil"
-version = "5.9.5"
+version = "5.9.6"
 description = "Cross-platform lib for process and system monitoring in Python."
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
 files = [
-    {file = "psutil-5.9.5-cp311-abi3-linux_armv6l.whl", hash = "sha256:2f68209cdaa6ae6dbce6bb7f9c2d6dd3df20eb95a0765bd1628c05271b3589d5"},
-    {file = "psutil-5.9.5-cp311-abi3-linux_armv7l.whl", hash = "sha256:2f68209cdaa6ae6dbce6bb7f9c2d6dd3df20eb95a0765bd1628c05271b3589d5"},
-    {file = "psutil-5.9.5-cp37-abi3-linux_armv6l.whl", hash = "sha256:7337415f7f8d238c310f2e5fb7ad5de6a4f709d4854bb83baad44cd16600326c"},
-    {file = "psutil-5.9.5-cp37-abi3-linux_armv7l.whl", hash = "sha256:7337415f7f8d238c310f2e5fb7ad5de6a4f709d4854bb83baad44cd16600326c"},
-    {file = "psutil-5.9.5-cp39-abi3-linux_armv6l.whl", hash = "sha256:56f7bc39867415d4be0d2e8537ec59643b2c253d1d38214db9874d48570d0925"},
-    {file = "psutil-5.9.5-cp39-abi3-linux_armv7l.whl", hash = "sha256:56f7bc39867415d4be0d2e8537ec59643b2c253d1d38214db9874d48570d0925"},
+    {file = "psutil-5.9.6-cp311-abi3-linux_armv6l.whl", hash = "sha256:627f5478251560e8858aa260d20a019d91cd57f32af884b549a030619ead3c26"},
+    {file = "psutil-5.9.6-cp311-abi3-linux_armv7l.whl", hash = "sha256:627f5478251560e8858aa260d20a019d91cd57f32af884b549a030619ead3c26"},
+    {file = "psutil-5.9.6-cp37-abi3-linux_armv6l.whl", hash = "sha256:ca8dd042776337af58d0b7ea22a7aa2f7e20e78535bd10a8db180522e0fddafe"},
+    {file = "psutil-5.9.6-cp37-abi3-linux_armv7l.whl", hash = "sha256:ca8dd042776337af58d0b7ea22a7aa2f7e20e78535bd10a8db180522e0fddafe"},
+    {file = "psutil-5.9.6-cp39-abi3-linux_armv6l.whl", hash = "sha256:a81f4d0267b0dacfa1fd06929268be99af81a1463a6a0ba02c663b41145d7dda"},
+    {file = "psutil-5.9.6-cp39-abi3-linux_armv7l.whl", hash = "sha256:a81f4d0267b0dacfa1fd06929268be99af81a1463a6a0ba02c663b41145d7dda"},
 ]
 
 [package.extras]
@@ -733,12 +733,12 @@ reference = "piwheels"
 
 [[package]]
 name = "urllib3"
-version = "2.0.6"
+version = "2.0.7"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "urllib3-2.0.6-py3-none-any.whl", hash = "sha256:b2ecf34755fab2a18d14dc61d7e474f5c2f83d8a07e69c3ce0cc65873b769d42"},
+    {file = "urllib3-2.0.7-py3-none-any.whl", hash = "sha256:569a2c93ac2791db5f1e10ca665db55661f9727a47e9f95385ea840d06baac85"},
 ]
 
 [package.extras]

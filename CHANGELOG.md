@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.3.6
+
+- refactor: propagate buttons to current_application
+- fix: NotificationWidget scrolling and improve its layout
+
 ## Version 0.3.5
 
 - refactor: use Factory.register to register widgets
