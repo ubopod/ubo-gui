@@ -44,7 +44,7 @@ if TYPE_CHECKING:
 
 notification_manager.notify(
     title='Low priority',
-    content='Something happened but it is not important and this content is very long'
+    content='Something happened but it is not important and this content is very long '
     'since we need a very long content to check the scrollability of the widget',
     importance=Importance.LOW,
     sender='demo',
@@ -347,9 +347,9 @@ class MenuApp(UboApp, Keypad):
         """Handle keyboard events."""
         if modifier == []:
             if key == Keyboard.keycodes['up']:
-                self.menu_widget.go_to_previous_page()
+                self.menu_widget.go_up()
             elif key == Keyboard.keycodes['down']:
-                self.menu_widget.go_to_next_page()
+                self.menu_widget.go_down()
             elif key == Keyboard.keycodes['1']:
                 self.menu_widget.select(0)
             elif key == Keyboard.keycodes['2']:
@@ -367,18 +367,18 @@ class MenuApp(UboApp, Keypad):
         if button_status == 'pressed':
             if button_pressed == ButtonName.UP:
                 Clock.schedule_once(
-                    lambda dt: self.menu_widget.go_to_previous_page(), -1)
+                    lambda _dt: self.menu_widget.go_up(), -1)
             elif button_pressed == ButtonName.DOWN:
                 Clock.schedule_once(
-                    lambda dt: self.menu_widget.go_to_next_page(), -1)
+                    lambda _dt: self.menu_widget.go_down(), -1)
             elif button_pressed == ButtonName.TOP_LEFT:
-                Clock.schedule_once(lambda dt: self.menu_widget.select(0), -1)
+                Clock.schedule_once(lambda _dt: self.menu_widget.select(0), -1)
             elif button_pressed == ButtonName.MIDDLE_LEFT:
-                Clock.schedule_once(lambda dt: self.menu_widget.select(1), -1)
+                Clock.schedule_once(lambda _dt: self.menu_widget.select(1), -1)
             elif button_pressed == ButtonName.BOTTOM_LEFT:
-                Clock.schedule_once(lambda dt: self.menu_widget.select(2), -1)
+                Clock.schedule_once(lambda _dt: self.menu_widget.select(2), -1)
             elif button_pressed == ButtonName.BACK:
-                Clock.schedule_once(lambda dt: self.menu_widget.go_back(), -1)
+                Clock.schedule_once(lambda _dt: self.menu_widget.go_back(), -1)
         self.root.reset_fps_control_queue()
 
 

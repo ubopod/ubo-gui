@@ -37,6 +37,8 @@ if TYPE_CHECKING:
     from page import PageWidget
     from typing_extensions import Any
 
+    from ubo.animated_slider import AnimatedSlider
+
 
 def paginate(items: list[Item], offset: int = 0) -> Iterator[list[Item]]:
     """Yield successive PAGE_SIZE-sized chunks from list.
@@ -63,10 +65,17 @@ class MenuWidget(BoxLayout):
     def set_pages(self: MenuWidget, pages: list[PageWidget]) -> None:
         self._pages = pages
 
+    def get_is_scrollbar_visible(self: MenuWidget) -> bool:
+        return self.current_application is None and len(self.pages) > 1
+
     title = StringProperty(allownone=True)
     page_index = NumericProperty(0)
     depth = NumericProperty(0)
     pages = AliasProperty(getter=get_pages, setter=set_pages, bind=['depth'])
+    is_scrollbar_visible = AliasProperty(getter=get_is_scrollbar_visible, bind=[
+        'depth',
+        'pages',
+    ])
     _pages: list[PageWidget]
     current_menu: Menu = None
     current_application: PageWidget | None = None
@@ -93,11 +102,16 @@ class MenuWidget(BoxLayout):
             return []
         return menu_items(self.current_menu)
 
-    def go_to_next_page(self: MenuWidget) -> None:
+    def go_down(self: MenuWidget) -> None:
         """Go to the next page.
 
         If it is already the last page, rotate to the first page.
         """
+        if self.current_application:
+            if hasattr(self.current_application, 'go_down'):
+                self.current_application.go_down()
+            return
+
         if len(self.current_menu_items) == 0:
             return
         self.page_index += 1
@@ -106,11 +120,16 @@ class MenuWidget(BoxLayout):
         self.screen_manager.transition.direction = 'up'
         self.update()
 
-    def go_to_previous_page(self: MenuWidget) -> None:
+    def go_up(self: MenuWidget) -> None:
         """Go to the previous page.
 
         If it is already the first page, rotate to the last page.
         """
+        if self.current_application:
+            if hasattr(self.current_application, 'go_up'):
+                self.current_application.go_up()
+            return
+
         if len(self.current_menu_items) == 0:
             return
         self.page_index -= 1
@@ -128,6 +147,11 @@ class MenuWidget(BoxLayout):
             An integer number, can only take values greater than or equal to zero and
             less than `PAGE_SIZE`
         """
+        if self.current_application:
+            if hasattr(self.current_application, 'select'):
+                self.current_application.select(index)
+            return
+
         if self.screen_manager.current_screen is None:
             warnings.warn('`current_screen` is `None`',
                           RuntimeWarning, stacklevel=1)
