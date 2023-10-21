@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.3.5
+
+- refactor: use Factory.register to register widgets
+
 ## Version 0.3.4
 
 - fix: provide AnimatedSlider for menu.kv
