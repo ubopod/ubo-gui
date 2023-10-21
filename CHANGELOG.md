@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.3.3
+
+- feat: add ellipses for labels where applicable
+
 ## Version 0.3.2
 
 - chore: add CHANGELOG.md
