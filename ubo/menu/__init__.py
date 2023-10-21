@@ -17,6 +17,8 @@ from kivy.app import Builder
 from kivy.properties import AliasProperty, NumericProperty, StringProperty
 from kivy.uix.boxlayout import BoxLayout
 
+from ubo.animated_slider import AnimatedSlider  # noqa: TCH001
+
 from .constants import PAGE_SIZE
 from .header_menu_page_widget import HeaderMenuPageWidget
 from .item_widget import ItemWidget  # noqa: F401
@@ -37,8 +39,6 @@ if TYPE_CHECKING:
     from menu.types import Menu
     from page import PageWidget
     from typing_extensions import Any
-
-    from ubo.animated_slider import AnimatedSlider
 
 
 def paginate(items: list[Item], offset: int = 0) -> Iterator[list[Item]]:

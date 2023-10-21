@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.3.4
+
+- fix: provide AnimatedSlider for menu.kv
+
 ## Version 0.3.3
 
 - feat: add ellipses for labels where applicable
