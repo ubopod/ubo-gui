@@ -89,6 +89,8 @@ class MenuWidget(BoxLayout):
     @property
     def current_menu_items(self: MenuWidget) -> list[Item]:
         """Items of the current menu."""
+        if self.current_application:
+            return []
         return menu_items(self.current_menu)
 
     def go_to_next_page(self: MenuWidget) -> None:
