@@ -36,9 +36,12 @@
         Label:
           font_size: dp(15)
           text: root.notification.title
+          text_size: self.size
           size_hint: 1, None
           height: dp(24)
           halign: 'center'
+          shorten: True
+          shorten_from: 'center'
 
         Widget:
           size_hint: 1, None
