@@ -32,6 +32,7 @@ from kivy.core.window import (  # noqa: E402
 
 from ubo.app import UboApp  # noqa: E402
 from ubo.menu import MenuWidget  # noqa: E402
+from ubo.menu.constants import SHORT_WIDTH  # noqa: E402
 from ubo.notification import (  # noqa: E402
     Importance,
     notification_manager,
@@ -254,7 +255,7 @@ class MenuApp(UboApp, Keypad):
         horizontal_layout = BoxLayout()
 
         self.menu_widget.size_hint = (None, 1)
-        self.menu_widget.width = dp(50)
+        self.menu_widget.width = dp(SHORT_WIDTH)
         horizontal_layout.add_widget(self.menu_widget)
 
         central_column = BoxLayout(
@@ -267,12 +268,13 @@ class MenuApp(UboApp, Keypad):
         right_column = BoxLayout(orientation='vertical')
         right_column.add_widget(VolumeWidget(value=40))
         right_column.size_hint = (None, 1)
+        right_column.width = dp(SHORT_WIDTH)
         horizontal_layout.add_widget(right_column)
 
         def handle_depth_change(_instance: Widget, depth: int) -> None:
             if depth == 0:
                 self.menu_widget.size_hint = (None, 1)
-                self.menu_widget.width = dp(50)
+                self.menu_widget.width = dp(SHORT_WIDTH)
                 central_column.size_hint = (1, 1)
                 right_column.size_hint = (None, 1)
             else:

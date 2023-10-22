@@ -205,6 +205,7 @@ class MenuWidget(BoxLayout):
         """Go one level deeper in the menu stack."""
         self.screen_manager.transition.direction = 'left'
         self.menu_stack.append((self.current_menu, self.page_index))
+        self.page_index = 0
         self.set_current_menu(menu)
         self.depth = self.current_depth
 
@@ -212,10 +213,10 @@ class MenuWidget(BoxLayout):
         """Come up one level from of the menu stack."""
         if self.current_depth == 0:
             return
-        parent_menu = self.menu_stack.pop()
-        self.set_current_menu(parent_menu[0])
-        self.page_index = parent_menu[1]
-        self.screen_manager.current = f'Page {self.current_depth} {self.page_index}'
+        self.screen_manager.transition.direction = 'right'
+        target_menu = self.menu_stack.pop()
+        self.page_index = target_menu[1]
+        self.set_current_menu(target_menu[0])
         self.depth = self.current_depth
 
     def set_current_menu(self: MenuWidget, menu: Menu) -> None:
@@ -224,7 +225,6 @@ class MenuWidget(BoxLayout):
         while len(self.pages) > 0:
             self.screen_manager.remove_widget(self.pages.pop())
 
-        self.page_index = 0
         self.current_menu = menu
 
         if 'heading' in self.current_menu:
@@ -248,7 +248,9 @@ class MenuWidget(BoxLayout):
             self.pages.append(page)
             self.screen_manager.add_widget(page)
         self.title = menu_title(menu)
-        self.screen_manager.current = f'Page {self.current_depth} 0'
+        if self.page_index >= len(self.pages):
+            self.page_index = max(len(self.pages) - 1, 0)
+        self.screen_manager.current = f'Page {self.current_depth} {self.page_index}'
         self.slider.value = len(self.pages) - 1 - self.page_index
         HeadlessWidget.activate_low_fps_mode()
 

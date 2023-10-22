@@ -14,6 +14,7 @@ from kivy.uix.label import (
 )
 
 from ubo.constants import PRIMARY_COLOR
+from ubo.menu.constants import SHORT_WIDTH
 
 if TYPE_CHECKING:
     from . import Item
@@ -61,5 +62,9 @@ class ItemWidget(BoxLayout):
             instance.is_set = False
 
 
-Builder.load_file(pathlib.Path(
-    __file__).parent.joinpath('item_widget.kv').resolve().as_posix())
+Builder.load_string(f"""
+#:set SHORT_WIDTH {SHORT_WIDTH}
+""")
+
+Builder.load_file(pathlib.Path(__file__).parent.joinpath(
+    'item_widget.kv').resolve().as_posix())
