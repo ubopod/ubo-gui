@@ -2,17 +2,18 @@
 
 <ItemWidget>:
   height: dp(52)
+
   canvas.before:
     Color:
       rgba: root.background_color if root.is_set else (0, 0, 0, 0)
 
     RoundedRectangle:
       pos: self.pos
-      size: (dp(50) if self.is_short else self.size[0] - dp(30), self.size[1]) if root.is_set else (0, 0)
+      size: (dp(SHORT_WIDTH) if self.is_short else self.width - dp(30), self.height) if root.is_set else (0, 0)
       radius: (0, 0), (dp(26), dp(26)), (dp(26), dp(26)), (0, 0)
 
   orientation: 'horizontal'
-  spacing: dp(8)
+  spacing: dp(4) if root.is_short else dp(6)
 
   Widget:
     width: dp(2)
@@ -42,4 +43,4 @@
 
   Widget:
     width: dp(34)
-    size_hint: None, 1
+    size_hint: (None, 1) if root.is_short else (0, 1)
