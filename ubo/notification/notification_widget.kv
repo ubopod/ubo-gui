@@ -8,30 +8,16 @@
     BoxLayout:
       orientation: 'vertical'
       size_hint: None, 1
-      width: dp(50)
+      width: dp(SHORT_WIDTH)
 
       ItemWidget:
         id: first_item
         item: root.items[0] if len(root.items) > 0 else None
         size_hint: 1, None
 
-    StencilView:
+    Widget:
       id: container
       size_hint: 1, 1
-
-      canvas.before:
-        StencilPush
-        Rectangle:
-          pos: self.pos
-          size: self.size
-        StencilUse
-
-      canvas.after:
-        StencilUnUse
-        Rectangle:
-          pos: self.pos
-          size: self.size
-        StencilPop
 
       BoxLayout:
         pos: container.pos
@@ -56,12 +42,10 @@
         Label:
           font_size: dp(20)
           text: root.notification.title
-          text_size: self.size
           size_hint: 1, None
-          height: dp(24)
           halign: 'center'
-          shorten: True
-          shorten_from: 'center'
+          shorten: False
+          strip: True
 
         Widget:
           size_hint: 1, None
@@ -74,6 +58,8 @@
           height: self.texture_size[1]
           size_hint: 1, None
           halign: 'center'
+          shorten: False
+          strip: True
 
         Widget:
           size_hint: 1, 1
@@ -85,7 +71,7 @@
       animated_value: self.max
       orientation: 'vertical'
       size_hint: (None, 1) if scrollable_widget.height - container.height > 0 else (None, None)
-      width: dp(50)
+      width: dp(SHORT_WIDTH)
       height: 0
       opacity: 1 if scrollable_widget.height - container.height > 0 else 0
       disabled: scrollable_widget.height - container.height <= 0

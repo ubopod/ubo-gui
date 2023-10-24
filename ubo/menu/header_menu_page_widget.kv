@@ -16,12 +16,13 @@
       text: root.heading
       text_size: self.size
       halign: 'center'
-      valign: 'bottom'
+      valign: 'top'
       font_size: dp(20)
       color: 1, 1, 1
       size_hint: 1, None
       height: dp(50)
-      shorten: True
+      max_lines: 2
+      strip: True
       shorten_from: 'right'
 
     Label:
@@ -30,9 +31,9 @@
       font_size: dp(12)
       halign: 'center'
       valign: 'middle'
+      height: dp(30)
       color: .5, .5, .5
       size_hint: 1, None
-      height: dp(30)
       shorten: True
       shorten_from: 'right'
       

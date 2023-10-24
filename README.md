@@ -1,6 +1,6 @@
 # Ubo GUI
 
-GUI manager for [Ubo Pod](https://github.com/ubopod)
+GUI sdk for [Ubo Pod](https://github.com/ubopod)
 
 ## ⚡️ Requirements
 

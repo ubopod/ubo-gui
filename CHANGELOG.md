@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.3.7
+
+- style: improve styling of notifications and menus
+- refactor: replace hardcoded short ItemWidget width with a constant
+
 ## Version 0.3.6
 
 - refactor: propagate buttons to current_application

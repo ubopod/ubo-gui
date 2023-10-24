@@ -12,6 +12,7 @@ from kivy.event import EventDispatcher
 from kivy.metrics import dp
 from kivy.properties import ColorProperty, ObjectProperty, StringProperty
 
+from ubo.menu.constants import SHORT_WIDTH
 from ubo.page import PAGE_MAX_ITEMS, PageWidget
 
 if TYPE_CHECKING:
@@ -205,12 +206,15 @@ class NotificationWidget(PageWidget):
     def go_up(self: NotificationWidget) -> None:
         self.ids.slider.animated_value += dp(50)
 
-    def select(self: NotificationWidget, index: int) -> Item | None:
+    def get_item(self: NotificationWidget, index: int) -> Item | None:
         if index != PAGE_MAX_ITEMS - 1:
             warnings.warn('index must be 2', ResourceWarning, stacklevel=1)
             return None
-        self.items[index - 2]['action']()
+        return self.items[index - 2]
 
+Builder.load_string(f"""
+#:set SHORT_WIDTH {SHORT_WIDTH}
+""")
 
 Builder.load_file(pathlib.Path(
     __file__).parent.joinpath('notification_widget.kv').resolve().as_posix())
