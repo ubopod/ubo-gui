@@ -147,11 +147,6 @@ class MenuWidget(BoxLayout):
             An integer number, can only take values greater than or equal to zero and
             less than `PAGE_SIZE`
         """
-        if self.current_application:
-            if hasattr(self.current_application, 'select'):
-                self.current_application.select(index)
-            return
-
         if self.screen_manager.current_screen is None:
             warnings.warn('`current_screen` is `None`',
                           RuntimeWarning, stacklevel=1)
@@ -167,7 +162,8 @@ class MenuWidget(BoxLayout):
         elif is_sub_menu_item(item):
             self.push_menu(item['sub_menu'])
         elif is_application_item(item):
-            self.open_application(item['application'](name=uuid.uuid4().hex))
+            application_instance = item['application'](name=uuid.uuid4().hex)
+            self.open_application(application_instance)
 
     def open_application(self: MenuWidget, application: PageWidget) -> None:
         """Open an application."""

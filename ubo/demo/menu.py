@@ -89,7 +89,7 @@ class WifiPrompt(PromptWidget):
 
     def second_option_callback(self: WifiPrompt):
         notification_manager.notify(
-            title='Wifi forgot',
+            title='Wifi forgotten',
             content='This Wifi network is forgotten',
             importance=Importance.CRITICAL,
             sender='Wifi',

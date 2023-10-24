@@ -17,6 +17,7 @@ class AnimatedSlider(Slider):
 
     def __init__(self, **kwargs):
         self.value = self.animated_value
+        self.padding = 0
         super().__init__(**kwargs)
         self.property('animated_value').__init__(
             0,
