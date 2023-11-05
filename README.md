@@ -20,12 +20,7 @@ poetry add headless-kivy-pi@git+https://github.com/ubopod/ubo-gui.git
 
 ## 🚀 Usage
 
-Checkout [the menu demo](./demo/menu.py) to see a sample usage. You can run it with this command:
-
-```sh
-poetry install --with demo # You also need `--with development` if you want to run it on a non-raspberry machine
-poetry run demo-menu
-```
+Checkout [Ubo App](https://github.com/ubopod/ubo-app) to see a sample implementation.
 
 ## ⚒️ Contribution
 
