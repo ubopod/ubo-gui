@@ -7,10 +7,10 @@ from typing import TYPE_CHECKING, Any
 from kivy.app import Builder
 from kivy.properties import ObjectProperty, StringProperty
 
-from ubo.page import PageWidget
+from ubo_gui.page import PageWidget
 
 if TYPE_CHECKING:
-    from ubo.menu.types import Item
+    from ubo_gui.menu.types import Item
 
 PROMPT_OPTIONS = 2
 

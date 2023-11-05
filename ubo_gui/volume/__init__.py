@@ -6,7 +6,7 @@ from kivy.app import Builder
 from kivy.properties import ColorProperty, NumericProperty
 from kivy.uix.boxlayout import BoxLayout
 
-from ubo.constants import PRIMARY_COLOR, SECONDARY_COLOR
+from ubo_gui.constants import PRIMARY_COLOR, SECONDARY_COLOR
 
 
 class VolumeWidget(BoxLayout):

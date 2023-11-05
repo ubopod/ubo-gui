@@ -13,8 +13,8 @@ from kivy.uix.label import (
     StringProperty,
 )
 
-from ubo.constants import PRIMARY_COLOR
-from ubo.menu.constants import SHORT_WIDTH
+from ubo_gui.constants import PRIMARY_COLOR
+from ubo_gui.menu.constants import SHORT_WIDTH
 
 if TYPE_CHECKING:
     from . import Item
@@ -49,22 +49,25 @@ class ItemWidget(BoxLayout):
     def on_item(self: ItemWidget, instance: ItemWidget, value: Item | None) -> None:
         if value is not None:
             instance.is_set = True
-            instance.label = value['label']
-            if 'is_short' in value:
-                instance.is_short = value['is_short']
-            if 'color' in value:
-                instance.color = value['color']
-            if 'background_color' in value:
-                instance.background_color = value['background_color']
-            if 'icon' in value:
-                instance.icon = value['icon']
+            instance.label = value["label"]
+            if "is_short" in value:
+                instance.is_short = value["is_short"]
+            if "color" in value:
+                instance.color = value["color"]
+            if "background_color" in value:
+                instance.background_color = value["background_color"]
+            if "icon" in value:
+                instance.icon = value["icon"]
         else:
             instance.is_set = False
 
 
-Builder.load_string(f"""
+Builder.load_string(
+    f"""
 #:set SHORT_WIDTH {SHORT_WIDTH}
-""")
+""",
+)
 
-Builder.load_file(pathlib.Path(__file__).parent.joinpath(
-    'item_widget.kv').resolve().as_posix())
+Builder.load_file(
+    pathlib.Path(__file__).parent.joinpath("item_widget.kv").resolve().as_posix(),
+)
