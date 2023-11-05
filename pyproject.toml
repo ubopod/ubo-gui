@@ -29,15 +29,9 @@ poethepoet = "^0.23.0"
 screeninfo = "^0.8.1"
 
 
-[tool.poetry.group.demo.dependencies]
-psutil = "^5.9.5"
-
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.scripts]
-demo-menu = "ubo.demo.menu:main"
 
 [tool.poe.tasks]
 lint = "pyright -p pyproject.toml ."
