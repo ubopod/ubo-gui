@@ -5,17 +5,17 @@ GUI sdk for [Ubo Pod](https://github.com/ubopod)
 ## ⚡️ Requirements
 
 - [Ubo Pod](https://github.com/ubopod)
-- [headless-kivy-pi](https://github.com/sassanh/headless-kivy-pi)
+- [headless-kivy-pi](https://github.com/ubopod/headless-kivy-pi)
 
 ## 📦Installation
 
-You can install it using this handle: headless-kivy-pi@git+<https://github.com/sassanh/ubo-gui.git>
+You can install it using this handle: headless-kivy-pi@git+<https://github.com/ubopod/ubo-gui.git>
 
 ```sh
 # pip:
-pip install headless-kivy-pi@git+https://github.com/sassanh/ubo-gui.git
+pip install headless-kivy-pi@git+https://github.com/ubopod/ubo-gui.git
 # poetry:
-poetry add headless-kivy-pi@git+https://github.com/sassanh/ubo-gui.git
+poetry add headless-kivy-pi@git+https://github.com/ubopod/ubo-gui.git
 ```
 
 ## 🚀 Usage
