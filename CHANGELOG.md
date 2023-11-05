@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 0.4.0
+
+- chore: update dependencies to their latest versions
+- chore: extract demo from repostory and bundle it as to be ubo-app
+- chore: rename python module from ubo to ubo_gui
+- docs: update README with new repository locations
+
 ## Version 0.3.7
 
 - style: improve styling of notifications and menus
