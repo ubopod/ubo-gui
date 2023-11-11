@@ -49,15 +49,15 @@ class ItemWidget(BoxLayout):
     def on_item(self: ItemWidget, instance: ItemWidget, value: Item | None) -> None:
         if value is not None:
             instance.is_set = True
-            instance.label = value["label"]
-            if "is_short" in value:
-                instance.is_short = value["is_short"]
-            if "color" in value:
-                instance.color = value["color"]
-            if "background_color" in value:
-                instance.background_color = value["background_color"]
-            if "icon" in value:
-                instance.icon = value["icon"]
+            instance.label = value['label']
+            if 'is_short' in value:
+                instance.is_short = value['is_short']
+            if 'color' in value:
+                instance.color = value['color']
+            if 'background_color' in value:
+                instance.background_color = value['background_color']
+            if 'icon' in value:
+                instance.icon = value['icon']
         else:
             instance.is_set = False
 
@@ -69,5 +69,5 @@ Builder.load_string(
 )
 
 Builder.load_file(
-    pathlib.Path(__file__).parent.joinpath("item_widget.kv").resolve().as_posix(),
+    pathlib.Path(__file__).parent.joinpath('item_widget.kv').resolve().as_posix(),
 )

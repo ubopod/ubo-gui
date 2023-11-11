@@ -40,15 +40,17 @@ download_font.shell = "mkdir -p ubo_gui/assets/fonts; wget https://github.com/go
 [tool.poe.tasks.deploy_to_device]
 cmd = 'scripts/deploy.sh'
 
+[tool.ruff]
+select = ['ALL']
+ignore = []
+
+fixable = ['ALL']
+unfixable = []
+
 [tool.ruff.flake8-quotes]
 docstring-quotes = "double"
 inline-quotes = "single"
 multiline-quotes = "double"
 
-[tool.ruff]
-select = ['ALL']
-ignore = []
-
-# Allow autofix for all enabled rules (when `--fix`) is provided.
-fixable = ['ALL']
-unfixable = []
+[tool.ruff.format]
+quote-style = 'single'
