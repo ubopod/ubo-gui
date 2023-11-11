@@ -10,7 +10,7 @@ from kivy.core.text import LabelBase
 from kivy.metrics import dp
 from kivy.uix.label import Label
 
-from ubo import FONTS_PATH
+from ubo_gui import FONTS_PATH
 
 LabelBase.register(
     name='material_symbols',

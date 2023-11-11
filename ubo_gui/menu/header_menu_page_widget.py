@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any
 
 from kivy.app import Builder, StringProperty
 
-from ubo.page import PageWidget
+from ubo_gui.page import PageWidget
 
 from .constants import PAGE_SIZE
 

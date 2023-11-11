@@ -12,13 +12,13 @@ from kivy.event import EventDispatcher
 from kivy.metrics import dp
 from kivy.properties import ColorProperty, ObjectProperty, StringProperty
 
-from ubo.menu.constants import SHORT_WIDTH
-from ubo.page import PAGE_MAX_ITEMS, PageWidget
+from ubo_gui.menu.constants import SHORT_WIDTH
+from ubo_gui.page import PAGE_MAX_ITEMS, PageWidget
 
 if TYPE_CHECKING:
     from typing_extensions import Any
 
-    from ubo.menu.types import Item
+    from ubo_gui.menu.types import Item
 
 
 class Importance(Enum):
