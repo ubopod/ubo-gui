@@ -37,7 +37,7 @@ if TYPE_CHECKING:
     from page import PageWidget
     from typing_extensions import Any
 
-    from ubo.animated_slider import AnimatedSlider
+    from ubo_gui.animated_slider import AnimatedSlider
 
 
 def paginate(items: list[Item], offset: int = 0) -> Iterator[list[Item]]:

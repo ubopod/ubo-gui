@@ -2,7 +2,7 @@ import pathlib
 
 from kivy.app import Builder
 
-from ubo.page import PageWidget
+from ubo_gui.page import PageWidget
 
 
 class NormalMenuPageWidget(PageWidget):
