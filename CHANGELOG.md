@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 0.4.2
+## Version 0.4.4
 
 - chore: migrate from poetry groups to poetry extras
 
