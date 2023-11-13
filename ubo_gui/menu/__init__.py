@@ -52,8 +52,8 @@ def paginate(items: list[Item], offset: int = 0) -> Iterator[list[Item]]:
         An offset greater than or equal to zero and less than `PAGE_SIZE`. The size of
         the first page will be `PAGE_SIZE` - `offset`. The default value is 0.
     """
-    for i in range(PAGE_SIZE-offset, len(items), PAGE_SIZE):
-        yield items[i:i + PAGE_SIZE]
+    for i in range(PAGE_SIZE - offset, len(items), PAGE_SIZE):
+        yield items[i : i + PAGE_SIZE]
 
 
 class MenuWidget(BoxLayout):
@@ -72,10 +72,13 @@ class MenuWidget(BoxLayout):
     page_index = NumericProperty(0)
     depth = NumericProperty(0)
     pages = AliasProperty(getter=get_pages, setter=set_pages, bind=['depth'])
-    is_scrollbar_visible = AliasProperty(getter=get_is_scrollbar_visible, bind=[
-        'depth',
-        'pages',
-    ])
+    is_scrollbar_visible = AliasProperty(
+        getter=get_is_scrollbar_visible,
+        bind=[
+            'depth',
+            'pages',
+        ],
+    )
     _pages: list[PageWidget]
     current_menu: Menu = None
     current_application: PageWidget | None = None
@@ -148,14 +151,12 @@ class MenuWidget(BoxLayout):
             less than `PAGE_SIZE`
         """
         if self.screen_manager.current_screen is None:
-            warnings.warn('`current_screen` is `None`',
-                          RuntimeWarning, stacklevel=1)
+            warnings.warn('`current_screen` is `None`', RuntimeWarning, stacklevel=1)
             return
         current_page: PageWidget = self.screen_manager.current_screen
         item = current_page.get_item(index)
         if not item:
-            warnings.warn('Selected `item` is `None`',
-                          RuntimeWarning, stacklevel=1)
+            warnings.warn('Selected `item` is `None`', RuntimeWarning, stacklevel=1)
             return
         if is_action_item(item):
             item['action']()
@@ -173,8 +174,11 @@ class MenuWidget(BoxLayout):
         self.screen_manager.add_widget(self.current_application)
         self.screen_manager.transition.direction = 'left'
         self.screen_manager.current = self.current_application.name
-        self.title = self.current_application.title if hasattr(
-            self.current_application, 'title') else None
+        self.title = (
+            self.current_application.title
+            if hasattr(self.current_application, 'title')
+            else None
+        )
         self.current_application.bind(on_close=lambda _: self.go_back())
         self.depth = self.current_depth
 
@@ -218,8 +222,8 @@ class MenuWidget(BoxLayout):
     def set_current_menu(self: MenuWidget, menu: Menu) -> None:
         """Set the `current_menu` and create its pages."""
         HeadlessWidget.activate_high_fps_mode()
-        while len(self.pages) > 0:
-            self.screen_manager.remove_widget(self.pages.pop())
+        self.pages.clear()
+        self.screen_manager.clear_widgets()
 
         self.current_menu = menu
 
@@ -232,15 +236,16 @@ class MenuWidget(BoxLayout):
             )
         else:
             first_page = NormalMenuPageWidget(
-                menu_items(menu)[:3], name=f'Page {self.current_depth} 0')
+                menu_items(menu)[:3], name=f'Page {self.current_depth} 0'
+            )
         self.pages.append(first_page)
         self.screen_manager.add_widget(first_page)
 
-        paginated_items = paginate(
-            menu_items(menu), 2 if 'heading' in menu else 0)
+        paginated_items = paginate(menu_items(menu), 2 if 'heading' in menu else 0)
         for index, page_items in enumerate(paginated_items):
             page = NormalMenuPageWidget(
-                page_items, name=f'Page {self.current_depth} {index + 1}')
+                page_items, name=f'Page {self.current_depth} {index + 1}'
+            )
             self.pages.append(page)
             self.screen_manager.add_widget(page)
         self.title = menu_title(menu)
@@ -256,8 +261,7 @@ class MenuWidget(BoxLayout):
         on_progress_ = self.screen_manager.transition.on_progress
 
         def on_progress(progression):
-            self.screen_manager.transition.screen_out.opacity = (
-                1 - progression)
+            self.screen_manager.transition.screen_out.opacity = 1 - progression
             self.screen_manager.transition.screen_in.opacity = progression
             on_progress_(progression)
 
@@ -272,5 +276,6 @@ class MenuWidget(BoxLayout):
         self.slider = self.ids.slider
 
 
-Builder.load_file(pathlib.Path(
-    __file__).parent.joinpath('menu.kv').resolve().as_posix())
+Builder.load_file(
+    pathlib.Path(__file__).parent.joinpath('menu.kv').resolve().as_posix()
+)

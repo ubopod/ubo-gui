@@ -206,7 +206,7 @@ reference = "piwheels"
 name = "cython"
 version = "3.0.5"
 description = "The Cython compiler for writing C extensions in the Python language."
-optional = false
+optional = true
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 files = [
     {file = "Cython-3.0.5-cp311-cp311-linux_armv6l.whl", hash = "sha256:a7e4594bde5f96ec4463935d783613f402f2afa87567717f7857903e45f9d46d"},
@@ -239,13 +239,13 @@ reference = "piwheels"
 
 [[package]]
 name = "headless-kivy-pi"
-version = "0.3.7"
-description = ""
+version = "0.4.2"
+description = "Headless renderer for Kivy framework on Raspberry Pi"
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "headless_kivy_pi-0.3.7-py3-none-any.whl", hash = "sha256:dd5c8bc108d47f23861c694916c6d2af569863b88d3b99d56f7d3a1e77dd1262"},
-    {file = "headless_kivy_pi-0.3.7.tar.gz", hash = "sha256:1e842e14e45a2546ea681bbeef221776ca168381490a48eccce2b57f40d221f6"},
+    {file = "headless_kivy_pi-0.4.2-py3-none-any.whl", hash = "sha256:a2242a8adf0129975f42f86d8861aba77f04120fa5222fb95e5a89bdf7877447"},
+    {file = "headless_kivy_pi-0.4.2.tar.gz", hash = "sha256:5b4acdd1c9b06749fde0eda3315f5b94dc24f44d91868e8f7a27b25895c7f3ea"},
 ]
 
 [package.dependencies]
@@ -253,7 +253,11 @@ adafruit-circuitpython-aw9523 = ">=1.1.7,<2.0.0"
 adafruit-circuitpython-rgb-display = ">=3.11.0,<4.0.0"
 kivy = ">=2.2.1,<3.0.0"
 numpy = ">=1.24.2,<2.0.0"
+screeninfo = {version = ">=0.8.1,<0.9.0", optional = true, markers = "platform_machine != \"aarch64\" and extra == \"dev\""}
 typing-extensions = ">=4.8.0,<5.0.0"
+
+[package.extras]
+dev = ["screeninfo (>=0.8.1,<0.9.0)"]
 
 [[package]]
 name = "idna"
@@ -381,25 +385,54 @@ requests = "*"
 
 [[package]]
 name = "numpy"
-version = "1.25.2"
+version = "1.26.2"
 description = "Fundamental package for array computing in Python"
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "numpy-1.25.2-cp39-cp39-linux_armv6l.whl", hash = "sha256:4b0bf79e4c9ea416d3e7ddfd463263b7489c80e8fac9c94f3c9f11ee443210b7"},
-    {file = "numpy-1.25.2-cp39-cp39-linux_armv7l.whl", hash = "sha256:4b0bf79e4c9ea416d3e7ddfd463263b7489c80e8fac9c94f3c9f11ee443210b7"},
+    {file = "numpy-1.26.2-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:3703fc9258a4a122d17043e57b35e5ef1c5a5837c3db8be396c82e04c1cf9b0f"},
+    {file = "numpy-1.26.2-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:cc392fdcbd21d4be6ae1bb4475a03ce3b025cd49a9be5345d76d7585aea69440"},
+    {file = "numpy-1.26.2-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:36340109af8da8805d8851ef1d74761b3b88e81a9bd80b290bbfed61bd2b4f75"},
+    {file = "numpy-1.26.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:bcc008217145b3d77abd3e4d5ef586e3bdfba8fe17940769f8aa09b99e856c00"},
+    {file = "numpy-1.26.2-cp310-cp310-musllinux_1_1_aarch64.whl", hash = "sha256:3ced40d4e9e18242f70dd02d739e44698df3dcb010d31f495ff00a31ef6014fe"},
+    {file = "numpy-1.26.2-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:b272d4cecc32c9e19911891446b72e986157e6a1809b7b56518b4f3755267523"},
+    {file = "numpy-1.26.2-cp310-cp310-win32.whl", hash = "sha256:22f8fc02fdbc829e7a8c578dd8d2e15a9074b630d4da29cda483337e300e3ee9"},
+    {file = "numpy-1.26.2-cp310-cp310-win_amd64.whl", hash = "sha256:26c9d33f8e8b846d5a65dd068c14e04018d05533b348d9eaeef6c1bd787f9919"},
+    {file = "numpy-1.26.2-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:b96e7b9c624ef3ae2ae0e04fa9b460f6b9f17ad8b4bec6d7756510f1f6c0c841"},
+    {file = "numpy-1.26.2-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:aa18428111fb9a591d7a9cc1b48150097ba6a7e8299fb56bdf574df650e7d1f1"},
+    {file = "numpy-1.26.2-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:06fa1ed84aa60ea6ef9f91ba57b5ed963c3729534e6e54055fc151fad0423f0a"},
+    {file = "numpy-1.26.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:96ca5482c3dbdd051bcd1fce8034603d6ebfc125a7bd59f55b40d8f5d246832b"},
+    {file = "numpy-1.26.2-cp311-cp311-musllinux_1_1_aarch64.whl", hash = "sha256:854ab91a2906ef29dc3925a064fcd365c7b4da743f84b123002f6139bcb3f8a7"},
+    {file = "numpy-1.26.2-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:f43740ab089277d403aa07567be138fc2a89d4d9892d113b76153e0e412409f8"},
+    {file = "numpy-1.26.2-cp311-cp311-win32.whl", hash = "sha256:a2bbc29fcb1771cd7b7425f98b05307776a6baf43035d3b80c4b0f29e9545186"},
+    {file = "numpy-1.26.2-cp311-cp311-win_amd64.whl", hash = "sha256:2b3fca8a5b00184828d12b073af4d0fc5fdd94b1632c2477526f6bd7842d700d"},
+    {file = "numpy-1.26.2-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:a4cd6ed4a339c21f1d1b0fdf13426cb3b284555c27ac2f156dfdaaa7e16bfab0"},
+    {file = "numpy-1.26.2-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:5d5244aabd6ed7f312268b9247be47343a654ebea52a60f002dc70c769048e75"},
+    {file = "numpy-1.26.2-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:6a3cdb4d9c70e6b8c0814239ead47da00934666f668426fc6e94cce869e13fd7"},
+    {file = "numpy-1.26.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:aa317b2325f7aa0a9471663e6093c210cb2ae9c0ad824732b307d2c51983d5b6"},
+    {file = "numpy-1.26.2-cp312-cp312-musllinux_1_1_aarch64.whl", hash = "sha256:174a8880739c16c925799c018f3f55b8130c1f7c8e75ab0a6fa9d41cab092fd6"},
+    {file = "numpy-1.26.2-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:f79b231bf5c16b1f39c7f4875e1ded36abee1591e98742b05d8a0fb55d8a3eec"},
+    {file = "numpy-1.26.2-cp312-cp312-win32.whl", hash = "sha256:4a06263321dfd3598cacb252f51e521a8cb4b6df471bb12a7ee5cbab20ea9167"},
+    {file = "numpy-1.26.2-cp312-cp312-win_amd64.whl", hash = "sha256:b04f5dc6b3efdaab541f7857351aac359e6ae3c126e2edb376929bd3b7f92d7e"},
+    {file = "numpy-1.26.2-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:4eb8df4bf8d3d90d091e0146f6c28492b0be84da3e409ebef54349f71ed271ef"},
+    {file = "numpy-1.26.2-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:1a13860fdcd95de7cf58bd6f8bc5a5ef81c0b0625eb2c9a783948847abbef2c2"},
+    {file = "numpy-1.26.2-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:64308ebc366a8ed63fd0bf426b6a9468060962f1a4339ab1074c228fa6ade8e3"},
+    {file = "numpy-1.26.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:baf8aab04a2c0e859da118f0b38617e5ee65d75b83795055fb66c0d5e9e9b818"},
+    {file = "numpy-1.26.2-cp39-cp39-musllinux_1_1_aarch64.whl", hash = "sha256:d73a3abcac238250091b11caef9ad12413dab01669511779bc9b29261dd50210"},
+    {file = "numpy-1.26.2-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:b361d369fc7e5e1714cf827b731ca32bff8d411212fccd29ad98ad622449cc36"},
+    {file = "numpy-1.26.2-cp39-cp39-win32.whl", hash = "sha256:bd3f0091e845164a20bd5a326860c840fe2af79fa12e0469a12768a3ec578d80"},
+    {file = "numpy-1.26.2-cp39-cp39-win_amd64.whl", hash = "sha256:2beef57fb031dcc0dc8fa4fe297a742027b954949cabb52a2a376c144e5e6060"},
+    {file = "numpy-1.26.2-pp39-pypy39_pp73-macosx_10_9_x86_64.whl", hash = "sha256:1cc3d5029a30fb5f06704ad6b23b35e11309491c999838c31f124fee32107c79"},
+    {file = "numpy-1.26.2-pp39-pypy39_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:94cc3c222bb9fb5a12e334d0479b97bb2df446fbe622b470928f5284ffca3f8d"},
+    {file = "numpy-1.26.2-pp39-pypy39_pp73-win_amd64.whl", hash = "sha256:fe6b44fb8fcdf7eda4ef4461b97b3f63c466b27ab151bec2366db8b197387841"},
+    {file = "numpy-1.26.2.tar.gz", hash = "sha256:f65738447676ab5777f11e6bbbdb8ce11b785e105f690bc45966574816b6d3ea"},
 ]
-
-[package.source]
-type = "legacy"
-url = "https://www.piwheels.org/simple"
-reference = "piwheels"
 
 [[package]]
 name = "pastel"
 version = "0.2.1"
 description = "Bring colors to your terminal."
-optional = false
+optional = true
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 files = [
     {file = "pastel-0.2.1-py2.py3-none-any.whl", hash = "sha256:4349225fcdf6c2bb34d483e523475de5bb04a5c10ef711263452cb37d7dd4364"},
@@ -414,7 +447,7 @@ reference = "piwheels"
 name = "poethepoet"
 version = "0.23.0"
 description = "A task runner that works well with poetry."
-optional = false
+optional = true
 python-versions = ">=3.8"
 files = [
     {file = "poethepoet-0.23.0-py3-none-any.whl", hash = "sha256:d573ff31d7678e62b6f9bc9a1291ae2009ac14e0eead0a450598f9f05abb27a3"},
@@ -473,7 +506,7 @@ reference = "piwheels"
 name = "pyobjc-core"
 version = "10.0"
 description = "Python<->ObjC Interoperability Module"
-optional = false
+optional = true
 python-versions = ">=3.8"
 files = [
     {file = "pyobjc-core-10.0.tar.gz", hash = "sha256:3dd0a7b3acd7e0b8ffd3f5331b29a3aaebe79a03323e61efeece38627a6020b3"},
@@ -489,7 +522,7 @@ files = [
 name = "pyobjc-framework-cocoa"
 version = "10.0"
 description = "Wrappers for the Cocoa frameworks on macOS"
-optional = false
+optional = true
 python-versions = ">=3.8"
 files = [
     {file = "pyobjc-framework-Cocoa-10.0.tar.gz", hash = "sha256:723421eff4f59e4ca9a9bb8ec6dafbc0f778141236fa85a49fdd86732d58a74c"},
@@ -645,7 +678,7 @@ reference = "piwheels"
 name = "screeninfo"
 version = "0.8.1"
 description = "Fetch location and size of physical screens."
-optional = false
+optional = true
 python-versions = ">=3.6.2,<4.0.0"
 files = [
     {file = "screeninfo-0.8.1-py3-none-any.whl", hash = "sha256:1d5c100d6cf2b65ebde6c112be395693f953ed25377187f75fdf5a0ac5587b31"},
@@ -682,7 +715,7 @@ reference = "piwheels"
 name = "tomli"
 version = "2.0.1"
 description = "A lil' TOML parser"
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"},
@@ -729,7 +762,10 @@ type = "legacy"
 url = "https://www.piwheels.org/simple"
 reference = "piwheels"
 
+[extras]
+dev = ["headless-kivy-pi"]
+
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "dd6a3f19d044ef8e59a0a6eceee825ab908f09aeb96d137a450ea4e3eed4b54a"
+content-hash = "4b6dee3533ca94d9d6286d525df9627c249ee7ea3eb3f4c6aed1b4cea72449c6"

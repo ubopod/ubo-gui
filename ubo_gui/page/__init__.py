@@ -17,7 +17,7 @@ PAGE_MAX_ITEMS = 3
 class PageWidget(Screen):
     """renders a page."""
 
-    __events__ = ('on_close', )
+    __events__ = ('on_close',)
 
     items = ListProperty([])
 
