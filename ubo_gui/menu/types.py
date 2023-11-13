@@ -65,9 +65,7 @@ def menu_items(menu: Menu) -> list[Item]:
 
     in case it's a function, the return value of the function is called.
     """
-    return menu['items']() if\
-        callable(menu['items']) else\
-        menu['items']
+    return menu['items']() if callable(menu['items']) else menu['items']
 
 
 def menu_title(menu: Menu) -> str:
@@ -75,9 +73,7 @@ def menu_title(menu: Menu) -> str:
 
     in case it's a function, the return value of the function is called.
     """
-    return menu['title']() if\
-        callable(menu['title']) else\
-        menu['title']
+    return menu['title']() if callable(menu['title']) else menu['title']
 
 
 class BaseItem(TypedDict):
@@ -144,7 +140,7 @@ class ApplicationItem(BaseItem):
         If provided, activating this item will show this widget
     """
 
-    application: PageWidget
+    application: type[PageWidget]
 
 
 def is_application_item(item: Item) -> TypeGuard[ApplicationItem]:

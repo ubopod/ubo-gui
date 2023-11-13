@@ -13,6 +13,7 @@ from kivy.metrics import dp
 from kivy.properties import ColorProperty, ObjectProperty, StringProperty
 
 from ubo_gui.menu.constants import SHORT_WIDTH
+from ubo_gui.menu.types import ApplicationItem
 from ubo_gui.page import PAGE_MAX_ITEMS, PageWidget
 
 if TYPE_CHECKING:
@@ -66,16 +67,18 @@ class Notification:
     icon: str
     expiry_date: datetime | None
 
-    def __init__(self: Notification, *,
-                 title: str,
-                 content: str,
-                 importance: Importance = Importance.LOW,
-                 sender: str | None = None,
-                 actions: list[NotificationAction] | None = None,
-                 icon: str | None = None,
-                 expiry_date: datetime | None = None,
-                 timestamp: datetime | None = None,
-                 ) -> None:
+    def __init__(
+        self: Notification,
+        *,
+        title: str,
+        content: str,
+        importance: Importance = Importance.LOW,
+        sender: str | None = None,
+        actions: list[NotificationAction] | None = None,
+        icon: str | None = None,
+        expiry_date: datetime | None = None,
+        timestamp: datetime | None = None,
+    ) -> None:
         if actions is None:
             actions = []
         if timestamp is None:
@@ -101,73 +104,100 @@ class Notification:
         self.is_read = False
 
     def is_expired(self: Notification) -> bool:
-        return self.expiry_date is not None and\
-            datetime.now(tz=timezone.utc) > self.expiry_date
+        return (
+            self.expiry_date is not None
+            and datetime.now(tz=timezone.utc) > self.expiry_date
+        )
 
-    def __repr__(self) -> str:
-        return (f'<Notification(id={self.id}, title={self.title}, '
-                f'content={self.content}, importance={self.importance.name}, '
-                f'timestamp={self.timestamp}, is_read={self.is_read}, '
-                f'sender={self.sender}, actions={self.actions}, icon={self.icon}, '
-                f'expiry_date={self.expiry_date})>')
+    def __repr__(self: Notification) -> str:
+        return (
+            f'<Notification(id={self.id}, title={self.title}, '
+            f'content={self.content}, importance={self.importance.name}, '
+            f'timestamp={self.timestamp}, is_read={self.is_read}, '
+            f'sender={self.sender}, actions={self.actions}, icon={self.icon}, '
+            f'expiry_date={self.expiry_date})>'
+        )
 
 
 class NotificationManager(EventDispatcher):
     __events__ = ('on_change',)
 
-    _notifications: list[Notification] = []
+    _notifications: list[Notification]
 
-    def notify(self: NotificationManager, *,
-               title: str,
-               content: str,
-               importance: Importance = Importance.LOW,
-               sender: str | None = None,
-               actions: list[NotificationAction] | None = None,
-               icon: str | None = None,
-               expiry_date: datetime | None = None) -> None:
+    def __init__(
+        self: NotificationManager,
+        *args: list[Any],
+        **kwargs: dict[str, Any],
+    ) -> None:
+        self._notifications = []
+        super().__init__(*args, **kwargs)
 
-        self._notifications.append(Notification(
-            title=title,
-            content=content,
-            importance=importance,
-            sender=sender,
-            actions=actions,
-            icon=icon,
-            expiry_date=expiry_date,
-        ))
+    def notify(
+        self: NotificationManager,
+        *,
+        title: str,
+        content: str,
+        importance: Importance = Importance.LOW,
+        sender: str | None = None,
+        actions: list[NotificationAction] | None = None,
+        icon: str | None = None,
+        expiry_date: datetime | None = None,
+    ) -> None:
+        self._notifications.append(
+            Notification(
+                title=title,
+                content=content,
+                importance=importance,
+                sender=sender,
+                actions=actions,
+                icon=icon,
+                expiry_date=expiry_date,
+            )
+        )
         self.dispatch('on_change')
 
     @property
     def unread_count(self: NotificationManager):
-        return len([
-            notification
-            for notification in self._notifications
-            if not notification.is_read
-        ])
+        return len(
+            [
+                notification
+                for notification in self._notifications
+                if not notification.is_read
+            ]
+        )
 
     def remove(self: NotificationManager, notification: Notification):
         self._notifications.remove(notification)
         self.dispatch('on_change')
 
     def menu_items(self: NotificationManager) -> list[Item]:
+        manager = self
+
         def notification_widget_builder(
             notification: Notification,
             index: int,
-        ) -> Callable[[], NotificationWidget]:
-            return lambda **kwargs: NotificationWidget(
-                notification=notification,
-                title=f'Notification ({index+1}/'
-                f'{len(self._notifications)})',
-                **kwargs,
-            )
+        ) -> type[PageWidget]:
+            class NotificationWrapper(NotificationWidget):
+                def __init__(self, **kwargs):
+                    super().__init__(
+                        notification=notification,
+                        title=f'Notification ({index+1}/'
+                        f'{len(manager._notifications)})',
+                        **kwargs,
+                    )
 
-        return [{
-            'label': notification.title,
-            'icon': notification.icon,
-            'color': 'black',
-            'background_color': IMPORTANCE_COLORS[notification.importance],
-            'application': notification_widget_builder(notification, index),
-        } for index, notification in enumerate(self._notifications)]
+            return NotificationWrapper
+
+        return [
+            ApplicationItem(
+                label=notification.title,
+                icon=notification.icon,
+                color='black',
+                background_color=IMPORTANCE_COLORS[notification.importance],
+                application=notification_widget_builder(notification, index),
+            )
+            for index, notification in enumerate(self._notifications)
+        ]
 
     def on_change(self: NotificationManager) -> None:
         pass
@@ -182,7 +212,8 @@ class NotificationWidget(PageWidget):
     title = StringProperty()
 
     def __init__(
-        self: NotificationWidget, *,
+        self: NotificationWidget,
+        *,
         notification: Notification,
         title: str,
         **kwargs: Any,
@@ -190,15 +221,20 @@ class NotificationWidget(PageWidget):
         self.notification = notification
         self.color = IMPORTANCE_COLORS[notification.importance]
         self.title = title
-        super().__init__(items=[{
-            'icon': 'delete',
-            'action': lambda: (
-                notification_manager.remove(notification),
-                self.dispatch('on_close'),
-            ),
-            'label': '',
-            'is_short': True,
-        }], **kwargs)
+        super().__init__(
+            items=[
+                {
+                    'icon': 'delete',
+                    'action': lambda: (
+                        notification_manager.remove(notification),
+                        notification_manager.dispatch('on_close'),
+                    ),
+                    'label': '',
+                    'is_short': True,
+                }
+            ],
+            **kwargs,
+        )
 
     def go_down(self: NotificationWidget) -> None:
         self.ids.slider.animated_value -= dp(50)
@@ -212,9 +248,16 @@ class NotificationWidget(PageWidget):
             return None
         return self.items[index - 2]
 
-Builder.load_string(f"""
-#:set SHORT_WIDTH {SHORT_WIDTH}
-""")
 
-Builder.load_file(pathlib.Path(
-    __file__).parent.joinpath('notification_widget.kv').resolve().as_posix())
+Builder.load_string(
+    f"""
+#:set SHORT_WIDTH {SHORT_WIDTH}
+"""
+)
+
+Builder.load_file(
+    pathlib.Path(__file__)
+    .parent.joinpath('notification_widget.kv')
+    .resolve()
+    .as_posix()
+)
