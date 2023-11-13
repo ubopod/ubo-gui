@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ubo-gui"
-version = "0.4.2"
+version = "0.4.4"
 description = "GUI sdk for Ubo Pod"
 authors = ["Sassan Haradji <sassanh@gmail.com>"]
 license = "Apache-2.0"
@@ -21,12 +21,17 @@ priority = "primary"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-headless-kivy-pi = { version = "^0.4.2" }
+headless-kivy-pi = [
+  { version = "^0.4.2", markers = "extra!='dev'" },
+  { version = "^0.4.2", markers = "extra=='dev'", extras = [
+    "dev",
+  ] },
+]
 
 
 [tool.poetry.group.dev.dependencies]
-poethepoet = { version = "^0.23.0", optional = true }
-headless-kivy-pi = { version = "^0.4.2", extras = ['dev'], optional = true }
+poethepoet = { version = "^0.24.2", optional = true }
+headless-kivy-pi = { version = "^0.4.2" }
 
 [tool.poetry.extras]
 dev = ['poethepoet', 'headless-kivy-pi']

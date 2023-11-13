@@ -2,12 +2,13 @@
 
 [[package]]
 name = "adafruit-blinka"
-version = "8.24.0"
+version = "8.25.0"
 description = "CircuitPython APIs for non-CircuitPython versions of Python such as CPython on Linux and MicroPython."
 optional = false
 python-versions = ">=3.7.0"
 files = [
-    {file = "Adafruit_Blinka-8.24.0-py3-none-any.whl", hash = "sha256:9aff60442085102d4af963a37292761ca19f187de858b2836d9b0a545b2159a4"},
+    {file = "Adafruit-Blinka-8.25.0.tar.gz", hash = "sha256:4cae1655a60c341d97e59108c0fa4f3963e8373b6195381e3b7f76ce1f4c2a5b"},
+    {file = "Adafruit_Blinka-8.25.0-py3-none-any.whl", hash = "sha256:6ccb124143bfc1073af7225445c75781e5415ecb97484bd24a9e0d9dbfb90816"},
 ]
 
 [package.dependencies]
@@ -15,14 +16,6 @@ adafruit-circuitpython-typing = "*"
 Adafruit-PlatformDetect = ">=3.53.0"
 Adafruit-PureIO = ">=1.1.7"
 pyftdi = ">=0.40.0"
-"RPi.GPIO" = "*"
-rpi-ws281x = ">=4.0.0"
-sysv-ipc = ">=1.1.0"
-
-[package.source]
-type = "legacy"
-url = "https://www.piwheels.org/simple"
-reference = "piwheels"
 
 [[package]]
 name = "adafruit-circuitpython-aw9523"
@@ -144,18 +137,14 @@ reference = "piwheels"
 
 [[package]]
 name = "adafruit-platformdetect"
-version = "3.53.0"
+version = "3.54.0"
 description = "Platform detection for use by libraries like Adafruit-Blinka."
 optional = false
 python-versions = "*"
 files = [
-    {file = "Adafruit_PlatformDetect-3.53.0-py3-none-any.whl", hash = "sha256:7d039d5d4546b45859209daea6322c188f291633c43b0c01a8be7ee364263abf"},
+    {file = "Adafruit-PlatformDetect-3.54.0.tar.gz", hash = "sha256:3fe7fb781a83d3f28812bcbff34edd4100afb68901d9c62ee22d07e824d82168"},
+    {file = "Adafruit_PlatformDetect-3.54.0-py3-none-any.whl", hash = "sha256:fecae7a6612bbcd32d1f40c2d2f1aa263c554be5e52cc6fa4eebaf8b80c33519"},
 ]
-
-[package.source]
-type = "legacy"
-url = "https://www.piwheels.org/simple"
-reference = "piwheels"
 
 [[package]]
 name = "adafruit-pureio"
@@ -445,12 +434,13 @@ reference = "piwheels"
 
 [[package]]
 name = "poethepoet"
-version = "0.23.0"
+version = "0.24.3"
 description = "A task runner that works well with poetry."
 optional = true
 python-versions = ">=3.8"
 files = [
-    {file = "poethepoet-0.23.0-py3-none-any.whl", hash = "sha256:d573ff31d7678e62b6f9bc9a1291ae2009ac14e0eead0a450598f9f05abb27a3"},
+    {file = "poethepoet-0.24.3-py3-none-any.whl", hash = "sha256:8817c6d3d8492776bbb17eb29b7b815b2905aefaa0ad887137e69e53349e2235"},
+    {file = "poethepoet-0.24.3.tar.gz", hash = "sha256:73f1060200d1c8f21e303d06a879c5c0e17b96ab16740da70aee2dcc3e4350e4"},
 ]
 
 [package.dependencies]
@@ -459,11 +449,6 @@ tomli = ">=1.2.2"
 
 [package.extras]
 poetry-plugin = ["poetry (>=1.0,<2.0)"]
-
-[package.source]
-type = "legacy"
-url = "https://www.piwheels.org/simple"
-reference = "piwheels"
 
 [[package]]
 name = "pyftdi"
@@ -637,44 +622,6 @@ url = "https://www.piwheels.org/simple"
 reference = "piwheels"
 
 [[package]]
-name = "rpi-gpio"
-version = "0.7.1"
-description = "A module to control Raspberry Pi GPIO channels"
-optional = false
-python-versions = "*"
-files = [
-    {file = "RPi.GPIO-0.7.1-cp35-cp35m-linux_armv6l.whl", hash = "sha256:5073d1972727cfad38a1a42f02da91dc41f137679290aa804ab6c410168347ac"},
-    {file = "RPi.GPIO-0.7.1-cp35-cp35m-linux_armv7l.whl", hash = "sha256:5073d1972727cfad38a1a42f02da91dc41f137679290aa804ab6c410168347ac"},
-    {file = "RPi.GPIO-0.7.1-cp37-cp37m-linux_armv6l.whl", hash = "sha256:e5dfec2c4ccb7dbe9eef3dfc76a3b04121fc62d77fd8fbe1a8e841468a1b0c4c"},
-    {file = "RPi.GPIO-0.7.1-cp37-cp37m-linux_armv7l.whl", hash = "sha256:e5dfec2c4ccb7dbe9eef3dfc76a3b04121fc62d77fd8fbe1a8e841468a1b0c4c"},
-    {file = "RPi.GPIO-0.7.1-cp39-cp39-linux_armv6l.whl", hash = "sha256:231f6142c25975a7e39b96faf4905f05f97dba6809e8c5f0d58f284b35b4b821"},
-    {file = "RPi.GPIO-0.7.1-cp39-cp39-linux_armv7l.whl", hash = "sha256:231f6142c25975a7e39b96faf4905f05f97dba6809e8c5f0d58f284b35b4b821"},
-]
-
-[package.source]
-type = "legacy"
-url = "https://www.piwheels.org/simple"
-reference = "piwheels"
-
-[[package]]
-name = "rpi-ws281x"
-version = "5.0.0"
-description = "Userspace Raspberry Pi PWM/PCM/SPI library for SK6812 and WS281X LEDs."
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "rpi_ws281x-5.0.0-cp37-cp37m-linux_armv6l.whl", hash = "sha256:2d9d8cb8f54bf68c1935a9b466aef8960f2e4aec4328057c0a9e59fc8eaad187"},
-    {file = "rpi_ws281x-5.0.0-cp37-cp37m-linux_armv7l.whl", hash = "sha256:2d9d8cb8f54bf68c1935a9b466aef8960f2e4aec4328057c0a9e59fc8eaad187"},
-    {file = "rpi_ws281x-5.0.0-cp39-cp39-linux_armv6l.whl", hash = "sha256:3c4af921dda22a393e42793e799823918e7d7a5bb71e50e885c22769ffa00c73"},
-    {file = "rpi_ws281x-5.0.0-cp39-cp39-linux_armv7l.whl", hash = "sha256:3c4af921dda22a393e42793e799823918e7d7a5bb71e50e885c22769ffa00c73"},
-]
-
-[package.source]
-type = "legacy"
-url = "https://www.piwheels.org/simple"
-reference = "piwheels"
-
-[[package]]
 name = "screeninfo"
 version = "0.8.1"
 description = "Fetch location and size of physical screens."
@@ -687,24 +634,6 @@ files = [
 [package.dependencies]
 Cython = {version = "*", markers = "sys_platform == \"darwin\""}
 pyobjc-framework-Cocoa = {version = "*", markers = "sys_platform == \"darwin\""}
-
-[package.source]
-type = "legacy"
-url = "https://www.piwheels.org/simple"
-reference = "piwheels"
-
-[[package]]
-name = "sysv-ipc"
-version = "1.1.0"
-description = "System V IPC primitives (semaphores, shared memory and message queues) for Python"
-optional = false
-python-versions = "*"
-files = [
-    {file = "sysv_ipc-1.1.0-cp37-cp37m-linux_armv6l.whl", hash = "sha256:3cc523ce39338200c0ad7735c48267a26735690977b4eb4879bd8e10b4e7a82d"},
-    {file = "sysv_ipc-1.1.0-cp37-cp37m-linux_armv7l.whl", hash = "sha256:3cc523ce39338200c0ad7735c48267a26735690977b4eb4879bd8e10b4e7a82d"},
-    {file = "sysv_ipc-1.1.0-cp39-cp39-linux_armv6l.whl", hash = "sha256:0ef1f4360d0c4e353f63d43743911c060881ebf920c95ec8adfa4fcbf58955da"},
-    {file = "sysv_ipc-1.1.0-cp39-cp39-linux_armv7l.whl", hash = "sha256:0ef1f4360d0c4e353f63d43743911c060881ebf920c95ec8adfa4fcbf58955da"},
-]
 
 [package.source]
 type = "legacy"
@@ -743,29 +672,24 @@ reference = "piwheels"
 
 [[package]]
 name = "urllib3"
-version = "2.0.7"
+version = "2.1.0"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "urllib3-2.0.7-py3-none-any.whl", hash = "sha256:569a2c93ac2791db5f1e10ca665db55661f9727a47e9f95385ea840d06baac85"},
+    {file = "urllib3-2.1.0-py3-none-any.whl", hash = "sha256:55901e917a5896a349ff771be919f8bd99aff50b79fe58fec595eb37bbc56bb3"},
+    {file = "urllib3-2.1.0.tar.gz", hash = "sha256:df7aa8afb0148fa78488e7899b2c59b5f4ffcfa82e6c54ccb9dd37c1d7b52d54"},
 ]
 
 [package.extras]
 brotli = ["brotli (>=1.0.9)", "brotlicffi (>=0.8.0)"]
-secure = ["certifi", "cryptography (>=1.9)", "idna (>=2.0.0)", "pyopenssl (>=17.1.0)", "urllib3-secure-extra"]
 socks = ["pysocks (>=1.5.6,!=1.5.7,<2.0)"]
 zstd = ["zstandard (>=0.18.0)"]
 
-[package.source]
-type = "legacy"
-url = "https://www.piwheels.org/simple"
-reference = "piwheels"
-
 [extras]
-dev = ["headless-kivy-pi"]
+dev = ["headless-kivy-pi", "headless-kivy-pi"]
 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "4b6dee3533ca94d9d6286d525df9627c249ee7ea3eb3f4c6aed1b4cea72449c6"
+content-hash = "5825b335e9d7c0a40ba22a4dd5e15fcbbedee9bde06f7334c6a5c895f9487224"
