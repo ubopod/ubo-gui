@@ -22,7 +22,7 @@ class HeaderMenuPageWidget(PageWidget):
 
     def __init__(
         self: HeaderMenuPageWidget,
-        item: Item,
+        items: list[Item],
         heading: str,
         sub_heading: str,
         **kwargs: Any,  # noqa: ANN401
@@ -44,16 +44,27 @@ class HeaderMenuPageWidget(PageWidget):
             Stuff that will get directly passed to the `__init__` method of Kivy's
         `Screen`.
         """
-        super().__init__([item], **kwargs)
+        if len(items) > 1:
+            msg = '`HeaderMenuPageWidget` is initialized with more than one item'
+            raise ValueError(msg)
+        super().__init__(items, **kwargs)
         self.heading = heading
         self.sub_heading = sub_heading
 
     def get_item(self: HeaderMenuPageWidget, index: int) -> Item | None:
         if index != PAGE_SIZE - 1:
-            warnings.warn('index must be 2', ResourceWarning, stacklevel=1)
+            warnings.warn(
+                f'index must be {PAGE_SIZE - 1}',
+                ResourceWarning,
+                stacklevel=1,
+            )
             return None
-        return self.items[index - 2]
+        return self.items[index - PAGE_SIZE + 1]
 
 
-Builder.load_file(pathlib.Path(
-    __file__).parent.joinpath('header_menu_page_widget.kv').resolve().as_posix())
+Builder.load_file(
+    pathlib.Path(__file__)
+    .parent.joinpath('header_menu_page_widget.kv')
+    .resolve()
+    .as_posix(),
+)

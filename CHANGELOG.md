@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.4.5
+
+- fix: crash when empty header menu page is rendered
+
 ## Version 0.4.4
 
 - chore: migrate from poetry groups to poetry extras

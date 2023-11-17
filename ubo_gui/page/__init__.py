@@ -38,7 +38,7 @@ class PageWidget(Screen):
         `Screen`.
         """
         if len(items) > PAGE_MAX_ITEMS:
-            msg = f'`Page` is initialized with more than `MAX_ITEMS`={PAGE_MAX_ITEMS} items'
+            msg = f'`PageWidget` is initialized with more than `MAX_ITEMS`={PAGE_MAX_ITEMS} items'
             raise ValueError(msg)
         self.items = items
         super().__init__(**kwargs)
