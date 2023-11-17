@@ -81,6 +81,7 @@ class MenuWidget(BoxLayout):
     )
     _pages: list[PageWidget]
     current_menu: Menu = None
+    current_menu_items: list[Item]
     current_application: PageWidget | None = None
     menu_stack: list[tuple[Menu, int]]
     screen_manager: ScreenManager
@@ -89,6 +90,7 @@ class MenuWidget(BoxLayout):
     def __init__(self: MenuWidget, **kwargs: Any) -> None:  # noqa: ANN401
         """Initialize a `MenuWidget`."""
         self.pages = []
+        self.current_menu_items = []
         self.menu_stack = []
         super().__init__(**kwargs)
         HeadlessWidget.activate_low_fps_mode()
@@ -97,13 +99,6 @@ class MenuWidget(BoxLayout):
     def current_depth(self: MenuWidget) -> int:
         """Depth of current menu in menu tree."""
         return len(self.menu_stack) + (1 if self.current_application else 0)
-
-    @property
-    def current_menu_items(self: MenuWidget) -> list[Item]:
-        """Items of the current menu."""
-        if self.current_application:
-            return []
-        return menu_items(self.current_menu)
 
     def go_down(self: MenuWidget) -> None:
         """Go to the next page.
@@ -226,25 +221,31 @@ class MenuWidget(BoxLayout):
         self.screen_manager.clear_widgets()
 
         self.current_menu = menu
+        self.current_menu_items = menu_items(menu)
 
         if 'heading' in self.current_menu:
             first_page = HeaderMenuPageWidget(
-                menu_items(menu)[0],
+                self.current_menu_items[:1],
                 cast(str, menu.get('heading', '')),
                 cast(str, menu.get('sub_heading', '')),
                 name=f'Page {self.current_depth} 0',
             )
         else:
             first_page = NormalMenuPageWidget(
-                menu_items(menu)[:3], name=f'Page {self.current_depth} 0'
+                self.current_menu_items[:3],
+                name=f'Page {self.current_depth} 0',
             )
         self.pages.append(first_page)
         self.screen_manager.add_widget(first_page)
 
-        paginated_items = paginate(menu_items(menu), 2 if 'heading' in menu else 0)
+        paginated_items = paginate(
+            self.current_menu_items,
+            2 if 'heading' in menu else 0,
+        )
         for index, page_items in enumerate(paginated_items):
             page = NormalMenuPageWidget(
-                page_items, name=f'Page {self.current_depth} {index + 1}'
+                page_items,
+                name=f'Page {self.current_depth} {index + 1}',
             )
             self.pages.append(page)
             self.screen_manager.add_widget(page)
