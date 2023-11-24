@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pathlib
 from functools import cached_property
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from headless_kivy_pi import HeadlessWidget
 from kivy.app import App, Builder, StringProperty, Widget
@@ -14,8 +14,9 @@ from ubo_gui import FONTS_PATH
 
 LabelBase.register(
     name='material_symbols',
-    fn_regular=FONTS_PATH.joinpath(
-        'MaterialSymbolsOutlined[FILL,GRAD,opsz,wght].ttf').resolve().as_posix(),
+    fn_regular=FONTS_PATH.joinpath('MaterialSymbolsOutlined[FILL,GRAD,opsz,wght].ttf')
+    .resolve()
+    .as_posix(),
 )
 
 if TYPE_CHECKING:
@@ -28,8 +29,12 @@ class RootWidget(HeadlessWidget):
 
 class UboApp(App):
     def build(self: UboApp) -> Widget | None:
-        self.root: RootWidget = Builder.load_file(pathlib.Path(
-            __file__).parent.joinpath('app.kv').resolve().as_posix())
+        self.root: RootWidget = cast(
+            RootWidget,
+            Builder.load_file(
+                pathlib.Path(__file__).parent.joinpath('app.kv').resolve().as_posix(),
+            ),
+        )
 
         if self.root is None:
             return None
@@ -56,7 +61,7 @@ class UboApp(App):
     def header(self: UboApp) -> Widget | None:
         header_label = Label(text=self.root.title)
 
-        def title_callback(_: RootWidget, title: str):
+        def title_callback(_: RootWidget, title: str) -> None:
             header_layout: BoxLayout = self.root.ids.header_layout
             if title is not None:
                 header_label.text = title
@@ -64,6 +69,7 @@ class UboApp(App):
             else:
                 header_label.text = ''
                 header_layout.height = 0
+
         self.root.bind(title=title_callback)
 
         return header_label

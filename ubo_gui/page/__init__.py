@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
 from kivy.core.window import ListProperty
 from kivy.uix.screenmanager import Screen
@@ -20,10 +20,13 @@ class PageWidget(Screen):
     __events__ = ('on_close',)
 
     items = ListProperty([])
+    title: str
+    go_up: Callable
+    go_down: Callable
 
     def __init__(
         self: PageWidget,
-        items: list[Item],
+        items: list[Item] | None = None,
         **kwargs: Any,  # noqa: ANN401
     ) -> None:
         """Initialize a `PageWidget`.
@@ -37,10 +40,10 @@ class PageWidget(Screen):
             Stuff that will get directly passed to the `__init__` method of Kivy's
         `Screen`.
         """
-        if len(items) > PAGE_MAX_ITEMS:
+        if items and len(items) > PAGE_MAX_ITEMS:
             msg = f'`PageWidget` is initialized with more than `MAX_ITEMS`={PAGE_MAX_ITEMS} items'
             raise ValueError(msg)
-        self.items = items
+        self.items = items or []
         super().__init__(**kwargs)
 
     def get_item(self: PageWidget, index: int) -> Item | None:
