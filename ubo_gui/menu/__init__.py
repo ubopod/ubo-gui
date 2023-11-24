@@ -16,6 +16,7 @@ from headless_kivy_pi import HeadlessWidget
 from kivy.app import Builder
 from kivy.properties import AliasProperty, NumericProperty, StringProperty
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.screenmanager import ScreenManager
 
 from .constants import PAGE_SIZE
 from .header_menu_page_widget import HeaderMenuPageWidget
@@ -32,7 +33,6 @@ from .types import (
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from kivy.uix.screenmanager import ScreenManager
     from menu.types import Menu
     from page import PageWidget
     from typing_extensions import Any
@@ -80,7 +80,7 @@ class MenuWidget(BoxLayout):
         ],
     )
     _pages: list[PageWidget]
-    current_menu: Menu = None
+    current_menu: Menu | None = None
     current_menu_items: list[Item]
     current_application: PageWidget | None = None
     menu_stack: list[tuple[Menu, int]]
@@ -199,7 +199,8 @@ class MenuWidget(BoxLayout):
     def push_menu(self: MenuWidget, menu: Menu) -> None:
         """Go one level deeper in the menu stack."""
         self.screen_manager.transition.direction = 'left'
-        self.menu_stack.append((self.current_menu, self.page_index))
+        if self.current_menu:
+            self.menu_stack.append((self.current_menu, self.page_index))
         self.page_index = 0
         self.set_current_menu(menu)
         self.depth = self.current_depth
@@ -214,7 +215,7 @@ class MenuWidget(BoxLayout):
         self.set_current_menu(target_menu[0])
         self.depth = self.current_depth
 
-    def set_current_menu(self: MenuWidget, menu: Menu) -> None:
+    def set_current_menu(self: MenuWidget, menu: Menu | None) -> None:
         """Set the `current_menu` and create its pages."""
         HeadlessWidget.activate_high_fps_mode()
         self.pages.clear()
@@ -223,11 +224,14 @@ class MenuWidget(BoxLayout):
         self.current_menu = menu
         self.current_menu_items = menu_items(menu)
 
+        if not self.current_menu:
+            return
+
         if 'heading' in self.current_menu:
             first_page = HeaderMenuPageWidget(
                 self.current_menu_items[:1],
-                cast(str, menu.get('heading', '')),
-                cast(str, menu.get('sub_heading', '')),
+                cast(str, self.current_menu.get('heading', '')),
+                cast(str, self.current_menu.get('sub_heading', '')),
                 name=f'Page {self.current_depth} 0',
             )
         else:
@@ -240,7 +244,7 @@ class MenuWidget(BoxLayout):
 
         paginated_items = paginate(
             self.current_menu_items,
-            2 if 'heading' in menu else 0,
+            2 if 'heading' in self.current_menu else 0,
         )
         for index, page_items in enumerate(paginated_items):
             page = NormalMenuPageWidget(
@@ -249,7 +253,7 @@ class MenuWidget(BoxLayout):
             )
             self.pages.append(page)
             self.screen_manager.add_widget(page)
-        self.title = menu_title(menu)
+        self.title = menu_title(self.current_menu)
         if self.page_index >= len(self.pages):
             self.page_index = max(len(self.pages) - 1, 0)
         self.screen_manager.current = f'Page {self.current_depth} {self.page_index}'
@@ -258,15 +262,15 @@ class MenuWidget(BoxLayout):
 
     def on_kv_post(self: MenuWidget, _: Any) -> None:  # noqa: ANN401
         """Activate low fps mode when transition is done."""
-        self.screen_manager = self.ids.screen_manager
+        self.screen_manager = cast(ScreenManager, self.ids.screen_manager)
         on_progress_ = self.screen_manager.transition.on_progress
 
-        def on_progress(progression):
+        def on_progress(progression: float) -> None:
             self.screen_manager.transition.screen_out.opacity = 1 - progression
             self.screen_manager.transition.screen_in.opacity = progression
             on_progress_(progression)
 
-        def on_complete():
+        def on_complete() -> None:
             self.screen_manager.transition.screen_out.opacity = 0
             self.screen_manager.transition.screen_in.opacity = 1
             HeadlessWidget.activate_low_fps_mode()
@@ -278,5 +282,5 @@ class MenuWidget(BoxLayout):
 
 
 Builder.load_file(
-    pathlib.Path(__file__).parent.joinpath('menu.kv').resolve().as_posix()
+    pathlib.Path(__file__).parent.joinpath('menu.kv').resolve().as_posix(),
 )
