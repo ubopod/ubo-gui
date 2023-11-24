@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.5.0
+
+- chore: drop support for python 3.9 and 3.10
+- refactor: improve typings
+
 ## Version 0.4.5
 
 - fix: crash when empty header menu page is rendered

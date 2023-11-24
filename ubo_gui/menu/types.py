@@ -60,11 +60,13 @@ def is_headless_menu(menu: Menu) -> TypeGuard[ActionItem]:
 Menu = Union[HeadedMenu, HeadlessMenu]
 
 
-def menu_items(menu: Menu) -> list[Item]:
+def menu_items(menu: Menu | None) -> list[Item]:
     """Return items of the menu.
 
     in case it's a function, the return value of the function is called.
     """
+    if not menu:
+        return []
     return menu['items']() if callable(menu['items']) else menu['items']
 
 
