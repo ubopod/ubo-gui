@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.6.1
+
+- fix: checking availability of `PromptWidget` items would cause a crash
+
 ## Version 0.6.0
 
 - refactor: optimize `MenuWidget` and improve its api to use kivy properties

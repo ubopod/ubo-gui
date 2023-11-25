@@ -25,10 +25,10 @@ class PromptWidget(PageWidget, ABC, metaclass=PromptWidgetMetaClass):
     prompt = StringProperty()
     first_option_label = StringProperty()
     first_option_icon = StringProperty()
-    first_option_is_short = BooleanProperty()
+    first_option_is_short = BooleanProperty(default=False)
     second_option_label = StringProperty()
     second_option_icon = StringProperty()
-    second_option_is_short = BooleanProperty()
+    second_option_is_short = BooleanProperty(default=False)
 
     @abstractmethod
     def first_option_callback(
