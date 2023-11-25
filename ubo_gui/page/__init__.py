@@ -21,8 +21,9 @@ class PageWidget(Screen):
 
     items = ListProperty([])
     title: str
-    go_up: Callable
-    go_down: Callable
+    go_up: Callable[[], None]
+    go_down: Callable[[], None]
+    go_back: Callable[[], bool | None]
 
     def __init__(
         self: PageWidget,
