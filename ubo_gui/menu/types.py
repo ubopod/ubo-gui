@@ -125,7 +125,7 @@ class ActionItem(BaseItem):
         If provided, activating this item will call this function.
     """
 
-    action: Callable
+    action: Callable[[], Menu | type[PageWidget] | None]
 
 
 def is_action_item(item: Item) -> TypeGuard[ActionItem]:

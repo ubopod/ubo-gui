@@ -10,8 +10,8 @@
   AnimatedSlider:
     id: slider
     min: 0
-    max: len(root.pages) - 1
-    animated_value: len(root.pages) - 1 - root.page_index
+    max: root.pages - 1
+    animated_value: root.pages - 1 - root.page_index
     orientation: 'vertical'
     size_hint: (None, 1) if root.is_scrollbar_visible else (None, None)
     width: dp(30) if root.is_scrollbar_visible else 0

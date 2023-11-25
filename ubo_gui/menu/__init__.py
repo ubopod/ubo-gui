@@ -7,6 +7,7 @@ Each item can optionally be styled differently.
 """
 from __future__ import annotations
 
+import math
 import pathlib
 import uuid
 import warnings
@@ -14,9 +15,11 @@ from typing import TYPE_CHECKING, cast
 
 from headless_kivy_pi import HeadlessWidget
 from kivy.app import Builder
-from kivy.properties import AliasProperty, NumericProperty, StringProperty
+from kivy.properties import AliasProperty, ListProperty, NumericProperty
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.screenmanager import ScreenManager
+from kivy.uix.screenmanager import Screen, ScreenManager
+
+from ubo_gui.page import PageWidget
 
 from .constants import PAGE_SIZE
 from .header_menu_page_widget import HeaderMenuPageWidget
@@ -31,74 +34,50 @@ from .types import (
 )
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
-
     from menu.types import Menu
-    from page import PageWidget
     from typing_extensions import Any
 
     from ubo_gui.animated_slider import AnimatedSlider
 
 
-def paginate(items: list[Item], offset: int = 0) -> Iterator[list[Item]]:
-    """Yield successive PAGE_SIZE-sized chunks from list.
-
-    Parameters
-    ----------
-    items: `list` of `Item`
-        The items to be paginated.
-
-    offset: `int`
-        An offset greater than or equal to zero and less than `PAGE_SIZE`. The size of
-        the first page will be `PAGE_SIZE` - `offset`. The default value is 0.
-    """
-    for i in range(PAGE_SIZE - offset, len(items), PAGE_SIZE):
-        yield items[i : i + PAGE_SIZE]
-
-
 class MenuWidget(BoxLayout):
     """Paginated menu."""
 
-    def get_pages(self: MenuWidget) -> list[PageWidget]:
-        return self._pages
-
-    def set_pages(self: MenuWidget, pages: list[PageWidget]) -> None:
-        self._pages = pages
-
-    def get_is_scrollbar_visible(self: MenuWidget) -> bool:
-        return self.current_application is None and len(self.pages) > 1
-
-    title = StringProperty(allownone=True)
-    page_index = NumericProperty(0)
-    depth = NumericProperty(0)
-    pages = AliasProperty(getter=get_pages, setter=set_pages, bind=['depth'])
-    is_scrollbar_visible = AliasProperty(
-        getter=get_is_scrollbar_visible,
-        bind=[
-            'depth',
-            'pages',
-        ],
-    )
-    _pages: list[PageWidget]
-    current_menu: Menu | None = None
+    _current_menu: Menu | None = None
+    _current_application: PageWidget | None = None
     current_menu_items: list[Item]
-    current_application: PageWidget | None = None
-    menu_stack: list[tuple[Menu, int]]
     screen_manager: ScreenManager
     slider: AnimatedSlider
 
     def __init__(self: MenuWidget, **kwargs: Any) -> None:  # noqa: ANN401
         """Initialize a `MenuWidget`."""
-        self.pages = []
         self.current_menu_items = []
-        self.menu_stack = []
         super().__init__(**kwargs)
-        HeadlessWidget.activate_low_fps_mode()
 
-    @property
-    def current_depth(self: MenuWidget) -> int:
-        """Depth of current menu in menu tree."""
-        return len(self.menu_stack) + (1 if self.current_application else 0)
+    def set_root_menu(self: MenuWidget, root_menu: Menu) -> None:
+        """Set the root menu."""
+        self.current_menu = root_menu
+        self.screen_manager.switch_to(self.current_screen)
+
+    def get_depth(self: MenuWidget) -> int:
+        """Return depth of the current screen."""
+        return len(self.stack)
+
+    def get_pages(self: MenuWidget) -> int:
+        """Return the number of pages of the currently active menu."""
+        if not self.current_menu:
+            return 0
+        if 'heading' in self.current_menu:
+            return math.ceil((len(self.current_menu_items) + 2) / 3)
+        return math.ceil(len(self.current_menu_items) / 3)
+
+    def get_title(self: MenuWidget) -> str | None:
+        """Return the title of the currently active menu."""
+        if self.current_application:
+            return getattr(self.current_application, 'title', None)
+        if self.current_menu:
+            return menu_title(self.current_menu)
+        return None
 
     def go_down(self: MenuWidget) -> None:
         """Go to the next page.
@@ -112,11 +91,8 @@ class MenuWidget(BoxLayout):
 
         if len(self.current_menu_items) == 0:
             return
-        self.page_index += 1
-        if self.page_index >= len(self.pages):
-            self.page_index = 0
-        self.screen_manager.transition.direction = 'up'
-        self.update()
+        self.page_index = (self.page_index + 1) % self.pages
+        self.screen_manager.switch_to(self.current_screen, direction='up')
 
     def go_up(self: MenuWidget) -> None:
         """Go to the previous page.
@@ -130,11 +106,8 @@ class MenuWidget(BoxLayout):
 
         if len(self.current_menu_items) == 0:
             return
-        self.page_index -= 1
-        if self.page_index < 0:
-            self.page_index = len(self.pages) - 1
-        self.screen_manager.transition.direction = 'down'
-        self.update()
+        self.page_index = (self.page_index - 1) % self.pages
+        self.screen_manager.switch_to(self.current_screen, direction='down')
 
     def select(self: MenuWidget, index: int) -> None:
         """Select one of the items currently visible on the screen.
@@ -148,117 +121,140 @@ class MenuWidget(BoxLayout):
         if self.screen_manager.current_screen is None:
             warnings.warn('`current_screen` is `None`', RuntimeWarning, stacklevel=1)
             return
-        current_page: PageWidget = self.screen_manager.current_screen
+        current_page = cast(PageWidget, self.screen_manager.current_screen)
         item = current_page.get_item(index)
         if not item:
             warnings.warn('Selected `item` is `None`', RuntimeWarning, stacklevel=1)
             return
+
         if is_action_item(item):
-            item['action']()
-        elif is_sub_menu_item(item):
-            self.push_menu(item['sub_menu'])
+            item = item['action']()
+            if not item:
+                return
+            if isinstance(item, type):
+                application_instance = item(name=uuid.uuid4().hex)
+                self.push_menu()
+                self.open_application(application_instance)
+            else:
+                self.push_menu()
+                self.current_menu = item
+                self.screen_manager.switch_to(self.current_screen, direction='left')
         elif is_application_item(item):
             application_instance = item['application'](name=uuid.uuid4().hex)
+            self.push_menu()
             self.open_application(application_instance)
+        elif is_sub_menu_item(item):
+            self.push_menu()
+            self.current_menu = item['sub_menu']
+            self.screen_manager.switch_to(self.current_screen, direction='left')
+
+    def go_back(self: MenuWidget) -> None:
+        """Go back to the previous menu."""
+        if (
+            self.current_application
+            and hasattr(self.current_application, 'go_back')
+            and self.current_application.go_back()
+        ):
+            return
+        HeadlessWidget.activate_high_fps_mode()
+        self.pop_menu()
+
+    def get_current_screen(self: MenuWidget) -> Screen | None:
+        """Return the current screen page."""
+        if self.current_application:
+            return self.current_application
+
+        if not self.current_menu:
+            return None
+
+        if self.page_index == 0 and 'heading' in self.current_menu:
+            return HeaderMenuPageWidget(
+                self.current_menu_items[:1],
+                cast(str, self.current_menu.get('heading', '')),
+                cast(str, self.current_menu.get('sub_heading', '')),
+                name=f'Page {self.get_depth()} 0',
+            )
+
+        offset = -(PAGE_SIZE - 1) if 'heading' in self.current_menu else 0
+        return NormalMenuPageWidget(
+            self.current_menu_items[
+                self.page_index * 3 + offset : self.page_index * 3 + 3 + offset
+            ],
+            name=f'Page {self.get_depth()} 0',
+        )
 
     def open_application(self: MenuWidget, application: PageWidget) -> None:
         """Open an application."""
         HeadlessWidget.activate_high_fps_mode()
         self.current_application = application
-        self.pages.append(self.current_application)
-        self.screen_manager.add_widget(self.current_application)
-        self.screen_manager.transition.direction = 'left'
-        self.screen_manager.current = self.current_application.name
-        self.title = (
-            self.current_application.title
-            if hasattr(self.current_application, 'title')
-            else None
-        )
-        self.current_application.bind(on_close=lambda _: self.go_back())
-        self.depth = self.current_depth
+        self.screen_manager.switch_to(self.current_screen, direction='left')
 
-    def go_back(self: MenuWidget) -> None:
-        """Go back to the previous menu."""
-        self.screen_manager.transition.direction = 'right'
-        if self.current_application:
-            HeadlessWidget.activate_high_fps_mode()
-            self.current_application = None
-            self.set_current_menu(self.current_menu)
-        else:
-            self.pop_menu()
-        self.depth = self.current_depth
+        def on_close(_: PageWidget) -> None:
+            self.go_back()
+            application.unbind(on_close=on_close)
 
-    def update(self: MenuWidget) -> None:
-        """Activate the transition from the previously active page to the current page.
+        application.bind(on_close=on_close)
 
-        Activate high fps mode to render the animation in high fps
-        """
-        HeadlessWidget.activate_high_fps_mode()
-        self.screen_manager.current = f'Page {self.current_depth} {self.page_index}'
-
-    def push_menu(self: MenuWidget, menu: Menu) -> None:
+    def push_menu(self: MenuWidget) -> None:
         """Go one level deeper in the menu stack."""
-        self.screen_manager.transition.direction = 'left'
         if self.current_menu:
-            self.menu_stack.append((self.current_menu, self.page_index))
+            self.stack.append((self.current_menu, self.page_index))
+            self.current_menu = None
+        elif self.current_application:
+            self.stack.append(self.current_application)
+            self.current_application = None
         self.page_index = 0
-        self.set_current_menu(menu)
-        self.depth = self.current_depth
 
     def pop_menu(self: MenuWidget) -> None:
         """Come up one level from of the menu stack."""
-        if self.current_depth == 0:
+        if self.depth == 0:
             return
-        self.screen_manager.transition.direction = 'right'
-        target_menu = self.menu_stack.pop()
-        self.page_index = target_menu[1]
-        self.set_current_menu(target_menu[0])
-        self.depth = self.current_depth
-
-    def set_current_menu(self: MenuWidget, menu: Menu | None) -> None:
-        """Set the `current_menu` and create its pages."""
-        HeadlessWidget.activate_high_fps_mode()
-        self.pages.clear()
-        self.screen_manager.clear_widgets()
-
-        self.current_menu = menu
-        self.current_menu_items = menu_items(menu)
-
-        if not self.current_menu:
-            return
-
-        if 'heading' in self.current_menu:
-            first_page = HeaderMenuPageWidget(
-                self.current_menu_items[:1],
-                cast(str, self.current_menu.get('heading', '')),
-                cast(str, self.current_menu.get('sub_heading', '')),
-                name=f'Page {self.current_depth} 0',
-            )
+        target = self.stack.pop()
+        if isinstance(target, PageWidget):
+            self.current_application = target
+            self.current_menu = None
+            self.page_index = 0
         else:
-            first_page = NormalMenuPageWidget(
-                self.current_menu_items[:3],
-                name=f'Page {self.current_depth} 0',
-            )
-        self.pages.append(first_page)
-        self.screen_manager.add_widget(first_page)
+            self.current_application = None
+            self.current_menu = target[0]
+            self.page_index = target[1]
+        self.screen_manager.switch_to(self.current_screen, direction='right')
 
-        paginated_items = paginate(
-            self.current_menu_items,
-            2 if 'heading' in self.current_menu else 0,
-        )
-        for index, page_items in enumerate(paginated_items):
-            page = NormalMenuPageWidget(
-                page_items,
-                name=f'Page {self.current_depth} {index + 1}',
-            )
-            self.pages.append(page)
-            self.screen_manager.add_widget(page)
-        self.title = menu_title(self.current_menu)
-        if self.page_index >= len(self.pages):
-            self.page_index = max(len(self.pages) - 1, 0)
-        self.screen_manager.current = f'Page {self.current_depth} {self.page_index}'
-        self.slider.value = len(self.pages) - 1 - self.page_index
-        HeadlessWidget.activate_low_fps_mode()
+    def get_is_scrollbar_visible(self: MenuWidget) -> bool:
+        """Return whether scroll-bar is needed or not."""
+        return self.current_application is None and self.pages > 1
+
+    def get_current_application(self: MenuWidget) -> PageWidget | None:
+        """Return current application."""
+        return self._current_application
+
+    def set_current_application(
+        self: MenuWidget,
+        application: PageWidget | None,
+    ) -> bool:
+        """Set current application."""
+        self._current_application = application
+
+        return True
+
+    def get_current_menu(self: MenuWidget) -> Menu | None:
+        """Return current menu."""
+        return self._current_menu
+
+    def set_current_menu(self: MenuWidget, menu: Menu | None) -> bool:
+        """Set the current menu."""
+        self.current_menu_items = menu_items(menu)
+        self._current_menu = menu
+
+        if not menu:
+            self.page_index = 0
+            return True
+
+        pages = self.get_pages()
+        if self.page_index >= pages:
+            self.page_index = max(self.pages - 1, 0)
+        self.slider.value = pages - 1 - self.page_index
+        return True
 
     def on_kv_post(self: MenuWidget, _: Any) -> None:  # noqa: ANN401
         """Activate low fps mode when transition is done."""
@@ -266,6 +262,8 @@ class MenuWidget(BoxLayout):
         on_progress_ = self.screen_manager.transition.on_progress
 
         def on_progress(progression: float) -> None:
+            if progression is 0:  # noqa: F632 - float 0.0 is not accepted, we are looking for int 0
+                HeadlessWidget.activate_high_fps_mode()
             self.screen_manager.transition.screen_out.opacity = 1 - progression
             self.screen_manager.transition.screen_in.opacity = progression
             on_progress_(progression)
@@ -279,6 +277,40 @@ class MenuWidget(BoxLayout):
         self.screen_manager.transition.on_complete = on_complete
 
         self.slider = self.ids.slider
+
+    page_index = NumericProperty(0)
+    stack: list[tuple[Menu, int] | PageWidget] = ListProperty()
+    title = AliasProperty(
+        getter=get_title,
+        bind=['current_menu', 'current_application'],
+        cache=True,
+    )
+    depth: int = AliasProperty(
+        getter=get_depth,
+        bind=['current_menu', 'current_application'],
+        cache=True,
+    )
+    pages: int = AliasProperty(getter=get_pages, bind=['current_menu'], cache=True)
+    current_application: PageWidget | None = AliasProperty(
+        getter=get_current_application,
+        setter=set_current_application,
+        cache=True,
+    )
+    current_menu: Menu | None = AliasProperty(
+        getter=get_current_menu,
+        setter=set_current_menu,
+        cache=True,
+    )
+    current_screen: Menu | None = AliasProperty(
+        getter=get_current_screen,
+        cache=True,
+        bind=['current_menu', 'page_index', 'current_application'],
+    )
+    is_scrollbar_visible = AliasProperty(
+        getter=get_is_scrollbar_visible,
+        bind=['pages', 'current_application'],
+        cache=True,
+    )
 
 
 Builder.load_file(
