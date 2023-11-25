@@ -33,14 +33,14 @@
 
     ItemWidget:
       id: first_item
-      item: root.items[0] if len(root.items) > 0 else None
+      item: root.items[0] and (root.items[0].label or root.items[0].icon) if len(root.items) > 0 else None
       size_hint: 1, None
       background_color: '#03F7AE'
       color: 0, 0, 0, 1
 
     ItemWidget:
       id: second_item
-      item: root.items[1] if len(root.items) > 1 else None
+      item: root.items[1] and (root.items[1].label or root.items[1].icon) if len(root.items) > 1 else None
       size_hint: 1, None
       background_color: '#FF3F51'
       color: 1, 1, 1, 1
