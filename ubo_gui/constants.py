@@ -1,3 +1,14 @@
+from kivy.app import Builder
+
+
 PRIMARY_COLOR = '#68B7FF'
 SECONDARY_COLOR = '#363F4B'
 TEXT_COLOR = '#FFFFFF'
+
+Builder.load_string(
+    f"""
+#:set UBO_GUI_PRIMARY_COLOR '{PRIMARY_COLOR}'
+#:set UBO_GUI_SECONDARY_COLOR '{SECONDARY_COLOR}'
+#:set UBO_GUI_TEXT_COLOR '{TEXT_COLOR}'
+""",
+)
