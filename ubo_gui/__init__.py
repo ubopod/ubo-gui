@@ -6,6 +6,9 @@ from pathlib import Path
 
 from kivy.factory import Factory
 
+__import__('ubo_gui.constants')
+__import__('ubo_gui.menu.constants')
+
 ROOT_PATH = Path(__file__).parent
 ASSETS_PATH = ROOT_PATH.joinpath('assets')
 FONTS_PATH = ASSETS_PATH.joinpath('fonts')
