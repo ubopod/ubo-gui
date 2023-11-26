@@ -82,5 +82,5 @@ class PromptWidget(PageWidget, ABC, metaclass=PromptWidgetMetaClass):
 
 
 Builder.load_file(
-    pathlib.Path(__file__).parent.joinpath('prompt_widget.kv').resolve().as_posix()
+    pathlib.Path(__file__).parent.joinpath('prompt_widget.kv').resolve().as_posix(),
 )
