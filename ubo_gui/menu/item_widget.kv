@@ -9,7 +9,7 @@
 
     RoundedRectangle:
       pos: self.pos
-      size: (dp(SHORT_WIDTH) if self.is_short else self.width - dp(30), self.height) if root.is_set else (0, 0)
+      size: (dp(UBO_GUI_SHORT_WIDTH) if self.is_short else self.width - dp(30), self.height) if root.is_set else (0, 0)
       radius: (0, 0), (dp(26), dp(26)), (dp(26), dp(26)), (0, 0)
 
   orientation: 'horizontal'

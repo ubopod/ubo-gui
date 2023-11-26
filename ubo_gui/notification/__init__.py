@@ -5,15 +5,14 @@ import uuid
 import warnings
 from datetime import datetime, timezone
 from enum import Enum, auto
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Callable, Mapping
 
 from kivy.app import Builder
 from kivy.event import EventDispatcher
 from kivy.metrics import dp
 from kivy.properties import ColorProperty, ObjectProperty, StringProperty
 
-from ubo_gui.menu.constants import SHORT_WIDTH
-from ubo_gui.menu.types import ApplicationItem
+from ubo_gui.menu.types import ActionItem, ApplicationItem
 from ubo_gui.page import PAGE_MAX_ITEMS, PageWidget
 
 if TYPE_CHECKING:
@@ -158,7 +157,7 @@ class NotificationManager(EventDispatcher):
                 actions=actions,
                 icon=icon,
                 expiry_date=expiry_date,
-            )
+            ),
         )
         self.dispatch('on_change')
 
@@ -170,7 +169,7 @@ class NotificationManager(EventDispatcher):
                 notification
                 for notification in self._notifications
                 if not notification.is_read
-            ]
+            ],
         )
 
     def remove(self: NotificationManager, notification: Notification):
@@ -188,7 +187,7 @@ class NotificationManager(EventDispatcher):
         ) -> type[PageWidget]:
             """Return a notification widget for the given notification."""
             class NotificationWrapper(NotificationWidget):
-                def __init__(self, **kwargs):
+                def __init__(self, **kwargs) -> None:
                     super().__init__(
                         notification=notification,
                         title=f'Notification ({index+1}/'
@@ -228,22 +227,24 @@ class NotificationWidget(PageWidget):
         *,
         notification: Notification,
         title: str,
-        **kwargs: Any,
+        **kwargs: Mapping[str, Any],
     ) -> None:
         self.notification = notification
         self.color = IMPORTANCE_COLORS[notification.importance]
         self.title = title
+
+        def close() -> None:
+            notification_manager.remove(notification)
+            notification_manager.dispatch('on_close')
+
         super().__init__(
             items=[
                 {
                     'icon': 'delete',
-                    'action': lambda: (
-                        notification_manager.remove(notification),
-                        notification_manager.dispatch('on_close'),
-                    ),
+                    'action': close,
                     'label': '',
                     'is_short': True,
-                }
+                },
             ],
             **kwargs,
         )
@@ -264,15 +265,9 @@ class NotificationWidget(PageWidget):
         return self.items[index - 2]
 
 
-Builder.load_string(
-    f"""
-#:set SHORT_WIDTH {SHORT_WIDTH}
-"""
-)
-
 Builder.load_file(
     pathlib.Path(__file__)
     .parent.joinpath('notification_widget.kv')
     .resolve()
-    .as_posix()
+    .as_posix(),
 )

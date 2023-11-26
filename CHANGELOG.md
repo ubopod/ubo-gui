@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.6.2
+
+- refactor: make constants globally accessible for all kv files with `UBO_GUI_` prefix
+
 ## Version 0.6.1
 
 - fix: checking availability of `PromptWidget` items would cause a crash
