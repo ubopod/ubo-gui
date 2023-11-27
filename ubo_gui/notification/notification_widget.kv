@@ -8,10 +8,9 @@
     BoxLayout:
       orientation: 'vertical'
       size_hint: None, 1
-      width: dp(SHORT_WIDTH)
+      width: dp(UBO_GUI_SHORT_WIDTH)
 
       ItemWidget:
-        id: first_item
         item: root.items[0] if len(root.items) > 0 else None
         size_hint: 1, None
 
@@ -71,7 +70,7 @@
       animated_value: self.max
       orientation: 'vertical'
       size_hint: (None, 1) if scrollable_widget.height - container.height > 0 else (None, None)
-      width: dp(SHORT_WIDTH)
+      width: dp(UBO_GUI_SHORT_WIDTH)
       height: 0
       opacity: 1 if scrollable_widget.height - container.height > 0 else 0
       disabled: scrollable_widget.height - container.height <= 0
