@@ -53,6 +53,7 @@ class NotificationAction:
         self.callback = callback
 
     def __repr__(self: NotificationAction) -> str:
+        """Return a string representation of this object."""
         return f'<NotificationAction(title={self.title}, callback={self.callback})>'
 
 
@@ -98,18 +99,22 @@ class Notification:
         self.expiry_date = expiry_date
 
     def mark_read(self: Notification) -> None:
+        """Mark this notification as read."""
         self.is_read = True
 
     def mark_unread(self: Notification) -> None:
+        """Mark this notification as unread."""
         self.is_read = False
 
     def is_expired(self: Notification) -> bool:
+        """Return whether this notification is expired."""
         return (
             self.expiry_date is not None
             and datetime.now(tz=timezone.utc) > self.expiry_date
         )
 
     def __repr__(self: Notification) -> str:
+        """Return a string representation of this object."""
         return (
             f'<Notification(id={self.id}, title={self.title}, '
             f'content={self.content}, importance={self.importance.name}, '
@@ -143,6 +148,7 @@ class NotificationManager(EventDispatcher):
         icon: str | None = None,
         expiry_date: datetime | None = None,
     ) -> None:
+        """Add a notification to the notification manager."""
         self._notifications.append(
             Notification(
                 title=title,
@@ -158,6 +164,7 @@ class NotificationManager(EventDispatcher):
 
     @property
     def unread_count(self: NotificationManager):
+        """Return the number of unread notifications."""
         return len(
             [
                 notification
@@ -167,16 +174,19 @@ class NotificationManager(EventDispatcher):
         )
 
     def remove(self: NotificationManager, notification: Notification):
+        """Remove a notification from the notification manager."""
         self._notifications.remove(notification)
         self.dispatch('on_change')
 
     def menu_items(self: NotificationManager) -> list[Item]:
+        """Return a list of menu items for the notification manager."""
         manager = self
 
         def notification_widget_builder(
             notification: Notification,
             index: int,
         ) -> type[PageWidget]:
+            """Return a notification widget for the given notification."""
             class NotificationWrapper(NotificationWidget):
                 def __init__(self, **kwargs):
                     super().__init__(
@@ -207,6 +217,8 @@ notification_manager = NotificationManager()
 
 
 class NotificationWidget(PageWidget):
+    """renders a notification."""
+
     notification = ObjectProperty()
     color = ColorProperty()
     title = StringProperty()
@@ -237,12 +249,15 @@ class NotificationWidget(PageWidget):
         )
 
     def go_down(self: NotificationWidget) -> None:
+        """Scroll down the notification list."""
         self.ids.slider.animated_value -= dp(50)
 
     def go_up(self: NotificationWidget) -> None:
+        """Scroll up the notification list."""
         self.ids.slider.animated_value += dp(50)
 
     def get_item(self: NotificationWidget, index: int) -> Item | None:
+        """Get the page item at the given index."""
         if index != PAGE_MAX_ITEMS - 1:
             warnings.warn('index must be 2', ResourceWarning, stacklevel=1)
             return None
