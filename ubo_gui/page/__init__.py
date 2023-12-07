@@ -48,6 +48,7 @@ class PageWidget(Screen):
         super().__init__(**kwargs)
 
     def get_item(self: PageWidget, index: int) -> Item | None:
+        """Get the page item at the given index."""
         if not 0 <= index < len(self.items):
             msg = f"""index must be greater than or equal to 0 and less than {
             len(self.items)}"""
