@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 0.6.4
+
+- feat: make `MenuWidget` subscribe to the items of the current menu if it provides a `subscribe` property
+
+## Version 0.6.3
+
+- refactor: make prompt widget responsive to changes of its items
+
 ## Version 0.6.2
 
 - refactor: make constants globally accessible for all kv files with `UBO_GUI_` prefix
