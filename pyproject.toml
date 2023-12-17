@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ubo-gui"
-version = "0.6.2"
+version = "0.6.4"
 description = "GUI sdk for Ubo Pod"
 authors = ["Sassan Haradji <sassanh@gmail.com>"]
 license = "Apache-2.0"
@@ -10,11 +10,6 @@ include = ['ubo_gui/assets/fonts/*']
 
 
 [[tool.poetry.source]]
-name = "piwheels"
-url = "https://www.piwheels.org/simple/"
-priority = "primary"
-
-[[tool.poetry.source]]
 name = "PyPI"
 priority = "primary"
 
@@ -22,19 +17,14 @@ priority = "primary"
 [tool.poetry.dependencies]
 python = "^3.11"
 headless-kivy-pi = [
-  { version = "^0.5.1", markers = "extra!='dev'" },
-  { version = "^0.5.1", markers = "extra=='dev'", extras = [
-    "dev",
-  ], optional = true },
+  { version = "^0.5.3" },
+  { version = "^0.5.3", markers = "extra=='dev'", extras = [
+    'dev',
+  ] },
 ]
 
-
-[tool.poetry.group.dev.dependencies]
-poethepoet = { version = "^0.24.2", markers = "platform_machine != 'aarch64'", source = 'PyPI' }
-headless-kivy-pi = { version = "^0.5.1" }
-
 [tool.poetry.extras]
-dev = ['poethepoet', 'headless-kivy-pi']
+dev = ['headless-kivy-pi']
 
 [build-system]
 requires = ["poetry-core"]
