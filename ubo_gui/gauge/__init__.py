@@ -8,6 +8,8 @@ from kivy.uix.boxlayout import BoxLayout
 
 
 class GaugeWidget(BoxLayout):
+    """A widget that displays a gauge."""
+
     value = NumericProperty(50)
     min_value = NumericProperty(0)
     max_value = NumericProperty(100)

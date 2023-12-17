@@ -26,6 +26,8 @@ class PromptWidgetMetaClass(type(ABC), type(PageWidget)):
 
 
 class PromptWidget(PageWidget, ABC, metaclass=PromptWidgetMetaClass):
+    """A widget that renders a prompt."""
+
     icon = StringProperty()
     prompt = StringProperty()
 
