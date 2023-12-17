@@ -1,6 +1,7 @@
+"""Class definition of main datatypes use in menus."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, Union
+from typing import TYPE_CHECKING, Callable, Sequence, Union
 
 from typing_extensions import NotRequired, TypedDict, TypeGuard
 
@@ -23,7 +24,7 @@ class BaseMenu(TypedDict):
     """
 
     title: str | Callable[[], str]
-    items: list[Item] | Callable[[], list[Item]]
+    items: Sequence[Item] | Callable[[], Sequence[Item]]
 
 
 class HeadedMenu(BaseMenu):
@@ -60,7 +61,7 @@ def is_headless_menu(menu: Menu) -> TypeGuard[ActionItem]:
 Menu = Union[HeadedMenu, HeadlessMenu]
 
 
-def menu_items(menu: Menu | None) -> list[Item]:
+def menu_items(menu: Menu | None) -> Sequence[Item]:
     """Return items of the menu.
 
     in case it's a function, the return value of the function is called.
