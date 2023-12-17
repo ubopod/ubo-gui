@@ -11,13 +11,13 @@ import math
 import pathlib
 import uuid
 import warnings
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Any, Callable, Sequence, cast
 
 from headless_kivy_pi import HeadlessWidget
 from kivy.app import Builder
 from kivy.properties import AliasProperty, ListProperty, NumericProperty
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.uix.screenmanager import NoTransition, Screen, ScreenManager
 
 from ubo_gui.page import PageWidget
 
@@ -35,7 +35,6 @@ from .types import (
 
 if TYPE_CHECKING:
     from menu.types import Menu
-    from typing_extensions import Any
 
     from ubo_gui.animated_slider import AnimatedSlider
 
@@ -44,14 +43,15 @@ class MenuWidget(BoxLayout):
     """Paginated menu."""
 
     _current_menu: Menu | None = None
+    _current_menu_items: Sequence[Item]
     _current_application: PageWidget | None = None
-    current_menu_items: list[Item]
     screen_manager: ScreenManager
     slider: AnimatedSlider
+    cancel_items_subscription: Callable[[], None] | None = None
 
     def __init__(self: MenuWidget, **kwargs: Any) -> None:  # noqa: ANN401
         """Initialize a `MenuWidget`."""
-        self.current_menu_items = []
+        self._current_menu_items = []
         super().__init__(**kwargs)
 
     def set_root_menu(self: MenuWidget, root_menu: Menu) -> None:
@@ -118,7 +118,7 @@ class MenuWidget(BoxLayout):
             An integer number, can only take values greater than or equal to zero and
             less than `PAGE_SIZE`
         """
-        if self.screen_manager.current_screen is None:
+        if not self.screen_manager.current_screen:
             warnings.warn('`current_screen` is `None`', RuntimeWarning, stacklevel=1)
             return
         current_page = cast(PageWidget, self.screen_manager.current_screen)
@@ -146,7 +146,8 @@ class MenuWidget(BoxLayout):
         elif is_sub_menu_item(item):
             self.push_menu()
             self.current_menu = item['sub_menu']
-            self.screen_manager.switch_to(self.current_screen, direction='left')
+            if self.current_screen:
+                self.screen_manager.switch_to(self.current_screen, direction='left')
 
     def go_back(self: MenuWidget) -> None:
         """Go back to the previous menu."""
@@ -186,6 +187,7 @@ class MenuWidget(BoxLayout):
     def open_application(self: MenuWidget, application: PageWidget) -> None:
         """Open an application."""
         HeadlessWidget.activate_high_fps_mode()
+        self.current_menu = None
         self.current_application = application
         self.screen_manager.switch_to(self.current_screen, direction='left')
 
@@ -199,10 +201,8 @@ class MenuWidget(BoxLayout):
         """Go one level deeper in the menu stack."""
         if self.current_menu:
             self.stack.append((self.current_menu, self.page_index))
-            self.current_menu = None
         elif self.current_application:
             self.stack.append(self.current_application)
-            self.current_application = None
         self.page_index = 0
 
     def pop_menu(self: MenuWidget) -> None:
@@ -222,7 +222,7 @@ class MenuWidget(BoxLayout):
 
     def get_is_scrollbar_visible(self: MenuWidget) -> bool:
         """Return whether scroll-bar is needed or not."""
-        return self.current_application is None and self.pages > 1
+        return not self.current_application and self.pages > 1
 
     def get_current_application(self: MenuWidget) -> PageWidget | None:
         """Return current application."""
@@ -237,18 +237,45 @@ class MenuWidget(BoxLayout):
 
         return True
 
+    def get_current_menu_items(self: MenuWidget) -> Sequence[Item] | None:
+        """Return current menu items."""
+        return self._current_menu_items
+
+    def set_current_menu_items(self: MenuWidget, items: Sequence[Item]) -> bool:
+        """Set current menu items."""
+        self._current_menu_items = items
+        return True
+
     def get_current_menu(self: MenuWidget) -> Menu | None:
-        """Return current menu."""
+        """Return the current menu."""
         return self._current_menu
 
     def set_current_menu(self: MenuWidget, menu: Menu | None) -> bool:
         """Set the current menu."""
-        self.current_menu_items = menu_items(menu)
+        self._current_menu_items = menu_items(menu)
+        if self.cancel_items_subscription:
+            self.cancel_items_subscription()
+            self.cancel_items_subscription = None
+        if menu and hasattr(menu['items'], 'subscribe'):
+
+            def refresh_items(items: Sequence[Item]) -> None:
+                self.current_menu_items = items
+                self.screen_manager.switch_to(
+                    self.current_screen,
+                    transition=NoTransition(),
+                )
+
+            self.cancel_items_subscription = cast(Any, menu['items']).subscribe(
+                refresh_items,
+            )
+
         self._current_menu = menu
 
         if not menu:
             self.page_index = 0
             return True
+
+        self.current_application = None
 
         pages = self.get_pages()
         if self.page_index >= pages:
@@ -296,6 +323,12 @@ class MenuWidget(BoxLayout):
         setter=set_current_application,
         cache=True,
     )
+    current_menu_items: Sequence[Item] = AliasProperty(
+        getter=get_current_menu_items,
+        setter=set_current_menu_items,
+        bind=['current_menu'],
+        cache=True,
+    )
     current_menu: Menu | None = AliasProperty(
         getter=get_current_menu,
         setter=set_current_menu,
@@ -304,7 +337,7 @@ class MenuWidget(BoxLayout):
     current_screen: Menu | None = AliasProperty(
         getter=get_current_screen,
         cache=True,
-        bind=['current_menu', 'page_index', 'current_application'],
+        bind=['page_index', 'current_application', 'current_menu_items'],
     )
     is_scrollbar_visible = AliasProperty(
         getter=get_is_scrollbar_visible,
