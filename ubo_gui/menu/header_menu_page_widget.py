@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pathlib
 import warnings
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Sequence
 
 from kivy.app import Builder, StringProperty
 
@@ -22,7 +22,7 @@ class HeaderMenuPageWidget(PageWidget):
 
     def __init__(
         self: HeaderMenuPageWidget,
-        items: list[Item],
+        items: Sequence[Item],
         heading: str,
         sub_heading: str,
         **kwargs: Any,  # noqa: ANN401

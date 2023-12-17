@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Callable, Sequence
 
 from kivy.core.window import ListProperty
 from kivy.uix.screenmanager import Screen
@@ -27,7 +27,7 @@ class PageWidget(Screen):
 
     def __init__(
         self: PageWidget,
-        items: list[Item] | None = None,
+        items: Sequence[Item] | None = None,
         **kwargs: Any,  # noqa: ANN401
     ) -> None:
         """Initialize a `PageWidget`.
