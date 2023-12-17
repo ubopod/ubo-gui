@@ -10,6 +10,8 @@ from ubo_gui.constants import PRIMARY_COLOR, SECONDARY_COLOR
 
 
 class VolumeWidget(BoxLayout):
+    """A widget that displays a volume bar."""
+
     value = NumericProperty(50)
     fill_color = ColorProperty(PRIMARY_COLOR)
     background_color = ColorProperty(SECONDARY_COLOR)

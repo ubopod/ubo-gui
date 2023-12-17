@@ -57,4 +57,5 @@ class PageWidget(Screen):
         return self.items[index]
 
     def on_close(self: PageWidget) -> None:
+        """Call when the page is closed."""
         pass
