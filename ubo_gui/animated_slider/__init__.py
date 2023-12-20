@@ -1,4 +1,4 @@
-"""Module for the AnimatedSlider class."""
+"""Module for the `AnimatedSlider` class."""
 
 from __future__ import annotations
 
