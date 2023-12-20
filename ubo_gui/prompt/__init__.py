@@ -26,6 +26,8 @@ class PromptWidgetMetaClass(type(ABC), type(PageWidget)):
 
 
 class PromptWidget(PageWidget, ABC, metaclass=PromptWidgetMetaClass):
+    """A widget that renders a prompt."""
+
     icon = StringProperty()
     prompt = StringProperty()
 
@@ -119,6 +121,7 @@ class PromptWidget(PageWidget, ABC, metaclass=PromptWidgetMetaClass):
         super().__init__(items=items, **kwargs)
 
     def get_item(self: PromptWidget, index: int) -> Item | None:
+        """Return the page item at the given index."""
         if not 1 <= index <= PROMPT_OPTIONS:
             warnings.warn('index must be either 1 or 2', ResourceWarning, stacklevel=1)
             return None
