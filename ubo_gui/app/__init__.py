@@ -29,6 +29,10 @@ class RootWidget(HeadlessWidget):
 
 class UboApp(App):
     def build(self: UboApp) -> Widget | None:
+        """Build the app. This is the landing point for the app.
+
+        The app can have a header, central section, and a footer.
+        """
         self.root: RootWidget = cast(
             RootWidget,
             Builder.load_file(
