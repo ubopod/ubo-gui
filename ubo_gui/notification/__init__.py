@@ -11,6 +11,7 @@ from kivy.app import Builder
 from kivy.metrics import dp
 from kivy.properties import ColorProperty, ObjectProperty, StringProperty
 
+from ubo_gui.constants import DANGER_COLOR
 from ubo_gui.menu.types import ActionItem
 from ubo_gui.page import PAGE_MAX_ITEMS, PageWidget
 
@@ -34,6 +35,8 @@ class NotificationAction:
 class NotificationWidget(PageWidget):
     """renders a notification."""
 
+    __events__ = ('on_dismiss',)
+
     notification = ObjectProperty()
     notification_title: str = StringProperty()
     content: str = StringProperty()
@@ -45,17 +48,15 @@ class NotificationWidget(PageWidget):
         *args: object,
         **kwargs: object,
     ) -> None:
-        def close() -> None:
-            self.dispatch('on_close')
-
         super().__init__(
             *args,
             items=[
                 ActionItem(
                     icon='delete',
-                    action=close,
+                    action=lambda: self.dispatch('on_dismiss') and None,
                     label='',
                     is_short=True,
+                    background_color=DANGER_COLOR,
                 ),
             ],
             **kwargs,
@@ -75,6 +76,10 @@ class NotificationWidget(PageWidget):
             warnings.warn('index must be 2', ResourceWarning, stacklevel=1)
             return None
         return self.items[index - 2]
+
+    def on_dismiss(self: PageWidget) -> None:
+        """Signal when the notification is dismissed."""
+        ...
 
 
 Builder.load_file(

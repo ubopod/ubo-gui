@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.7.1
+
+- feat: add `on_dismiss` event to `NotificationWidget`
+- refactor: extract `DANGER_COLOR` and `SUCCESS_COLOR` previously hardcoded in `PromptWidget`
+
 ## Version 0.7.0
 
 - refactor: migrate from `TypedDict` to `Immutable` of python-immutable for the
