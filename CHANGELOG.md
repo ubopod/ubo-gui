@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.6.5
+
+- docs: update `README.me`
+
 ## Version 0.6.4
 
 - feat: make `MenuWidget` subscribe to the items of the current menu if it provides a `subscribe` property
