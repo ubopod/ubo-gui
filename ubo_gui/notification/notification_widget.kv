@@ -35,12 +35,12 @@
           size_hint: 1, None
           height: dp(60)
           font_size: dp(52)
-          text: root.notification.icon
+          text: root.icon
           font_name: 'material_symbols'
 
         Label:
           font_size: dp(20)
-          text: root.notification.title
+          text: root.notification_title
           size_hint: 1, None
           halign: 'center'
           shorten: False
@@ -52,7 +52,7 @@
 
         Label:
           font_size: dp(16)
-          text: root.notification.content
+          text: root.content
           text_size: self.size[0], None
           height: self.texture_size[1]
           size_hint: 1, None
