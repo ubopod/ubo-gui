@@ -1,12 +1,20 @@
 # Changelog
 
+## Version 0.7.0
+
+- refactor: migrate from `TypedDict` to `Immutable` of python-immutable for the
+  sake of better compatibility with python-redux
+- refactor: remove `NotificationManager` as it is beyond the scope of this package
+- refactor: minor improvements in typehints
+
 ## Version 0.6.5
 
 - docs: update `README.me`
 
 ## Version 0.6.4
 
-- feat: make `MenuWidget` subscribe to the items of the current menu if it provides a `subscribe` property
+- feat: make `MenuWidget` subscribe to the items of the current menu if it provides
+  a `subscribe` property
 
 ## Version 0.6.3
 
@@ -90,13 +98,15 @@
 
 ## Version 0.2.3
 
-- refactor: update code structure so that all packages are sub-packages of a single package named ubo
+- refactor: update code structure so that all packages are sub-packages of a single
+  package named ubo
 
 ## Version 0.2.2
 
 - fix: use dp for the radius of rounded rectangles
 - feat: implement notifications and add sample usage to menu demo app
-- feat: implement WifiPrompt in demo/menu.py as an example of PromptWidget usage and as an example of application launcher menu item
+- feat: implement WifiPrompt in demo/menu.py as an example of PromptWidget usage
+  and as an example of application launcher menu item
 - refactor: change Widgets with nested BoxLayouts to simple BoxLayouts
 - feat: implement application launcher menu items
 - feat: add prompt widget
@@ -108,12 +118,14 @@
 - fix: change header.text only when the default header label is in use
 - chore: add poethepoet to dependencies
 - docs: add basic information in README.md
-- feat: replace old icon_path, etc with new icon field for menu items, it uses material symbols icon font to render icons
+- feat: replace old icon_path, etc with new icon field for menu items, it uses material
+  symbols icon font to render icons
 - fix: don't render non-existing item widgets in a menu page
 - docs: update menu demo to use latest features
 - chore: add lint script entry to pyproject.toml
 - feat: allow setting is_short property of menu items from Item TypedDict class
-- feat: add HeadlessMenu for rendering menus without a heading in the first page, it completes HeadedMenu which is the old Menu class
+- feat: add HeadlessMenu for rendering menus without a heading in the first page,
+  it completes HeadedMenu which is the old Menu class
 - feat: support function values for items field of a menu
 - style: change default color of menu items to ubo blue
 - feat: add is_short property to items
@@ -129,7 +141,8 @@
 ## Version 0.2.0
 
 - feat: add app class providing a general layout for ubo gui applications
-- refactor: decouple demo application from the core functionality and use its provided api instead
+- refactor: decouple demo application from the core functionality and use its provided
+  api instead
 
 ## Version 0.1.0
 
