@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.7.5
+
+- fix: allow `None` value for `title` property of `PageWidget`
+
 ## Version 0.7.4
 
 - fix: avoid unnecessary property caching causing temporary inaccurate state for
