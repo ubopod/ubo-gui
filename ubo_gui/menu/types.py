@@ -27,6 +27,7 @@ class BaseMenu(Immutable):
 
     title: str | Callable[[], str]
     items: Sequence[Item] | Callable[[], Sequence[Item]]
+    _id: str | None = None
 
 
 class HeadedMenu(BaseMenu):

@@ -11,6 +11,7 @@ import math
 import pathlib
 import uuid
 import warnings
+from functools import cached_property
 from typing import TYPE_CHECKING, Any, Callable, Sequence, cast
 
 from headless_kivy_pi import HeadlessWidget
@@ -23,6 +24,7 @@ from kivy.uix.screenmanager import (
     ScreenManager,
     SlideTransition,
     SwapTransition,
+    TransitionBase,
 )
 
 from ubo_gui.page import PageWidget
@@ -56,6 +58,46 @@ class MenuWidget(BoxLayout):
     slider: AnimatedSlider
     cancel_items_subscription: Callable[[], None] | None = None
 
+    def _handle_transition_progress(
+        self: MenuWidget,
+        transition: TransitionBase,
+        progression: float,
+    ) -> None:
+        if progression is 0:  # noqa: F632 - float 0.0 is not accepted, we are looking for int 0
+            HeadlessWidget.activate_high_fps_mode()
+        transition.screen_out.opacity = 1 - progression
+        transition.screen_in.opacity = progression
+
+    def _handle_transition_complete(
+        self: MenuWidget,
+        transition: TransitionBase,
+    ) -> None:
+        transition.screen_out.opacity = 0
+        transition.screen_in.opacity = 1
+        HeadlessWidget.activate_low_fps_mode()
+
+    def _setup_transition(self: MenuWidget, transition: TransitionBase) -> None:
+        transition.bind(on_progress=self._handle_transition_progress)
+        transition.bind(on_complete=self._handle_transition_complete)
+
+    @cached_property
+    def _no_transition(self: MenuWidget) -> NoTransition:
+        transition = NoTransition()
+        self._setup_transition(transition)
+        return transition
+
+    @cached_property
+    def _slide_transition(self: MenuWidget) -> SlideTransition:
+        transition = SlideTransition()
+        self._setup_transition(transition)
+        return transition
+
+    @cached_property
+    def _swap_transition(self: MenuWidget) -> SwapTransition:
+        transition = SwapTransition()
+        self._setup_transition(transition)
+        return transition
+
     def __init__(self: MenuWidget, **kwargs: Any) -> None:  # noqa: ANN401
         """Initialize a `MenuWidget`."""
         self._current_menu_items = []
@@ -63,8 +105,12 @@ class MenuWidget(BoxLayout):
 
     def set_root_menu(self: MenuWidget, root_menu: Menu) -> None:
         """Set the root menu."""
+        self.stack = []
         self.current_menu = root_menu
-        self.screen_manager.switch_to(self.current_screen, transition=NoTransition())
+        self.screen_manager.switch_to(
+            self.current_screen,
+            transition=self._no_transition,
+        )
 
     def get_depth(self: MenuWidget) -> int:
         """Return depth of the current screen."""
@@ -100,7 +146,7 @@ class MenuWidget(BoxLayout):
         self.page_index = (self.page_index + 1) % self.pages
         self.screen_manager.switch_to(
             self.current_screen,
-            transition=SlideTransition(),
+            transition=self._slide_transition,
             direction='up',
         )
 
@@ -118,7 +164,7 @@ class MenuWidget(BoxLayout):
         self.page_index = (self.page_index - 1) % self.pages
         self.screen_manager.switch_to(
             self.current_screen,
-            transition=SlideTransition(),
+            transition=self._slide_transition,
             direction='down',
         )
 
@@ -152,7 +198,7 @@ class MenuWidget(BoxLayout):
                 self.current_menu = item
                 self.screen_manager.switch_to(
                     self.current_screen,
-                    transition=SlideTransition(),
+                    transition=self._slide_transition,
                     direction='left',
                 )
         elif isinstance(item, ApplicationItem):
@@ -164,7 +210,7 @@ class MenuWidget(BoxLayout):
             if self.current_screen:
                 self.screen_manager.switch_to(
                     self.current_screen,
-                    transition=SlideTransition(),
+                    transition=self._slide_transition,
                     direction='left',
                 )
 
@@ -207,11 +253,10 @@ class MenuWidget(BoxLayout):
         """Open an application."""
         HeadlessWidget.activate_high_fps_mode()
         self.push_menu()
-        self.current_menu = None
         self.current_application = application
         self.screen_manager.switch_to(
             self.current_screen,
-            transition=SwapTransition(),
+            transition=self._swap_transition,
             duration=0.2,
             direction='left',
         )
@@ -242,18 +287,15 @@ class MenuWidget(BoxLayout):
         if self.depth == 0:
             return
         target = self.stack.pop()
-        transition = SlideTransition()
+        transition = self._slide_transition
         if isinstance(target, PageWidget):
-            transition = SwapTransition()
+            transition = self._swap_transition
             if self.current_application:
                 self.clean_application(self.current_application)
             self.current_application = target
-            self.current_menu = None
-            self.page_index = 0
         else:
             if self.current_application:
-                transition = SwapTransition()
-            self.current_application = None
+                transition = self._swap_transition
             self.current_menu = target[0]
             self.page_index = target[1]
         self.screen_manager.switch_to(
@@ -276,6 +318,8 @@ class MenuWidget(BoxLayout):
     ) -> bool:
         """Set current application."""
         self._current_application = application
+        if application:
+            self.current_menu = None
 
         return True
 
@@ -304,7 +348,7 @@ class MenuWidget(BoxLayout):
                 self.current_menu_items = items
                 self.screen_manager.switch_to(
                     self.current_screen,
-                    transition=NoTransition(),
+                    transition=self._no_transition,
                 )
 
             self.cancel_items_subscription = cast(Any, menu.items).subscribe(
@@ -329,23 +373,6 @@ class MenuWidget(BoxLayout):
         """Activate low fps mode when transition is done."""
         _ = base_widget
         self.screen_manager = cast(ScreenManager, self.ids.screen_manager)
-        on_progress_ = self.screen_manager.transition.on_progress
-
-        def on_progress(progression: float) -> None:
-            if progression is 0:  # noqa: F632 - float 0.0 is not accepted, we are looking for int 0
-                HeadlessWidget.activate_high_fps_mode()
-            self.screen_manager.transition.screen_out.opacity = 1 - progression
-            self.screen_manager.transition.screen_in.opacity = progression
-            on_progress_(progression)
-
-        def on_complete() -> None:
-            self.screen_manager.transition.screen_out.opacity = 0
-            self.screen_manager.transition.screen_in.opacity = 1
-            HeadlessWidget.activate_low_fps_mode()
-
-        self.screen_manager.transition.on_progress = on_progress
-        self.screen_manager.transition.on_complete = on_complete
-
         self.slider = self.ids.slider
 
     page_index = NumericProperty(0)

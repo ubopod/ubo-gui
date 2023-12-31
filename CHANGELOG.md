@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.7.2
+
+- feat: different transitions for different actions of `MenuWidget`
+- refactor: add default values for properties of `ItemWidget`
+- style: improve layout of `NotificationWidget`
+
 ## Version 0.7.1
 
 - feat: add `on_dismiss` event to `NotificationWidget`
