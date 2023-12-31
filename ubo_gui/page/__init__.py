@@ -19,7 +19,7 @@ class PageWidget(Screen):
     __events__ = ('on_close',)
 
     items: Sequence[Item] = ListProperty([])
-    title: str = StringProperty()
+    title: str = StringProperty(allownone=True, defaultvalue=None)
 
     def go_up(self: Self) -> None:
         """Implement this method to provide custom logic for up key."""
