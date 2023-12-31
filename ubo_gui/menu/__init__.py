@@ -384,30 +384,27 @@ class MenuWidget(BoxLayout):
     )
     depth: int = AliasProperty(
         getter=get_depth,
-        bind=['current_menu', 'current_application'],
+        bind=['current_menu', 'current_application', 'stack'],
         cache=True,
     )
     pages: int = AliasProperty(getter=get_pages, bind=['current_menu'], cache=True)
     current_application: PageWidget | None = AliasProperty(
         getter=get_current_application,
         setter=set_current_application,
-        cache=True,
     )
     current_menu_items: Sequence[Item] = AliasProperty(
         getter=get_current_menu_items,
         setter=set_current_menu_items,
         bind=['current_menu'],
-        cache=True,
     )
     current_menu: Menu | None = AliasProperty(
         getter=get_current_menu,
         setter=set_current_menu,
-        cache=True,
     )
     current_screen: Menu | None = AliasProperty(
         getter=_get_current_screen,
-        cache=True,
         bind=['page_index', 'current_application', 'current_menu_items'],
+        cache=True,
     )
     is_scrollbar_visible = AliasProperty(
         getter=get_is_scrollbar_visible,
