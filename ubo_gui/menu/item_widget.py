@@ -41,18 +41,20 @@ class ItemWidget(BoxLayout):
     label = StringProperty()
     color = ColorProperty((1, 1, 1, 1))
     background_color = ColorProperty(PRIMARY_COLOR)
-    icon = StringProperty()
+    icon = StringProperty(defaultvalue='')
     is_short = BooleanProperty(defaultvalue=False)
     item = ObjectProperty()
 
     def on_item(self: ItemWidget, instance: ItemWidget, value: Item | None) -> None:
         if value is not None:
             instance.is_set = True
-            instance.label = value.label
-            instance.is_short = value.is_short
-            instance.color = value.color
-            instance.background_color = value.background_color
-            instance.icon = value.icon
+            instance.label = value.label or ''
+            instance.is_short = False if value.is_short is None else value.is_short
+            instance.color = value.color or ItemWidget.color.defaultvalue
+            instance.background_color = (
+                value.background_color or ItemWidget.background_color.defaultvalue
+            )
+            instance.icon = value.icon or ''
         else:
             instance.is_set = False
 
