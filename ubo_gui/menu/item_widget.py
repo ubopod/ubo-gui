@@ -37,26 +37,22 @@ class ItemWidget(BoxLayout):
         Name of a Material Symbols icon.
     """
 
-    is_set = BooleanProperty(False)
+    is_set = BooleanProperty(defaultvalue=False)
     label = StringProperty()
     color = ColorProperty((1, 1, 1, 1))
     background_color = ColorProperty(PRIMARY_COLOR)
     icon = StringProperty()
-    is_short = BooleanProperty(False)
+    is_short = BooleanProperty(defaultvalue=False)
     item = ObjectProperty()
 
     def on_item(self: ItemWidget, instance: ItemWidget, value: Item | None) -> None:
         if value is not None:
             instance.is_set = True
-            instance.label = value['label']
-            if 'is_short' in value:
-                instance.is_short = value['is_short']
-            if 'color' in value:
-                instance.color = value['color']
-            if 'background_color' in value:
-                instance.background_color = value['background_color']
-            if 'icon' in value:
-                instance.icon = value['icon']
+            instance.label = value.label
+            instance.is_short = value.is_short
+            instance.color = value.color
+            instance.background_color = value.background_color
+            instance.icon = value.icon
         else:
             instance.is_set = False
 

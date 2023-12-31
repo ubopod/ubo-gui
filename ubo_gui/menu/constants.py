@@ -1,7 +1,8 @@
 from kivy.app import Builder
 
+from ubo_gui.page import PAGE_MAX_ITEMS
 
-PAGE_SIZE = 3
+PAGE_SIZE = PAGE_MAX_ITEMS
 SHORT_WIDTH = 46
 
 Builder.load_string(

@@ -2,12 +2,12 @@
 
 GUI sdk for [Ubo Pod](https://github.com/ubopod)
 
-## ⚡️ Requirements
+## 📋 Requirements
 
 - [Ubo Pod](https://github.com/ubopod)
 - [headless-kivy-pi](https://github.com/ubopod/headless-kivy-pi)
 
-## 📦Installation
+## 📦 Installation
 
 You can install it using this handle: headless-kivy-pi@git+<https://github.com/ubopod/ubo-gui.git>
 
@@ -18,11 +18,11 @@ pip install headless-kivy-pi@git+https://github.com/ubopod/ubo-gui.git
 poetry add headless-kivy-pi@git+https://github.com/ubopod/ubo-gui.git
 ```
 
-## 🚀 Usage
+## 🛠 Usage
 
 Checkout [Ubo App](https://github.com/ubopod/ubo-app) to see a sample implementation.
 
-## ⚒️ Contribution
+## 🤝 Contributing
 
 You need to have [Poetry](https://python-poetry.org/) installed on your machine.
 
@@ -56,6 +56,7 @@ poetry run poe lint
 
 Make sure to run `poetry run poe download_font` to download Material Symbols font.
 
-## 📜 License
+## 🔒 License
 
-This project is released under the Apache-2.0 License.
+This project is released under the Apache-2.0 License. See the [LICENSE](./LICENSE)
+file for more details.
