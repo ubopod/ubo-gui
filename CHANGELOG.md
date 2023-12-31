@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.7.4
+
+- fix: avoid unnecessary property caching causing temporary inaccurate state for
+  `MenuWidget`
+
 ## Version 0.7.2
 
 - feat: different transitions for different actions of `MenuWidget`
