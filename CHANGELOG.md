@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.7.6
+
+- fix: let `title` in `PageWidget` accept `None`
+
 ## Version 0.7.5
 
 - fix: allow `None` value for `title` property of `PageWidget`
