@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.7.7
+
+- fix: dispatch `on_close` when a `PageWidget` is left (`on_leave` is dispatched)
+- style: improve layout of `HeadedMenu`
+
 ## Version 0.7.6
 
 - fix: let `title` in `PageWidget` accept `None`
