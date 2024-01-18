@@ -12,15 +12,14 @@
       height: dp(14)
 
     Label:
-      padding: dp(50), 0, dp(50), 0
       text: root.heading
       text_size: self.size
       halign: 'center'
-      valign: 'top'
+      valign: 'middle'
       font_size: dp(20)
       color: 1, 1, 1
-      size_hint: 1, None
-      height: dp(50)
+      size_hint: 1, 0
+      height: dp(60)
       max_lines: 2
       strip: True
       shorten_from: 'right'
@@ -28,13 +27,13 @@
     Label:
       text: root.sub_heading
       text_size: self.size
-      font_size: dp(12)
+      font_size: dp(16)
       halign: 'center'
       valign: 'middle'
-      height: dp(30)
-      color: .5, .5, .5
-      size_hint: 1, None
-      shorten: True
+      height: dp(50)
+      color: .8, .8, .8
+      size_hint: 1, 0
+      max_lines: 2
       shorten_from: 'right'
       
     Widget:

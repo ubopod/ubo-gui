@@ -1,15 +1,17 @@
 """Class definition of main datatypes use in menus."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, Sequence, Union
+from typing import TYPE_CHECKING, Callable, Sequence
 
-from typing_extensions import NotRequired, TypedDict, TypeGuard
+from immutable import Immutable
+
+from ubo_gui.constants import PRIMARY_COLOR
 
 if TYPE_CHECKING:
     from page import PageWidget
 
 
-class BaseMenu(TypedDict):
+class BaseMenu(Immutable):
     """A class used to represent a menu.
 
     Attributes
@@ -25,6 +27,7 @@ class BaseMenu(TypedDict):
 
     title: str | Callable[[], str]
     items: Sequence[Item] | Callable[[], Sequence[Item]]
+    _id: str | None = None
 
 
 class HeadedMenu(BaseMenu):
@@ -44,21 +47,11 @@ class HeadedMenu(BaseMenu):
     sub_heading: str
 
 
-def is_headed_menu(menu: Menu) -> TypeGuard[ActionItem]:
-    """Check whether the menu is a `HeadedMenu` or not."""
-    return 'heading' in menu and 'sub_heading' in menu
-
-
 class HeadlessMenu(BaseMenu):
     """A class used to represent a headless menu."""
 
 
-def is_headless_menu(menu: Menu) -> TypeGuard[ActionItem]:
-    """Check whether the menu is a `HeadedMenu` or not."""
-    return 'heading' not in menu and 'sub_heading' not in menu
-
-
-Menu = Union[HeadedMenu, HeadlessMenu]
+Menu = HeadedMenu | HeadlessMenu
 
 
 def menu_items(menu: Menu | None) -> Sequence[Item]:
@@ -68,7 +61,7 @@ def menu_items(menu: Menu | None) -> Sequence[Item]:
     """
     if not menu:
         return []
-    return menu['items']() if callable(menu['items']) else menu['items']
+    return menu.items() if callable(menu.items) else menu.items
 
 
 def menu_title(menu: Menu) -> str:
@@ -76,10 +69,10 @@ def menu_title(menu: Menu) -> str:
 
     in case it's a function, the return value of the function is called.
     """
-    return menu['title']() if callable(menu['title']) else menu['title']
+    return menu.title() if callable(menu.title) else menu.title
 
 
-class BaseItem(TypedDict):
+class BaseItem(Immutable):
     """A class used to represent a menu item.
 
     Attributes
@@ -111,10 +104,10 @@ class BaseItem(TypedDict):
     """
 
     label: str
-    color: NotRequired[str | tuple[float, float, float, float]]
-    background_color: NotRequired[str | tuple[float, float, float, float]]
-    icon: NotRequired[str]
-    is_short: NotRequired[bool]
+    color: str | tuple[float, float, float, float] = (1, 1, 1, 1)
+    background_color: str | tuple[float, float, float, float] = PRIMARY_COLOR
+    icon: str | None = None
+    is_short: bool = False
 
 
 class ActionItem(BaseItem):
@@ -129,11 +122,6 @@ class ActionItem(BaseItem):
     action: Callable[[], Menu | type[PageWidget] | None]
 
 
-def is_action_item(item: Item) -> TypeGuard[ActionItem]:
-    """Check whether the item is an `ActionItem` or not."""
-    return 'action' in item
-
-
 class ApplicationItem(BaseItem):
     """A class used to represent an application menu item.
 
@@ -144,11 +132,6 @@ class ApplicationItem(BaseItem):
     """
 
     application: type[PageWidget]
-
-
-def is_application_item(item: Item) -> TypeGuard[ApplicationItem]:
-    """Check whether the item is an `ApplicationItem` or not."""
-    return 'application' in item
 
 
 class SubMenuItem(BaseItem):
@@ -164,9 +147,4 @@ class SubMenuItem(BaseItem):
     sub_menu: Menu
 
 
-def is_sub_menu_item(item: Item) -> TypeGuard[SubMenuItem]:
-    """Check whether the item is an `SubMenuItem` or not."""
-    return 'sub_menu' in item
-
-
-Item = Union[ActionItem, SubMenuItem, ApplicationItem]
+Item = ActionItem | SubMenuItem | ApplicationItem

@@ -63,7 +63,7 @@ class UboApp(App):
 
     @cached_property
     def header(self: UboApp) -> Widget | None:
-        header_label = Label(text=self.root.title)
+        header_label = Label(text=self.root.title or '')
 
         def title_callback(_: RootWidget, title: str) -> None:
             header_layout: BoxLayout = self.root.ids.header_layout

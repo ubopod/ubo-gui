@@ -27,32 +27,33 @@
 
         Label:
           padding: dp(20), 0, dp(20), 0
-          text: root.heading
-          text_size: self.size
           halign: 'center'
-          valign: 'bottom'
+          valign: 'middle'
           color: root.color
           size_hint: 1, None
           height: dp(60)
           font_size: dp(52)
-          text: root.notification.icon
+          text: root.icon
           font_name: 'material_symbols'
 
         Label:
-          font_size: dp(20)
-          text: root.notification.title
-          size_hint: 1, None
+          font_size: dp(22)
+          text: root.notification_title
+          size_hint: None, None
+          width: container.width
+          text_size: self.width, None
+          height: self.texture_size[1] + dp(16)
           halign: 'center'
-          shorten: False
+          valign: 'middle'
           strip: True
 
         Widget:
           size_hint: 1, None
-          height: dp(12)
+          height: dp(4)
 
         Label:
           font_size: dp(16)
-          text: root.notification.content
+          text: root.content
           text_size: self.size[0], None
           height: self.texture_size[1]
           size_hint: 1, None
@@ -63,16 +64,21 @@
         Widget:
           size_hint: 1, 1
 
-    AnimatedSlider:
-      id: slider
-      min: 0
-      max: max(scrollable_widget.height - container.height, 0)
-      animated_value: self.max
+    BoxLayout:
+      size_hint: None, 1
       orientation: 'vertical'
-      size_hint: (None, 1) if scrollable_widget.height - container.height > 0 else (None, None)
       width: dp(UBO_GUI_SHORT_WIDTH)
-      height: 0
-      opacity: 1 if scrollable_widget.height - container.height > 0 else 0
-      disabled: scrollable_widget.height - container.height <= 0
+      padding: 0, dp(16), 0, dp(16)
 
-      on_value: scrollable_widget.y = container.y - slider.value
+      AnimatedSlider:
+        id: slider
+        min: 0
+        max: max(scrollable_widget.height - container.height, 0)
+        animated_value: self.max
+        orientation: 'vertical'
+        size_hint: (1, 1) if scrollable_widget.height - container.height > 0 else (None, None)
+        height: root.height
+        opacity: 1 if scrollable_widget.height - container.height > 0 else 0
+        disabled: scrollable_widget.height - container.height <= 0
+
+        on_value: scrollable_widget.y = container.y - slider.value
