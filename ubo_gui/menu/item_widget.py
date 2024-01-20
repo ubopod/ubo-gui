@@ -14,8 +14,11 @@ from kivy.uix.label import (
 )
 
 from ubo_gui.constants import PRIMARY_COLOR
+from ubo_gui.menu.types import process_value
 
 if TYPE_CHECKING:
+    from kivy.graphics import Color
+
     from . import Item
 
 
@@ -37,24 +40,27 @@ class ItemWidget(BoxLayout):
         Name of a Material Symbols icon.
     """
 
-    is_set = BooleanProperty(defaultvalue=False)
-    label = StringProperty()
-    color = ColorProperty((1, 1, 1, 1))
-    background_color = ColorProperty(PRIMARY_COLOR)
-    icon = StringProperty(defaultvalue='')
-    is_short = BooleanProperty(defaultvalue=False)
-    item = ObjectProperty()
+    is_set: bool = BooleanProperty(defaultvalue=False)
+    label: str = StringProperty()
+    color: Color = ColorProperty((1, 1, 1, 1))
+    background_color: Color = ColorProperty(PRIMARY_COLOR)
+    icon: str = StringProperty(defaultvalue='')
+    is_short: bool = BooleanProperty(defaultvalue=False)
+    item: Item = ObjectProperty()
 
     def on_item(self: ItemWidget, instance: ItemWidget, value: Item | None) -> None:
+        """Update the widget properties when the item changes."""
         if value is not None:
             instance.is_set = True
-            instance.label = value.label or ''
-            instance.is_short = False if value.is_short is None else value.is_short
-            instance.color = value.color or ItemWidget.color.defaultvalue
+            instance.label = process_value(value.label) or ''
+            is_short = process_value(value.is_short)
+            instance.is_short = False if is_short is None else is_short
+            instance.color = process_value(value.color) or ItemWidget.color.defaultvalue
             instance.background_color = (
-                value.background_color or ItemWidget.background_color.defaultvalue
+                process_value(value.background_color)
+                or ItemWidget.background_color.defaultvalue
             )
-            instance.icon = value.icon or ''
+            instance.icon = process_value(value.icon) or ''
         else:
             instance.is_set = False
 
