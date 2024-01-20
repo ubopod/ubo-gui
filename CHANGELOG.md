@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.7.9
+
+- fix: don't call `application` if it's a subclass of `PageWidget`
+
 ## Version 0.7.8
 
 - feat: make all fields of `Menu` and `Item` and their sub classes accept callables
