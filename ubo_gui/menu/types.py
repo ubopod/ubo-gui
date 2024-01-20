@@ -1,9 +1,10 @@
 """Class definition of main datatypes use in menus."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, Sequence
+from typing import TYPE_CHECKING, Callable, Sequence, TypeAlias, TypeVar, cast, overload
 
 from immutable import Immutable
+from kivy.graphics import Color
 
 from ubo_gui.constants import PRIMARY_COLOR
 
@@ -37,21 +38,22 @@ class HeadedMenu(BaseMenu):
     ----------
     heading: `str`
         Rendered in the first page of the menu, stating the purpose of the menu and its
-    items.
+    items. Optionally it can be a callable returning the heading.
 
     sub_heading: `str`
         Rendered beneath the heading in the first page of the menu with a smaller font.
+    Optionally it can be a callable returning the sub heading.
     """
 
-    heading: str
-    sub_heading: str
+    heading: str | Callable[[], str]
+    sub_heading: str | Callable[[], str]
 
 
 class HeadlessMenu(BaseMenu):
     """A class used to represent a headless menu."""
 
 
-Menu = HeadedMenu | HeadlessMenu
+Menu: TypeAlias = HeadedMenu | HeadlessMenu
 
 
 def menu_items(menu: Menu | None) -> Sequence[Item]:
@@ -64,12 +66,27 @@ def menu_items(menu: Menu | None) -> Sequence[Item]:
     return menu.items() if callable(menu.items) else menu.items
 
 
-def menu_title(menu: Menu) -> str:
-    """Return items of the menu.
+T = TypeVar('T', bound=str | bool | Color)
+
+
+@overload
+def process_value(value: T | Callable[[], T], /) -> T:
+    ...
+
+
+@overload
+def process_value(value: T | None | Callable[[], T | None], /) -> T | None:  # pyright: ignore[reportOverlappingOverload]
+    ...
+
+
+def process_value(value: T | Callable[[], T]) -> T:
+    """Return the attribute of the menu or item.
 
     in case it's a function, the return value of the function is called.
     """
-    return menu.title() if callable(menu.title) else menu.title
+    if callable(value):
+        return value()
+    return cast(T, value)
 
 
 class BaseItem(Immutable):
@@ -78,7 +95,7 @@ class BaseItem(Immutable):
     Attributes
     ----------
     label: `str`
-        The label of the item.
+        The label of the item. Optionally it can be a callable returning the label.
 
     color: `str` or `tuple` of `float`
         The color by its name or in rgba format as a list of floats, the list should
@@ -86,6 +103,7 @@ class BaseItem(Immutable):
     [0..1].
         For example (0.5, 0, 0.5, 0.8) represents a semi transparent purple, or the
     string 'yellow' represents color yellow.
+        Optionally it can be a callable returning the color.
 
     background_color: `str` or `tuple` of `float`
         The background color by color name or in rgba format as a list of floats, the
@@ -93,21 +111,24 @@ class BaseItem(Immutable):
     the range [0..1].
         For example (0.5, 0, 0.5, 0.8) represents a semi transparent purple, or the
     string 'yellow' represents color yellow.
+        Optionally it can be a callable returning the background color.
 
     icon: `str`
         Name of a Material Symbols icon, check here for the complete list:
     https://fonts.google.com/icons
+        Optionally it can be a callable returning the icon.
 
     is_short: `bool`
         Whether the item should be rendered in short form or not. In short form only the
     icon of the item is rendered and its label is hidden.
+        Optionally it can be a callable returning the is_short value.
     """
 
-    label: str
-    color: str | tuple[float, float, float, float] = (1, 1, 1, 1)
-    background_color: str | tuple[float, float, float, float] = PRIMARY_COLOR
-    icon: str | None = None
-    is_short: bool = False
+    label: str | Callable[[], str] = ''
+    color: Color | Callable[[], Color] = (1, 1, 1, 1)
+    background_color: Color | Callable[[], Color] = PRIMARY_COLOR
+    icon: str | None | Callable[[], str | None] = None
+    is_short: bool | Callable[[], bool] = False
 
 
 class ActionItem(BaseItem):
@@ -128,10 +149,11 @@ class ApplicationItem(BaseItem):
     Attributes
     ----------
     application: `PageWidget`
-        If provided, activating this item will show this widget
+        If provided, activating this item will show this widget. Optionally it can be a
+    callable returning the widget.
     """
 
-    application: type[PageWidget]
+    application: type[PageWidget] | Callable[[], type[PageWidget]]
 
 
 class SubMenuItem(BaseItem):
@@ -141,10 +163,10 @@ class SubMenuItem(BaseItem):
     ----------
     sub_menu: `Menu`
         If provided, activating this item will open another menu, the description
-        described in this field.
+        described in this field. Optionally it can be a callable returning the menu.
     """
 
-    sub_menu: Menu
+    sub_menu: Menu | Callable[[], Menu]
 
 
 Item = ActionItem | SubMenuItem | ApplicationItem

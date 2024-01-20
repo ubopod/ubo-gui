@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.7.8
+
+- feat: make all fields of `Menu` and `Item` and their sub classes accept callables
+
 ## Version 0.7.7
 
 - fix: dispatch `on_close` when a `PageWidget` is left (`on_leave` is dispatched)

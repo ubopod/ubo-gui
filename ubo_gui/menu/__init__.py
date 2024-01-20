@@ -39,7 +39,7 @@ from .types import (
     Item,
     SubMenuItem,
     menu_items,
-    menu_title,
+    process_value,
 )
 
 if TYPE_CHECKING:
@@ -129,7 +129,7 @@ class MenuWidget(BoxLayout):
         if self.current_application:
             return getattr(self.current_application, 'title', None)
         if self.current_menu:
-            return menu_title(self.current_menu)
+            return process_value(self.current_menu.title)
         return None
 
     def go_down(self: MenuWidget) -> None:
@@ -202,11 +202,13 @@ class MenuWidget(BoxLayout):
                     direction='left',
                 )
         elif isinstance(item, ApplicationItem):
-            application_instance = item.application(name=uuid.uuid4().hex)
+            application = process_value(item.application)
+            application_instance = application(name=uuid.uuid4().hex)
             self.open_application(application_instance)
         elif isinstance(item, SubMenuItem):
             self.push_menu()
-            self.current_menu = item.sub_menu
+            sub_menu = process_value(item.sub_menu)
+            self.current_menu = sub_menu
             if self.current_screen:
                 self.screen_manager.switch_to(
                     self.current_screen,
@@ -232,8 +234,8 @@ class MenuWidget(BoxLayout):
         if self.page_index == 0 and isinstance(self.current_menu, HeadedMenu):
             return HeaderMenuPageWidget(
                 self.current_menu_items[:1],
-                self.current_menu.heading,
-                self.current_menu.sub_heading,
+                process_value(self.current_menu.heading),
+                process_value(self.current_menu.sub_heading),
                 name=f'Page {self.get_depth()} 0',
             )
 
