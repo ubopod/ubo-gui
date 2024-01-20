@@ -202,7 +202,13 @@ class MenuWidget(BoxLayout):
                     direction='left',
                 )
         elif isinstance(item, ApplicationItem):
-            application = process_value(item.application)
+            if not isinstance(item.application, type) or not issubclass(
+                item.application,
+                PageWidget,
+            ):
+                application = process_value(item.application)
+            else:
+                application = item.application
             application_instance = application(name=uuid.uuid4().hex)
             self.open_application(application_instance)
         elif isinstance(item, SubMenuItem):
