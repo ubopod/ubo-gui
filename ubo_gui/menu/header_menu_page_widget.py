@@ -1,3 +1,4 @@
+"""Module for the `HeaderMenuPageWidget` class."""
 from __future__ import annotations
 
 import pathlib
@@ -15,7 +16,7 @@ if TYPE_CHECKING:
 
 
 class HeaderMenuPageWidget(PageWidget):
-    """renders a header page of a `Menu`."""
+    """Renders a header page of a `Menu`."""
 
     heading = StringProperty()
     sub_heading = StringProperty()
@@ -23,15 +24,15 @@ class HeaderMenuPageWidget(PageWidget):
     def __init__(
         self: HeaderMenuPageWidget,
         items: Sequence[Item],
-        heading: str,
-        sub_heading: str,
+        heading: str = '',
+        sub_heading: str = '',
         **kwargs: Any,  # noqa: ANN401
     ) -> None:
         """Initialize a `HeaderMenuPageWidget`.
 
         Parameters
         ----------
-        item: `Item`
+        items: `Sequence`[[`Item`]]
             The item to be shown in this page
 
         heading: `str`
@@ -52,6 +53,7 @@ class HeaderMenuPageWidget(PageWidget):
         self.sub_heading = sub_heading
 
     def get_item(self: HeaderMenuPageWidget, index: int) -> Item | None:
+        """Get the item at the given index."""
         if index != PAGE_SIZE - 1:
             warnings.warn(
                 f'index must be {PAGE_SIZE - 1}',
