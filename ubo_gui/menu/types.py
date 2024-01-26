@@ -1,15 +1,28 @@
 """Class definition of main datatypes use in menus."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, Sequence, TypeAlias, TypeVar, cast, overload
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Generic,
+    Protocol,
+    Sequence,
+    TypeAlias,
+    TypeGuard,
+    cast,
+    overload,
+)
 
 from immutable import Immutable
-from kivy.graphics import Color
+from typing_extensions import TypeVar
 
 from ubo_gui.constants import PRIMARY_COLOR
 
 if TYPE_CHECKING:
-    from page import PageWidget
+    from kivy.graphics import Color
+
+    from ubo_gui.page import PageWidget
 
 
 class BaseMenu(Immutable):
@@ -66,30 +79,7 @@ def menu_items(menu: Menu | None) -> Sequence[Item]:
     return menu.items() if callable(menu.items) else menu.items
 
 
-T = TypeVar('T', bound=str | bool | Color)
-
-
-@overload
-def process_value(value: T | Callable[[], T], /) -> T:
-    ...
-
-
-@overload
-def process_value(value: T | None | Callable[[], T | None], /) -> T | None:  # pyright: ignore[reportOverlappingOverload]
-    ...
-
-
-def process_value(value: T | Callable[[], T]) -> T:
-    """Return the attribute of the menu or item.
-
-    in case it's a function, the return value of the function is called.
-    """
-    if callable(value):
-        return value()
-    return cast(T, value)
-
-
-class BaseItem(Immutable):
+class Item(Immutable):
     """A class used to represent a menu item.
 
     Attributes
@@ -131,7 +121,7 @@ class BaseItem(Immutable):
     is_short: bool | Callable[[], bool] = False
 
 
-class ActionItem(BaseItem):
+class ActionItem(Item):
     """A class used to represent an action menu item.
 
     Attributes
@@ -143,7 +133,7 @@ class ActionItem(BaseItem):
     action: Callable[[], Menu | type[PageWidget] | None]
 
 
-class ApplicationItem(BaseItem):
+class ApplicationItem(Item):
     """A class used to represent an application menu item.
 
     Attributes
@@ -156,7 +146,7 @@ class ApplicationItem(BaseItem):
     application: type[PageWidget] | Callable[[], type[PageWidget]]
 
 
-class SubMenuItem(BaseItem):
+class SubMenuItem(Item):
     """A class used to represent a sub-menu menu item.
 
     Attributes
@@ -169,4 +159,54 @@ class SubMenuItem(BaseItem):
     sub_menu: Menu | Callable[[], Menu]
 
 
-Item = ActionItem | SubMenuItem | ApplicationItem
+T = TypeVar('T', infer_variance=True)
+
+
+class Subscribable(Protocol, Generic[T]):
+    """A callable that can be subscribed to."""
+
+    def subscribe(
+        self: Subscribable,
+        callback: Callable[[T], Any],
+    ) -> Callable[[], None]:
+        """Subscribe to the changes."""
+        ...
+
+
+def is_subscribeable(value: object) -> TypeGuard[Subscribable]:
+    """Check if the value is subscribable."""
+    return callable(value) and hasattr(value, 'subscribe')
+
+
+@overload
+def process_subscribable_value(
+    value: T | Callable[[], T],
+    callback: Callable[[T], None],
+) -> Callable[[], None]:
+    ...
+
+
+@overload
+def process_subscribable_value(  # pyright: ignore[reportOverlappingOverload]
+    value: T | None | Callable[[], T | None],
+    callback: Callable[[T | None], None],
+) -> Callable[[], None]:
+    ...
+
+
+def process_subscribable_value(
+    value: T | Callable[[], T],
+    callback: Callable[[T], None],
+) -> Callable[[], None]:
+    """Return the attribute of the menu or item.
+
+    in case it's a function, the return value of the function is called.
+    """
+    if is_subscribeable(value):
+        return value.subscribe(callback)
+    processed_value = cast(
+        T,
+        value() if callable(value) and not isinstance(value, type) else value,
+    )
+    callback(processed_value)
+    return lambda: None

@@ -1,6 +1,12 @@
 #:kivy 2.2.1
 
 <HeaderMenuPageWidget>:
+  canvas:
+    Color:
+      rgba: 1, 0, 0, .2
+    Rectangle:
+      pos: self.pos
+      size: self.size
   BoxLayout:
     id: layout
     pos: self.pos
