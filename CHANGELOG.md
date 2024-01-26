@@ -1,5 +1,23 @@
 # Changelog
 
+## Version 0.8.0
+
+- feat: add a mechanism to sync properties with subscribable values (defined in python-redux).
+  applied for these properties:
+  - `MenuWidget`:
+    1. `application`
+    1. `sub_menu`
+    1. `heading` of headed menu
+    1. `sub_heading` of headed menu
+    1. `items` of menu
+    1. `title` of menu
+  - `ItemWidget`:
+    1. `label`
+    1. `is_short`
+    1. `color`
+    1. `background_color`
+    1. `icon`
+
 ## Version 0.7.9
 
 - fix: don't call `application` if it's a subclass of `PageWidget`
