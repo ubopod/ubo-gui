@@ -38,8 +38,7 @@ from .types import (
     HeadedMenu,
     Item,
     SubMenuItem,
-    menu_items,
-    menu_title,
+    process_subscribable_value,
 )
 
 if TYPE_CHECKING:
@@ -51,12 +50,14 @@ if TYPE_CHECKING:
 class MenuWidget(BoxLayout):
     """Paginated menu."""
 
+    _subscriptions: list[Callable[[], None]]
+
+    _title: str | None = None
     _current_menu: Menu | None = None
     _current_menu_items: Sequence[Item]
     _current_application: PageWidget | None = None
     screen_manager: ScreenManager
     slider: AnimatedSlider
-    cancel_items_subscription: Callable[[], None] | None = None
 
     def _handle_transition_progress(
         self: MenuWidget,
@@ -98,10 +99,15 @@ class MenuWidget(BoxLayout):
         self._setup_transition(transition)
         return transition
 
-    def __init__(self: MenuWidget, **kwargs: Any) -> None:  # noqa: ANN401
+    def __init__(self: MenuWidget, **kwargs: dict[str, Any]) -> None:
         """Initialize a `MenuWidget`."""
-        self._current_menu_items = []
         super().__init__(**kwargs)
+        self._subscriptions = []
+        self._current_menu_items = []
+
+    def __del__(self: MenuWidget) -> None:
+        """Unsubscribe from the item."""
+        self.clear_subscriptions()
 
     def set_root_menu(self: MenuWidget, root_menu: Menu) -> None:
         """Set the root menu."""
@@ -124,12 +130,17 @@ class MenuWidget(BoxLayout):
             return math.ceil((len(self.current_menu_items) + 2) / 3)
         return math.ceil(len(self.current_menu_items) / 3)
 
+    def set_title(self: MenuWidget, title: str) -> bool:
+        """Set the title of the currently active menu."""
+        self._title = title
+        return True
+
     def get_title(self: MenuWidget) -> str | None:
         """Return the title of the currently active menu."""
         if self.current_application:
             return getattr(self.current_application, 'title', None)
         if self.current_menu:
-            return menu_title(self.current_menu)
+            return self._title
         return None
 
     def go_down(self: MenuWidget) -> None:
@@ -182,15 +193,12 @@ class MenuWidget(BoxLayout):
             return
         current_page = cast(PageWidget, self.screen_manager.current_screen)
         item = current_page.get_item(index)
-        if not item:
-            warnings.warn('Selected `item` is `None`', RuntimeWarning, stacklevel=1)
-            return
 
         if isinstance(item, ActionItem):
             item = item.action()
             if not item:
                 return
-            if isinstance(item, type):
+            if isinstance(item, type) and issubclass(item, PageWidget):
                 application_instance = item(name=uuid.uuid4().hex)
                 self.open_application(application_instance)
             else:
@@ -201,18 +209,37 @@ class MenuWidget(BoxLayout):
                     transition=self._slide_transition,
                     direction='left',
                 )
-        elif isinstance(item, ApplicationItem):
-            application_instance = item.application(name=uuid.uuid4().hex)
-            self.open_application(application_instance)
-        elif isinstance(item, SubMenuItem):
+        if isinstance(item, ApplicationItem):
+
+            def handle_application_change(application: type[PageWidget]) -> None:
+                application_instance = application(name=uuid.uuid4().hex)
+                self.open_application(application_instance)
+
+            self._subscriptions.append(
+                process_subscribable_value(item.application, handle_application_change),
+            )
+
+        if isinstance(item, SubMenuItem):
             self.push_menu()
-            self.current_menu = item.sub_menu
-            if self.current_screen:
-                self.screen_manager.switch_to(
-                    self.current_screen,
-                    transition=self._slide_transition,
-                    direction='left',
-                )
+
+            is_first_transition = True
+
+            def handle_sub_menu_change(sub_menu: Menu) -> None:
+                nonlocal is_first_transition
+                self.current_menu = sub_menu
+                if self.current_screen:
+                    self.screen_manager.switch_to(
+                        self.current_screen,
+                        transition=self._slide_transition
+                        if is_first_transition
+                        else self._no_transition,
+                        direction='left',
+                    )
+                is_first_transition = False
+
+            self._subscriptions.append(
+                process_subscribable_value(item.sub_menu, handle_sub_menu_change),
+            )
 
     def go_back(self: MenuWidget) -> None:
         """Go back to the previous menu."""
@@ -230,12 +257,27 @@ class MenuWidget(BoxLayout):
             return None
 
         if self.page_index == 0 and isinstance(self.current_menu, HeadedMenu):
-            return HeaderMenuPageWidget(
+            header_menu_page_widget = HeaderMenuPageWidget(
                 self.current_menu_items[:1],
-                self.current_menu.heading,
-                self.current_menu.sub_heading,
                 name=f'Page {self.get_depth()} 0',
             )
+            self._subscriptions.append(
+                process_subscribable_value(
+                    self.current_menu.heading,
+                    lambda value: setattr(header_menu_page_widget, 'heading', value),
+                ),
+            )
+            self._subscriptions.append(
+                process_subscribable_value(
+                    self.current_menu.sub_heading,
+                    lambda value: setattr(
+                        header_menu_page_widget,
+                        'sub_heading',
+                        value,
+                    ),
+                ),
+            )
+            return header_menu_page_widget
 
         offset = -(PAGE_SIZE - 1) if isinstance(self.current_menu, HeadedMenu) else 0
         return NormalMenuPageWidget(
@@ -320,6 +362,7 @@ class MenuWidget(BoxLayout):
         self._current_application = application
         if application:
             self.current_menu = None
+            self.clear_subscriptions()
 
         return True
 
@@ -338,30 +381,45 @@ class MenuWidget(BoxLayout):
 
     def set_current_menu(self: MenuWidget, menu: Menu | None) -> bool:
         """Set the current menu."""
-        self._current_menu_items = menu_items(menu)
-        if self.cancel_items_subscription:
-            self.cancel_items_subscription()
-            self.cancel_items_subscription = None
-        if menu and hasattr(menu.items, 'subscribe'):
-
-            def refresh_items(items: Sequence[Item]) -> None:
-                self.current_menu_items = items
-                self.screen_manager.switch_to(
-                    self.current_screen,
-                    transition=self._no_transition,
-                )
-
-            self.cancel_items_subscription = cast(Any, menu.items).subscribe(
-                refresh_items,
-            )
-
         self._current_menu = menu
 
         if not menu:
+            self._current_menu_items = []
             self.page_index = 0
             return True
 
         self.current_application = None
+        self.clear_subscriptions()
+
+        is_first_transition = True
+
+        def refresh_items(items: Sequence[Item]) -> None:
+            nonlocal is_first_transition
+            self.current_menu_items = items
+            if not is_first_transition:
+                self.screen_manager.switch_to(
+                    self.current_screen,
+                    transition=self._no_transition,
+                )
+            is_first_transition = False
+
+        self._subscriptions.append(
+            process_subscribable_value(
+                menu.items,
+                refresh_items,
+            ),
+        )
+
+        def handle_title_change(title: str) -> None:
+            if self._title != title:
+                self.title = title
+
+        self._subscriptions.append(
+            process_subscribable_value(
+                menu.title,
+                handle_title_change,
+            ),
+        )
 
         pages = self.get_pages()
         if self.page_index >= pages:
@@ -375,10 +433,17 @@ class MenuWidget(BoxLayout):
         self.screen_manager = cast(ScreenManager, self.ids.screen_manager)
         self.slider = self.ids.slider
 
+    def clear_subscriptions(self: MenuWidget) -> None:
+        """Clear the subscriptions."""
+        for subscription in self._subscriptions:
+            subscription()
+        self._subscriptions.clear()
+
     page_index = NumericProperty(0)
     stack: list[tuple[Menu, int] | PageWidget] = ListProperty()
     title = AliasProperty(
         getter=get_title,
+        setter=set_title,
         bind=['current_menu', 'current_application'],
         cache=True,
     )
