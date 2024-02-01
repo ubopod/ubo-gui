@@ -7,12 +7,11 @@ from typing import TYPE_CHECKING, Any, Sequence
 
 from kivy.app import Builder, StringProperty
 
+from ubo_gui.menu.constants import PAGE_SIZE
 from ubo_gui.page import PageWidget
 
-from .constants import PAGE_SIZE
-
 if TYPE_CHECKING:
-    from .types import Item
+    from ubo_gui.menu.types import Item
 
 
 class HeaderMenuPageWidget(PageWidget):
@@ -44,6 +43,7 @@ class HeaderMenuPageWidget(PageWidget):
         kwargs: Any
             Stuff that will get directly passed to the `__init__` method of Kivy's
         `Screen`.
+
         """
         if len(items) > 1:
             msg = '`HeaderMenuPageWidget` is initialized with more than one item'
@@ -61,7 +61,10 @@ class HeaderMenuPageWidget(PageWidget):
                 stacklevel=1,
             )
             return None
-        return self.items[index - PAGE_SIZE + 1]
+        try:
+            return self.items[index - PAGE_SIZE + 1]
+        except IndexError:
+            return None
 
 
 Builder.load_file(

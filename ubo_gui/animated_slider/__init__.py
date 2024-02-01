@@ -50,7 +50,7 @@ class AnimatedSlider(Slider):
 
     def on_animated_value(
         self: AnimatedSlider,
-        _instance: AnimatedSlider,
+        _: AnimatedSlider,
         new_value: float,
     ) -> None:
         """Handle the `animated_value` property being set to a new value.
@@ -60,5 +60,6 @@ class AnimatedSlider(Slider):
         Arguments:
         ---------
             new_value: The new value that the `animated_value` property is being set to.
+
         """
         Animation(value=new_value, duration=0.2).start(self)
