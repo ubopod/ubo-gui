@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.9.1
+
+- hotfix: remove debug background rectangle
+
 ## Version 0.9.0
 
 - refactor: remove `current_application` and `current_menu` from `MenuWidget`, just
