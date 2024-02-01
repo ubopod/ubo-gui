@@ -19,7 +19,7 @@ from ubo_gui.menu.types import process_subscribable_value
 if TYPE_CHECKING:
     from kivy.graphics import Color
 
-    from . import Item
+    from ubo_gui.menu.types import Item
 
 
 class ItemWidget(BoxLayout):
@@ -38,6 +38,7 @@ class ItemWidget(BoxLayout):
 
     icon: `str`
         Name of a Material Symbols icon.
+
     """
 
     _subscriptions: list[Callable[[], None]]

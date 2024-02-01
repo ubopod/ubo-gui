@@ -37,6 +37,7 @@ class BaseMenu(Immutable):
     items: `list` of `Item`
         List of the items of the menu. Optionally it can be a callable returning the
     list of items
+
     """
 
     title: str | Callable[[], str]
@@ -56,6 +57,7 @@ class HeadedMenu(BaseMenu):
     sub_heading: `str`
         Rendered beneath the heading in the first page of the menu with a smaller font.
     Optionally it can be a callable returning the sub heading.
+
     """
 
     heading: str | Callable[[], str]
@@ -112,6 +114,7 @@ class Item(Immutable):
         Whether the item should be rendered in short form or not. In short form only the
     icon of the item is rendered and its label is hidden.
         Optionally it can be a callable returning the is_short value.
+
     """
 
     label: str | Callable[[], str] = ''
@@ -128,9 +131,10 @@ class ActionItem(Item):
     ----------
     action: `Function`
         If provided, activating this item will call this function.
+
     """
 
-    action: Callable[[], Menu | type[PageWidget] | None]
+    action: Callable[[], Menu | Callable[[], Menu] | type[PageWidget] | None]
 
 
 class ApplicationItem(Item):
@@ -141,6 +145,7 @@ class ApplicationItem(Item):
     application: `PageWidget`
         If provided, activating this item will show this widget. Optionally it can be a
     callable returning the widget.
+
     """
 
     application: type[PageWidget] | Callable[[], type[PageWidget]]
@@ -154,6 +159,7 @@ class SubMenuItem(Item):
     sub_menu: `Menu`
         If provided, activating this item will open another menu, the description
         described in this field. Optionally it can be a callable returning the menu.
+
     """
 
     sub_menu: Menu | Callable[[], Menu]
