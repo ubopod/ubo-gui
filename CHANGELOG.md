@@ -1,5 +1,17 @@
 # Changelog
 
+## Version 0.9.1
+
+- hotfix: remove debug background rectangle
+
+## Version 0.9.0
+
+- refactor: remove `current_application` and `current_menu` from `MenuWidget`, just
+  keep them as a proxy for the top item of the `stack`
+- refactor: clean subscriptions in different levels of screen, widget and item
+- feat: allow action items to return subscribable menus
+- feat: add `logger` and log subscriptions
+
 ## Version 0.8.0
 
 - feat: add a mechanism to sync properties with subscribable values (defined in python-redux).
