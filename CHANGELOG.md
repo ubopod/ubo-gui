@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.9.2
+
+- fix: queue transitions instead of letting the last transition interrupt the active
+  one
+
 ## Version 0.9.1
 
 - hotfix: remove debug background rectangle
