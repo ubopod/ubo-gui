@@ -162,7 +162,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             return
         self.page_index = (self.page_index + 1) % self.pages
         self.render_items()
-        self.screen_manager.switch_to(
+        self._switch_to(
             self.current_screen,
             transition=self._slide_transition,
             direction='up',
@@ -181,7 +181,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             return
         self.page_index = (self.page_index - 1) % self.pages
         self.render_items()
-        self.screen_manager.switch_to(
+        self._switch_to(
             self.current_screen,
             transition=self._slide_transition,
             direction='down',
@@ -371,7 +371,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                     self.current_menu_items = items
                     self.render_items()
                     if last_items:
-                        self.screen_manager.switch_to(
+                        self._switch_to(
                             self.current_screen,
                             transition=self._no_transition,
                         )
@@ -459,7 +459,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                 parent=self.top.parent,
             )
         self.top.subscriptions = subscriptions
-        self.screen_manager.switch_to(
+        self._switch_to(
             self.current_screen,
             transition=self._no_transition,
         )
@@ -485,11 +485,12 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                 *self.stack,
                 StackApplicationItem(application=item, parent=parent),
             ]
-        self.screen_manager.switch_to(
+
+        self._switch_to(
             self.current_screen,
             transition=transition,
-            **({'duration': duration} if duration else {}),
-            **({'direction': direction} if direction else {}),
+            duration=duration,
+            direction=direction,
         )
 
     def pop(
@@ -516,11 +517,11 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         elif self.current_application:
             self.clean_application(self.current_application)
             transition_ = self._swap_transition
-        self.screen_manager.switch_to(
+        self._switch_to(
             self.current_screen,
             transition=transition or transition_,
-            **({'duration': duration} if duration else {}),
-            **({'direction': direction} if direction else {}),
+            duration=duration,
+            direction=direction,
         )
 
     def get_is_scrollbar_visible(self: MenuWidget) -> bool:
