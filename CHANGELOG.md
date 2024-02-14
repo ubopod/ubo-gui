@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.9.3
+
+- fix: close_application now actually closes the passed application
+
 ## Version 0.9.2
 
 - fix: queue transitions instead of letting the last transition interrupt the active
