@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.9.5
+
+- chore: use git-lfs to track material font
+
 ## Version 0.9.4
 
 - chore: GitHub workflow to publish pushes on `main` branch to PyPI
