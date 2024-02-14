@@ -428,9 +428,11 @@ class MenuWidget(BoxLayout, TransitionsMixin):
     def close_application(self: MenuWidget, application: PageWidget) -> None:
         """Close an application after its `on_close` event is fired."""
         self.clean_application(application)
-        if application in self.stack:
-            while application in self.stack:
-                self.go_back()
+        while any(
+            isinstance(item, StackApplicationItem) and item.application is application
+            for item in self.stack
+        ):
+            self.go_back()
 
     @property
     def top(self: MenuWidget) -> StackItem:
