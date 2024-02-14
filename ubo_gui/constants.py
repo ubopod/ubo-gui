@@ -1,5 +1,5 @@
-from kivy.app import Builder
-
+"""Module to store constants used in the application."""
+from kivy.lang.builder import Builder
 
 PRIMARY_COLOR = '#68B7FF'
 SECONDARY_COLOR = '#363F4B'

@@ -1,13 +1,12 @@
+"""Notification widget."""
 from __future__ import annotations
 
 import pathlib
 import warnings
-from typing import (
-    TYPE_CHECKING,
-    Callable,
-)
+from typing import TYPE_CHECKING, Callable
 
-from kivy.app import Builder
+from immutable import Immutable
+from kivy.lang.builder import Builder
 from kivy.metrics import dp
 from kivy.properties import ColorProperty, ObjectProperty, StringProperty
 
@@ -19,17 +18,11 @@ if TYPE_CHECKING:
     from ubo_gui.menu.types import Item
 
 
-class NotificationAction:
+class NotificationAction(Immutable):
+    """A notification action."""
+
     title: str
     callback: Callable
-
-    def __init__(self: NotificationAction, *, title: str, callback: Callable) -> None:
-        self.title = title
-        self.callback = callback
-
-    def __repr__(self: NotificationAction) -> str:
-        """Return a string representation of this object."""
-        return f'<NotificationAction(title={self.title}, callback={self.callback})>'
 
 
 class NotificationWidget(PageWidget):
@@ -48,6 +41,7 @@ class NotificationWidget(PageWidget):
         *args: object,
         **kwargs: object,
     ) -> None:
+        """Create a new `NotificationWidget` object."""
         super().__init__(
             *args,
             items=[
@@ -79,7 +73,6 @@ class NotificationWidget(PageWidget):
 
     def on_dismiss(self: PageWidget) -> None:
         """Signal when the notification is dismissed."""
-        ...
 
 
 Builder.load_file(

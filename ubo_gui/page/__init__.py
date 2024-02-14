@@ -57,6 +57,7 @@ class PageWidget(Screen):
         kwargs: object
             Stuff that will get directly passed to the `__init__` method of Kivy's
         `Screen`.
+
         """
         if items and len(items) > PAGE_MAX_ITEMS:
             msg = f"""`PageWidget` is initialized with more than `MAX_ITEMS`={

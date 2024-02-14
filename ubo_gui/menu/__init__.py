@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Callable, Self, Sequence, cast
 
 from headless_kivy_pi import HeadlessWidget
-from kivy.app import Builder
+from kivy.lang.builder import Builder
 from kivy.properties import AliasProperty, ListProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen, ScreenManager, TransitionBase
