@@ -1,3 +1,7 @@
+"""Implements the `PromptWidget` class.
+
+A widget that renders a prompt with two options.
+"""
 from __future__ import annotations
 
 import pathlib
@@ -5,7 +9,7 @@ import warnings
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from kivy.app import Builder
+from kivy.lang.builder import Builder
 from kivy.properties import (
     AliasProperty,
     BooleanProperty,
@@ -24,7 +28,7 @@ PROMPT_OPTIONS = 2
 
 
 class PromptWidgetMetaClass(type(ABC), type(PageWidget)):
-    ...
+    """Metaclass merging `ABC` and `PageWidget` for `PromptWidget` class."""
 
 
 class PromptWidget(PageWidget, ABC, metaclass=PromptWidgetMetaClass):
@@ -46,6 +50,7 @@ class PromptWidget(PageWidget, ABC, metaclass=PromptWidgetMetaClass):
     second_option_color = ColorProperty((1, 1, 1, 1))
 
     def get_first_item(self: PromptWidget) -> ActionItem | None:
+        """Return the first item of the prompt."""
         if self.first_option_label is None:
             return None
         return ActionItem(
@@ -58,6 +63,7 @@ class PromptWidget(PageWidget, ABC, metaclass=PromptWidgetMetaClass):
         )
 
     def get_second_item(self: PromptWidget) -> ActionItem | None:
+        """Return the second item of the prompt."""
         if self.second_option_label is None:
             return None
         return ActionItem(
@@ -114,13 +120,6 @@ class PromptWidget(PageWidget, ABC, metaclass=PromptWidgetMetaClass):
         if this prompt is rendered in a `MenuWidget`.
         """
         return
-
-    def __init__(
-        self: PromptWidget,
-        items: None = None,
-        **kwargs: object,
-    ) -> None:
-        super().__init__(items=items, **kwargs)
 
     def get_item(self: PromptWidget, index: int) -> Item | None:
         """Return the page item at the given index."""

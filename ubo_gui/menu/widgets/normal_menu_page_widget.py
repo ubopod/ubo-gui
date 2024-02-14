@@ -1,7 +1,7 @@
 """Module for the `NormalMenuPageWidget` class."""
 import pathlib
 
-from kivy.app import Builder
+from kivy.lang.builder import Builder
 
 from ubo_gui.page import PageWidget
 

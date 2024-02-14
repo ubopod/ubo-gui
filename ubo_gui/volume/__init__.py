@@ -1,8 +1,9 @@
+"""A widget that displays a volume bar."""
 from __future__ import annotations
 
 import pathlib
 
-from kivy.app import Builder
+from kivy.lang.builder import Builder
 from kivy.properties import ColorProperty, NumericProperty
 from kivy.uix.boxlayout import BoxLayout
 
@@ -17,5 +18,6 @@ class VolumeWidget(BoxLayout):
     background_color = ColorProperty(SECONDARY_COLOR)
 
 
-Builder.load_file(pathlib.Path(
-    __file__).parent.joinpath('volume_widget.kv').resolve().as_posix())
+Builder.load_file(
+    pathlib.Path(__file__).parent.joinpath('volume_widget.kv').resolve().as_posix(),
+)

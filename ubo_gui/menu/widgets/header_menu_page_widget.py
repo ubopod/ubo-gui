@@ -5,7 +5,8 @@ import pathlib
 import warnings
 from typing import TYPE_CHECKING, Any, Sequence
 
-from kivy.app import Builder, StringProperty
+from kivy.lang.builder import Builder
+from kivy.properties import StringProperty
 
 from ubo_gui.menu.constants import PAGE_SIZE
 from ubo_gui.page import PageWidget

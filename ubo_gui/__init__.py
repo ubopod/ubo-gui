@@ -1,5 +1,5 @@
-"""
-This module initializes the ubo_gui package and registers various widgets with the Kivy Factory.
+"""Initializes the ubo_gui package and registers various widgets using Kivy Factory.
+
 It also defines the paths for assets and fonts used by the package.
 """
 from pathlib import Path
