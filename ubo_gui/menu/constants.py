@@ -1,4 +1,5 @@
-from kivy.app import Builder
+"""Module for defining constants used in the `Menu` widget."""
+from kivy.lang.builder import Builder
 
 from ubo_gui.page import PAGE_MAX_ITEMS
 

@@ -1,5 +1,20 @@
 # Changelog
 
+## Version 0.9.5
+
+- chore: use git-lfs to track material font
+
+## Version 0.9.4
+
+- chore: GitHub workflow to publish pushes on `main` branch to PyPI
+- chore: create GitHub release for main branch in GitHub workflows
+- chore: create Pyright stub files for Kivy
+- refactor: fix lint issues and typing issues
+
+## Version 0.9.3
+
+- fix: close_application now actually closes the passed application
+
 ## Version 0.9.2
 
 - fix: queue transitions instead of letting the last transition interrupt the active
