@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ubo-gui"
-version = "0.9.2"
+version = "0.9.5"
 description = "GUI sdk for Ubo Pod"
 authors = ["Sassan Haradji <sassanh@gmail.com>"]
 license = "Apache-2.0"
@@ -26,6 +26,13 @@ headless-kivy-pi = [
 ]
 python-immutable = "^1.0.2"
 
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+pyright = "^1.1.349"
+ruff = "^0.2.1"
+
 [tool.poetry.extras]
 dev = ['headless-kivy-pi']
 default = ['headless-kivy-pi']
@@ -35,20 +42,21 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poe.tasks]
-lint = "pyright -p pyproject.toml ."
+lint = "ruff . --unsafe-fixes"
+typecheck = "pyright -p pyproject.toml ."
+sanity = ["typecheck", "lint"]
 download_font.shell = "mkdir -p ubo_gui/assets/fonts; wget https://github.com/google/material-design-icons/raw/master/variablefont/MaterialSymbolsOutlined%5BFILL%2CGRAD%2Copsz%2Cwght%5D.ttf -O ./ubo_gui/assets/fonts/MaterialSymbolsOutlined[FILL,GRAD,opsz,wght].ttf"
 
 [tool.poe.tasks.deploy_to_device]
 cmd = 'scripts/deploy.sh'
 
 [tool.ruff]
-select = ['ALL']
-ignore = []
+lint.select = ['ALL']
+lint.ignore = ['INP001', 'PLR0911', 'D203', 'D213']
+lint.fixable = ['ALL']
+lint.unfixable = []
 
-fixable = ['ALL']
-unfixable = []
-
-[tool.ruff.flake8-quotes]
+[tool.ruff.lint.flake8-quotes]
 docstring-quotes = "double"
 inline-quotes = "single"
 multiline-quotes = "double"
@@ -58,3 +66,6 @@ quote-style = 'single'
 
 [tool.isort]
 profile = "black"
+
+[tool.pyright]
+exclude = ['typings']

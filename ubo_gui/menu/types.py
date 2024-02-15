@@ -20,7 +20,7 @@ from typing_extensions import TypeVar
 from ubo_gui.constants import PRIMARY_COLOR
 
 if TYPE_CHECKING:
-    from kivy.graphics import Color
+    from kivy.graphics.context_instructions import Color
 
     from ubo_gui.page import PageWidget
 

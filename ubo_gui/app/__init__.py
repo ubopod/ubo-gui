@@ -1,3 +1,4 @@
+"""The main module for the Ubo GUI."""
 from __future__ import annotations
 
 import pathlib
@@ -5,9 +6,11 @@ from functools import cached_property
 from typing import TYPE_CHECKING, cast
 
 from headless_kivy_pi import HeadlessWidget
-from kivy.app import App, Builder, StringProperty, Widget
+from kivy.app import App
 from kivy.core.text import LabelBase
+from kivy.lang.builder import Builder
 from kivy.metrics import dp
+from kivy.properties import StringProperty
 from kivy.uix.label import Label
 
 from ubo_gui import FONTS_PATH
@@ -21,13 +24,18 @@ LabelBase.register(
 
 if TYPE_CHECKING:
     from kivy.uix.boxlayout import BoxLayout
+    from kivy.uix.widget import Widget
 
 
 class RootWidget(HeadlessWidget):
+    """The root widget for the `UboApp`."""
+
     title = StringProperty('UBO', allownone=True)
 
 
 class UboApp(App):
+    """The main app for the Ubo GUI."""
+
     def build(self: UboApp) -> Widget | None:
         """Build the app. This is the landing point for the app.
 
@@ -59,10 +67,12 @@ class UboApp(App):
 
     @cached_property
     def central(self: UboApp) -> Widget | None:
+        """The central section of the app."""
         return None
 
     @cached_property
     def header(self: UboApp) -> Widget | None:
+        """The header section of the app."""
         header_label = Label(text=self.root.title or '')
 
         def title_callback(_: RootWidget, title: str) -> None:
@@ -80,4 +90,5 @@ class UboApp(App):
 
     @cached_property
     def footer(self: UboApp) -> Widget | None:
+        """The footer section of the app."""
         return None

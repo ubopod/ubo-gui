@@ -4,20 +4,20 @@ from __future__ import annotations
 import pathlib
 from typing import TYPE_CHECKING, Any, Callable
 
-from kivy.app import Builder
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.label import (
+from kivy.lang.builder import Builder
+from kivy.properties import (
     BooleanProperty,
     ColorProperty,
     ObjectProperty,
     StringProperty,
 )
+from kivy.uix.boxlayout import BoxLayout
 
 from ubo_gui.constants import PRIMARY_COLOR
 from ubo_gui.menu.types import process_subscribable_value
 
 if TYPE_CHECKING:
-    from kivy.graphics import Color
+    from kivy.graphics.context_instructions import Color
 
     from ubo_gui.menu.types import Item
 

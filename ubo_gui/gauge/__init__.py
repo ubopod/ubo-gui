@@ -1,8 +1,9 @@
+"""A half circle gauge widget."""
 from __future__ import annotations
 
 import pathlib
 
-from kivy.app import Builder
+from kivy.lang.builder import Builder
 from kivy.properties import ColorProperty, ListProperty, NumericProperty, StringProperty
 from kivy.uix.boxlayout import BoxLayout
 
@@ -21,5 +22,6 @@ class GaugeWidget(BoxLayout):
     _pos = ListProperty([0, 0])
 
 
-Builder.load_file(pathlib.Path(
-    __file__).parent.joinpath('gauge_widget.kv').resolve().as_posix())
+Builder.load_file(
+    pathlib.Path(__file__).parent.joinpath('gauge_widget.kv').resolve().as_posix(),
+)
