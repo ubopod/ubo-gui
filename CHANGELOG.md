@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.9.6
+
+- refactor: use headless-kivy-pi 0.6.0
+- refactor: make `on_title` callback use weakref to avoid memory leaks
+
 ## Version 0.9.5
 
 - chore: use git-lfs to track material font

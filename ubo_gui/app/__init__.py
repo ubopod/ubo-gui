@@ -70,23 +70,26 @@ class UboApp(App):
         """The central section of the app."""
         return None
 
+    def title_callback(self: UboApp, _: RootWidget, title: str) -> None:
+        """Update the header label when the title changes."""
+        if not self:
+            return
+        header_layout: BoxLayout = self.root.ids.header_layout
+        if title is not None:
+            self.header_label.text = title
+            header_layout.height = dp(30)
+        else:
+            self.header_label.text = ''
+            header_layout.height = 0
+
     @cached_property
     def header(self: UboApp) -> Widget | None:
         """The header section of the app."""
-        header_label = Label(text=self.root.title or '')
+        self.header_label = Label(text=self.root.title or '')
 
-        def title_callback(_: RootWidget, title: str) -> None:
-            header_layout: BoxLayout = self.root.ids.header_layout
-            if title is not None:
-                header_label.text = title
-                header_layout.height = dp(30)
-            else:
-                header_label.text = ''
-                header_layout.height = 0
+        self.root.bind(title=self.title_callback)
 
-        self.root.bind(title=title_callback)
-
-        return header_label
+        return self.header_label
 
     @cached_property
     def footer(self: UboApp) -> Widget | None:
