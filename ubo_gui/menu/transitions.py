@@ -6,7 +6,7 @@ from functools import cached_property
 from typing import Any
 
 from headless_kivy_pi import HeadlessWidget
-from kivy.clock import Clock
+from kivy.clock import Clock, mainthread
 from kivy.uix.screenmanager import (
     NoTransition,
     Screen,
@@ -15,6 +15,7 @@ from kivy.uix.screenmanager import (
     SwapTransition,
     TransitionBase,
 )
+from kivy.uix.widget import Widget
 
 
 class TransitionsMixin:
@@ -67,7 +68,10 @@ class TransitionsMixin:
                     ),
                 )
             else:
-                HeadlessWidget.activate_low_fps_mode()
+                if isinstance(self, Widget):
+                    headless_widget = HeadlessWidget.get_instance(self)
+                    if headless_widget:
+                        headless_widget.activate_low_fps_mode()
                 self._is_transition_in_progress = False
 
     def _setup_transition(self: TransitionsMixin, transition: TransitionBase) -> None:
@@ -92,6 +96,22 @@ class TransitionsMixin:
         self._setup_transition(transition)
         return transition
 
+    def _perform_switch(
+        self: TransitionsMixin,
+        screen: Screen | None,
+        /,
+        *,
+        transition: TransitionBase,
+        duration: float | None = None,
+        direction: str | None = None,
+    ) -> None:
+        self.screen_manager.switch_to(
+            screen,
+            transition=transition,
+            **({'duration': duration} if duration else {}),
+            **({'direction': direction} if direction else {}),
+        )
+
     def _switch_to(
         self: TransitionsMixin,
         screen: Screen | None,
@@ -104,15 +124,16 @@ class TransitionsMixin:
         """Switch to a new screen."""
         with self._transition_progress_lock:
             if not self._is_transition_in_progress:
-                HeadlessWidget.activate_high_fps_mode()
+                if isinstance(self, Widget):
+                    headless_widget = HeadlessWidget.get_instance(self)
+                    if headless_widget:
+                        headless_widget.activate_high_fps_mode()
                 self._is_transition_in_progress = transition is not self._no_transition
-                Clock.schedule_once(
-                    lambda *_: self.screen_manager.switch_to(
-                        screen,
-                        transition=transition,
-                        **({'duration': duration} if duration else {}),
-                        **({'direction': direction} if direction else {}),
-                    ),
+                mainthread(self._perform_switch)(
+                    screen,
+                    transition=transition,
+                    duration=duration,
+                    direction=direction,
                 )
             else:
                 self.transition_queue = [
