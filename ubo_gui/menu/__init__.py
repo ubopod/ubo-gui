@@ -282,7 +282,9 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         """Go back to the previous menu."""
         if self.current_application and self.current_application.go_back():
             return
-        HeadlessWidget.activate_high_fps_mode()
+        headless_widget = HeadlessWidget.get_instance(self)
+        if headless_widget:
+            headless_widget.activate_high_fps_mode()
         self.pop()
 
     def render_items(self: MenuWidget, *_: object) -> None:
@@ -412,7 +414,9 @@ class MenuWidget(BoxLayout, TransitionsMixin):
 
     def open_application(self: MenuWidget, application: PageWidget) -> None:
         """Open an application."""
-        HeadlessWidget.activate_high_fps_mode()
+        headless_widget = HeadlessWidget.get_instance(self)
+        if headless_widget:
+            headless_widget.activate_high_fps_mode()
         self.push(
             application,
             transition=self._swap_transition,
