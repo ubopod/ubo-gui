@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ubo-gui"
-version = "0.9.6"
+version = "0.9.7"
 description = "GUI sdk for Ubo Pod"
 authors = ["Sassan Haradji <sassanh@gmail.com>"]
 license = "Apache-2.0"
@@ -11,22 +11,23 @@ include = ['ubo_gui/assets/fonts/*']
 [tool.poetry.dependencies]
 python = "^3.11"
 headless-kivy-pi = [
-  { version = "^0.6.0", markers = "extra=='default'", extras = [
+  { version = "^0.6.1", markers = "extra=='default'", extras = [
     'default',
   ] },
-  { version = "^0.6.0", markers = "extra=='dev'", extras = [
+  { version = "^0.6.1", markers = "extra=='dev'", extras = [
     'dev',
   ] },
 ]
 python-immutable = "^1.0.2"
+qrcode = "^7.4.2"
 
 [tool.poetry.group.dev]
 optional = true
 
 [tool.poetry.group.dev.dependencies]
 poethepoet = "^0.24.4"
-pyright = "^1.1.349"
-ruff = "^0.2.2"
+pyright = "^1.1.353"
+ruff = "^0.3.1"
 
 [tool.poetry.extras]
 dev = ['headless-kivy-pi']
@@ -37,7 +38,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poe.tasks]
-lint = "ruff . --unsafe-fixes"
+lint = "ruff check . --unsafe-fixes"
 typecheck = "pyright -p pyproject.toml ."
 sanity = ["typecheck", "lint"]
 download_font.shell = "mkdir -p ubo_gui/assets/fonts; wget https://github.com/google/material-design-icons/raw/master/variablefont/MaterialSymbolsOutlined%5BFILL%2CGRAD%2Copsz%2Cwght%5D.ttf -O ./ubo_gui/assets/fonts/MaterialSymbolsOutlined[FILL,GRAD,opsz,wght].ttf"
