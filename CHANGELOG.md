@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.9.9
+
+- chore: update to the latest version of headless-kivy-pi 0.7.1
+
 ## Version 0.9.8
 
 - chore: update to the latest version of headless-kivy-pi

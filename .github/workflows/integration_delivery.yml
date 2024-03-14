@@ -178,6 +178,7 @@ jobs:
         with:
           packages-dir: dist
           verbose: true
+          skip-existing: true
 
   release:
     name: Release
@@ -210,7 +211,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: artifacts/*
-          tag_name: ${{ needs.build.outputs.version }}
+          tag_name: v${{ needs.build.outputs.version }}
           body: |
             Release of version ${{ needs.build.outputs.version }}
             PyPI package: https://pypi.org/project/${{ needs.build.outputs.name }}/${{ needs.build.outputs.version }}
