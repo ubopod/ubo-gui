@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.9.8
+
+- chore: update to the latest version of headless-kivy-pi
+
 ## Version 0.9.7
 
 - feat: add `QRCodeWidget`
