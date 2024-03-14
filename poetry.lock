@@ -349,13 +349,13 @@ files = [
 
 [[package]]
 name = "headless-kivy-pi"
-version = "0.7.0"
+version = "0.7.1"
 description = "Headless renderer for Kivy framework on Raspberry Pi"
 optional = true
 python-versions = ">=3.11,<4.0"
 files = [
-    {file = "headless_kivy_pi-0.7.0-py3-none-any.whl", hash = "sha256:2c894ea4475403a0b7568375f3842b7e77e4917ce6620658d799b89fd6f2756f"},
-    {file = "headless_kivy_pi-0.7.0.tar.gz", hash = "sha256:d640a84ab1d8e83ac47ab6f30a351ff36e6c9382b8224a41b3fe7fcdfa1b3adb"},
+    {file = "headless_kivy_pi-0.7.1-py3-none-any.whl", hash = "sha256:89e3d90f20ce01139c79b673b666da8f48a6c36f47b414a7416300082a5feedc"},
+    {file = "headless_kivy_pi-0.7.1.tar.gz", hash = "sha256:fa564536100225498b921847b180ddc92aefdccfc38d211cfd72ee513efccdb4"},
 ]
 
 [package.dependencies]
@@ -923,4 +923,4 @@ dev = ["headless-kivy-pi", "headless-kivy-pi"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "765178291653b34ff49bf81b6655502456fb013f3fd9f776e70a9d1c3c21ebc5"
+content-hash = "ec58be2163424ff91cf37e074044fc4bc812e5d70269c2dd1dbc73a01c4f3f61"
