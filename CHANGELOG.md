@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.10.1
+
+- fix: update remaining material symbols icons
+
 ## Version 0.10.0
 
 - refactor: drop material symbols font and use `ArimoNerdFont` instead to bring
