@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ubo-gui"
-version = "0.10.0"
+version = "0.10.1"
 description = "GUI sdk for Ubo Pod"
 authors = ["Sassan Haradji <sassanh@gmail.com>"]
 license = "Apache-2.0"
@@ -11,10 +11,10 @@ include = ['ubo_gui/assets/fonts/*']
 [tool.poetry.dependencies]
 python = "^3.11"
 headless-kivy-pi = [
-  { version = "^0.7.1", markers = "extra=='default'", extras = [
+  { version = "^0.7.2", markers = "extra=='default'", extras = [
     'default',
   ] },
-  { version = "^0.7.1", markers = "extra=='dev'", extras = [
+  { version = "^0.7.2", markers = "extra=='dev'", extras = [
     'dev',
   ] },
 ]

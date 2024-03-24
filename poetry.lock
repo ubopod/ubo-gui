@@ -2,13 +2,13 @@
 
 [[package]]
 name = "adafruit-blinka"
-version = "8.35.0"
+version = "8.37.0"
 description = "CircuitPython APIs for non-CircuitPython versions of Python such as CPython on Linux and MicroPython."
 optional = true
 python-versions = ">=3.7.0"
 files = [
-    {file = "Adafruit-Blinka-8.35.0.tar.gz", hash = "sha256:382d8a01a31fc427096bd0f3759e59560990bf8fc43f4e3b2ec5fb841427d718"},
-    {file = "Adafruit_Blinka-8.35.0-py3-none-any.whl", hash = "sha256:67c606a50e28b4c9464cc06eb5cea3457f166ba7968ebaa06a286bf27df51a9a"},
+    {file = "Adafruit-Blinka-8.37.0.tar.gz", hash = "sha256:e8ab9e03fe131305be4ea20b145dc6461fa9c6afefe0e617f99e5a1b8ab92d66"},
+    {file = "Adafruit_Blinka-8.37.0-py3-none-any.whl", hash = "sha256:0fe2ec27a0cba86fc1b12760277af192fb3792fd190226db8b3ea1cbd90c4c77"},
 ]
 
 [package.dependencies]
@@ -349,13 +349,13 @@ files = [
 
 [[package]]
 name = "headless-kivy-pi"
-version = "0.7.1"
+version = "0.7.2"
 description = "Headless renderer for Kivy framework on Raspberry Pi"
 optional = true
-python-versions = ">=3.11,<4.0"
+python-versions = "<4.0,>=3.11"
 files = [
-    {file = "headless_kivy_pi-0.7.1-py3-none-any.whl", hash = "sha256:89e3d90f20ce01139c79b673b666da8f48a6c36f47b414a7416300082a5feedc"},
-    {file = "headless_kivy_pi-0.7.1.tar.gz", hash = "sha256:fa564536100225498b921847b180ddc92aefdccfc38d211cfd72ee513efccdb4"},
+    {file = "headless_kivy_pi-0.7.2-py3-none-any.whl", hash = "sha256:75616d3eeb5242129d107ad50de6de153ca509ab894cc942400c8885f0a761a9"},
+    {file = "headless_kivy_pi-0.7.2.tar.gz", hash = "sha256:73e22b71c6cad7044d4b2495d208ab7ef120eea79a93d021ae843657ac2e85dc"},
 ]
 
 [package.dependencies]
@@ -923,4 +923,4 @@ dev = ["headless-kivy-pi", "headless-kivy-pi"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "7524961ddc4a0192ec00a9448f2ce73a2ce7c38f775336f77947eb621687adeb"
+content-hash = "8481fbb50cab4fd8b3e41bc6b473a83384bde4ddb8c15da4e8eac34710c7808a"
