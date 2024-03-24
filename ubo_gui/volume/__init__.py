@@ -1,4 +1,5 @@
 """A widget that displays a volume bar."""
+
 from __future__ import annotations
 
 import pathlib

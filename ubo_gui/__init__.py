@@ -2,6 +2,7 @@
 
 It also defines the paths for assets and fonts used by the package.
 """
+
 from pathlib import Path
 
 from kivy.factory import Factory
