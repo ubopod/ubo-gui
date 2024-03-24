@@ -5,6 +5,7 @@ Each item may have sub items, in that case activating this item will open a new 
 with its sub items.
 Each item can optionally be styled differently.
 """
+
 from __future__ import annotations
 
 import math

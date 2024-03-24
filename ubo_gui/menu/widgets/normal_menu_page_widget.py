@@ -1,4 +1,5 @@
 """Module for the `NormalMenuPageWidget` class."""
+
 import pathlib
 
 from kivy.lang.builder import Builder

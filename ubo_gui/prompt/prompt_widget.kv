@@ -17,17 +17,16 @@
       height: dp(50) if root.icon is not None else dp(0)
       font_size: dp(30)
       text: root.icon if root.icon is not None else ''
-      font_name: 'material_symbols'
 
     Label:
       text: root.prompt
       text_size: self.size
-      font_size: dp(20)
+      font_size: dp(18)
       halign: 'center'
       valign: 'middle'
       color: 1, 1, 1
       size_hint: 1, None
-      height: dp(30)
+      height: dp(20)
       shorten: True
       shorten_from: 'right'
 
