@@ -1,4 +1,5 @@
 """The main module for the Ubo GUI."""
+
 from __future__ import annotations
 
 import pathlib
@@ -7,7 +8,7 @@ from typing import TYPE_CHECKING, cast
 
 from headless_kivy_pi import HeadlessWidget
 from kivy.app import App
-from kivy.core.text import LabelBase
+from kivy.core.text import DEFAULT_FONT, LabelBase
 from kivy.lang.builder import Builder
 from kivy.metrics import dp
 from kivy.properties import StringProperty
@@ -16,8 +17,11 @@ from kivy.uix.label import Label
 from ubo_gui import FONTS_PATH
 
 LabelBase.register(
-    name='material_symbols',
-    fn_regular=FONTS_PATH.joinpath('MaterialSymbolsOutlined[FILL,GRAD,opsz,wght].ttf')
+    name=DEFAULT_FONT,
+    fn_regular=FONTS_PATH.joinpath('ArimoNerdFont-Regular.ttf').resolve().as_posix(),
+    fn_bold=FONTS_PATH.joinpath('ArimoNerdFont-Bold.ttf').resolve().as_posix(),
+    fn_italic=FONTS_PATH.joinpath('ArimoNerdFont-Italic.ttf').resolve().as_posix(),
+    fn_bolditalic=FONTS_PATH.joinpath('ArimoNerdFont-BoldItalic.ttf')
     .resolve()
     .as_posix(),
 )

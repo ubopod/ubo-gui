@@ -1,4 +1,5 @@
 """A half circle gauge widget."""
+
 from __future__ import annotations
 
 import pathlib

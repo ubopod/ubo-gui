@@ -1,4 +1,5 @@
 """Module containing the `PageWidget` class."""
+
 from __future__ import annotations
 
 import warnings
