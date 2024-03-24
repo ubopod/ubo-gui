@@ -67,7 +67,7 @@ class TransitionsMixin:
                         **({'duration': duration} if duration else {}),
                         **({'direction': direction} if direction else {}),
                     ),
-                )
+                )()
             else:
                 if isinstance(self, Widget):
                     headless_widget = HeadlessWidget.get_instance(self)
