@@ -1,4 +1,5 @@
 """Notification widget."""
+
 from __future__ import annotations
 
 import pathlib
@@ -46,7 +47,7 @@ class NotificationWidget(PageWidget):
             *args,
             items=[
                 ActionItem(
-                    icon='delete',
+                    icon='󰆴',
                     action=lambda: self.dispatch('on_dismiss') and None,
                     label='',
                     is_short=True,

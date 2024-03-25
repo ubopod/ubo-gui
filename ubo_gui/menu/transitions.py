@@ -1,4 +1,5 @@
 """Provides easy access to different transitions."""
+
 from __future__ import annotations
 
 import threading
@@ -6,7 +7,7 @@ from functools import cached_property
 from typing import Any
 
 from headless_kivy_pi import HeadlessWidget
-from kivy.clock import Clock, mainthread
+from kivy.clock import mainthread
 from kivy.uix.screenmanager import (
     NoTransition,
     Screen,
@@ -59,14 +60,14 @@ class TransitionsMixin:
                     and transition is not self._no_transition
                 ):
                     duration = 0.1
-                Clock.schedule_once(
+                mainthread(
                     lambda *_: self.screen_manager.switch_to(
                         screen,
                         transition=transition,
                         **({'duration': duration} if duration else {}),
                         **({'direction': direction} if direction else {}),
                     ),
-                )
+                )()
             else:
                 if isinstance(self, Widget):
                     headless_widget = HeadlessWidget.get_instance(self)
