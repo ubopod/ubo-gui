@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.10.3
+
+- feat(menu): add placeholder for the menu when it's empty
+
 ## Version 0.10.2
 
 - fix(regression): keep the menu responsive even with rapid switches of the screen-manager

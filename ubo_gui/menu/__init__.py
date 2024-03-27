@@ -291,8 +291,10 @@ class MenuWidget(BoxLayout, TransitionsMixin):
     def render_items(self: MenuWidget, *_: object) -> None:
         """Render the items of the current menu."""
         self.clear_widget_subscriptions()
+        if not self.current_menu:
+            return
         if self.page_index == 0 and isinstance(self.current_menu, HeadedMenu):
-            header_menu_page_widget = HeaderMenuPageWidget(
+            list_widget = HeaderMenuPageWidget(
                 self.current_menu_items[:1],
                 name=f'Page {self.get_depth()} 0',
             )
@@ -302,12 +304,12 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                     'Handle `heading` change...',
                     extra={
                         'new_heading': heading,
-                        'old_heading': header_menu_page_widget.heading,
+                        'old_heading': list_widget.heading,
                         'subscription_level': 'widget',
                     },
                 )
-                if heading != header_menu_page_widget.heading:
-                    header_menu_page_widget.heading = heading
+                if heading != list_widget.heading:
+                    list_widget.heading = heading
 
             self.widget_subscriptions.add(
                 process_subscribable_value(
@@ -321,12 +323,12 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                     'Handle `sub_heading` change...',
                     extra={
                         'new_sub_heading': sub_heading,
-                        'old_sub_heading': header_menu_page_widget.sub_heading,
+                        'old_sub_heading': list_widget.sub_heading,
                         'subscription_level': 'widget',
                     },
                 )
-                if sub_heading != header_menu_page_widget.sub_heading:
-                    header_menu_page_widget.sub_heading = sub_heading
+                if sub_heading != list_widget.sub_heading:
+                    list_widget.sub_heading = sub_heading
 
             self.widget_subscriptions.add(
                 process_subscribable_value(
@@ -335,17 +337,37 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                 ),
             )
 
-            self.current_screen = header_menu_page_widget
+            self.current_screen = list_widget
         else:
             offset = (
                 -(PAGE_SIZE - 1) if isinstance(self.current_menu, HeadedMenu) else 0
             )
-            self.current_screen = NormalMenuPageWidget(
+            list_widget = NormalMenuPageWidget(
                 self.current_menu_items[
                     self.page_index * 3 + offset : self.page_index * 3 + 3 + offset
                 ],
                 name=f'Page {self.get_depth()} 0',
             )
+            self.current_screen = list_widget
+
+        def handle_placeholder_change(placeholder: str | None) -> None:
+            logger.debug(
+                'Handle `placeholder` change...',
+                extra={
+                    'new_placeholder': placeholder,
+                    'old_placeholder': list_widget.placeholder,
+                    'subscription_level': 'widget',
+                },
+            )
+            if placeholder != list_widget.placeholder:
+                list_widget.placeholder = placeholder
+
+        self.widget_subscriptions.add(
+            process_subscribable_value(
+                self.current_menu.placeholder,
+                handle_placeholder_change,
+            ),
+        )
 
     def render(self: MenuWidget, *_: object) -> None:
         """Return the current screen page."""

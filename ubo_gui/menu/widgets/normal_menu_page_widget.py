@@ -3,12 +3,15 @@
 import pathlib
 
 from kivy.lang.builder import Builder
+from kivy.properties import StringProperty
 
 from ubo_gui.page import PageWidget
 
 
 class NormalMenuPageWidget(PageWidget):
     """renders a normal page of a `Menu`."""
+
+    placeholder = StringProperty(allownone=True)
 
 
 Builder.load_file(

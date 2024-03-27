@@ -6,16 +6,31 @@
     pos: self.pos
     size: self.size
     orientation: 'vertical'
-    spacing: dp(7)
 
-    ItemWidget:
-      item: root.items[0] if len(root.items) > 0 else None
-      size_hint: 1, None
+    Label:
+      text: '' if root.items else ('Nothing here yet' if root.placeholder is None else root.placeholder)
+      text_size: self.size
+      font_size: dp(20)
+      halign: 'center'
+      valign: 'middle'
+      color: .6, .6, .6
+      bold: True
+      italic: True
 
-    ItemWidget:
-      item: root.items[1] if len(root.items) > 1 else None
-      size_hint: 1, None
+    BoxLayout:
+      height: self.minimum_height if root.items else 0
+      size_hint_y: None if root.items else 0
+      orientation: 'vertical'
+      spacing: dp(7)
 
-    ItemWidget:
-      item: root.items[2] if len(root.items) > 2 else None
-      size_hint: 1, None
+      ItemWidget:
+        item: root.items[0] if len(root.items) > 0 else None
+        size_hint: 1, None
+
+      ItemWidget:
+        item: root.items[1] if len(root.items) > 1 else None
+        size_hint: 1, None
+
+      ItemWidget:
+        item: root.items[2] if len(root.items) > 2 else None
+        size_hint: 1, None
