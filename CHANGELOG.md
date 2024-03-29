@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.10.4
+
+- fix(menu): avoid closing all applications when a single application is closed
+
 ## Version 0.10.3
 
 - feat(menu): add placeholder for the menu when it's empty
