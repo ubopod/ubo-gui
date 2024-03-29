@@ -447,19 +447,29 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             direction='left',
         )
         application.bind(on_close=self.close_application)
+        application.bind(on_leave=self.leave_application)
 
     def clean_application(self: MenuWidget, application: PageWidget) -> None:
         """Clean up the application bounds."""
         application.unbind(on_close=self.close_application)
+        application.unbind(on_leave=self.leave_application)
 
     def close_application(self: MenuWidget, application: PageWidget) -> None:
         """Close an application after its `on_close` event is fired."""
-        self.clean_application(application)
         while any(
             isinstance(item, StackApplicationItem) and item.application is application
             for item in self.stack
         ):
             self.go_back()
+
+    def leave_application(self: MenuWidget, application: PageWidget) -> None:
+        """Close an application after its `on_close` event is fired."""
+        if any(
+            isinstance(item, StackApplicationItem) and item.application is application
+            for item in self.stack
+        ):
+            return
+        application.dispatch('on_close')
 
     @property
     def top(self: MenuWidget) -> StackItem:
@@ -537,14 +547,11 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         *self.stack, popped = self.stack
         if not keep_subscriptions and isinstance(popped, StackMenuItem):
             popped.clear_subscriptions()
+        elif isinstance(popped, StackApplicationItem):
+            self.clean_application(popped.application)
         target = self.top
         transition_ = self._slide_transition
-        if isinstance(target, PageWidget):
-            transition_ = self._swap_transition
-            if self.current_application:
-                self.clean_application(self.current_application)
-        elif self.current_application:
-            self.clean_application(self.current_application)
+        if isinstance(target, PageWidget) or self.current_application:
             transition_ = self._swap_transition
         self._switch_to(
             self.current_screen,
