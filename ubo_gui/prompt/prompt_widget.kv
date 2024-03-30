@@ -17,6 +17,7 @@
       height: dp(50) if root.icon is not None else dp(0)
       font_size: dp(30)
       text: root.icon if root.icon is not None else ''
+      markup: True
 
     Label:
       text: root.prompt
@@ -29,6 +30,7 @@
       height: dp(20)
       shorten: True
       shorten_from: 'right'
+      markup: True
 
     ItemWidget:
       item: root.first_item

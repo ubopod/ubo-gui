@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.10.5
+
+- refactor: enable `markup` for labels
+
 ## Version 0.10.4
 
 - fix(menu): avoid closing all applications when a single application is closed
