@@ -23,6 +23,7 @@
       max_lines: 2
       strip: True
       shorten_from: 'right'
+      markup: True
 
     Label:
       text: root.sub_heading
@@ -35,6 +36,7 @@
       size_hint: 1, 0
       max_lines: 2
       shorten_from: 'right'
+      markup: True
       
     Widget:
       size_hint: 1, None
@@ -51,6 +53,7 @@
       color: .6, .6, .6
       bold: True
       italic: True
+      markup: True
 
     BoxLayout:
       height: self.minimum_height if root.items else 0

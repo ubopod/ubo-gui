@@ -89,7 +89,7 @@ class UboApp(App):
     @cached_property
     def header(self: UboApp) -> Widget | None:
         """The header section of the app."""
-        self.header_label = Label(text=self.root.title or '')
+        self.header_label = Label(text=self.root.title or '', markup=True)
 
         self.root.bind(title=self.title_callback)
 
