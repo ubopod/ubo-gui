@@ -1,4 +1,5 @@
 """Class definition of main datatypes use in menus."""
+
 from __future__ import annotations
 
 from typing import (
@@ -42,7 +43,7 @@ class BaseMenu(Immutable):
 
     title: str | Callable[[], str]
     items: Sequence[Item] | Callable[[], Sequence[Item]]
-    _id: str | None = None
+    placeholder: str | None | Callable[[], str | None] = None
 
 
 class HeadedMenu(BaseMenu):
@@ -188,16 +189,14 @@ def is_subscribeable(value: object) -> TypeGuard[Subscribable]:
 def process_subscribable_value(
     value: T | Callable[[], T],
     callback: Callable[[T], None],
-) -> Callable[[], None]:
-    ...
+) -> Callable[[], None]: ...
 
 
 @overload
 def process_subscribable_value(  # pyright: ignore[reportOverlappingOverload]
     value: T | None | Callable[[], T | None],
     callback: Callable[[T | None], None],
-) -> Callable[[], None]:
-    ...
+) -> Callable[[], None]: ...
 
 
 def process_subscribable_value(

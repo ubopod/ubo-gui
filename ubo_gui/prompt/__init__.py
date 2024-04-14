@@ -2,6 +2,7 @@
 
 A widget that renders a prompt with two options.
 """
+
 from __future__ import annotations
 
 import pathlib

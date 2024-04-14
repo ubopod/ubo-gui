@@ -5,6 +5,7 @@ Each item may have sub items, in that case activating this item will open a new 
 with its sub items.
 Each item can optionally be styled differently.
 """
+
 from __future__ import annotations
 
 import math
@@ -290,8 +291,10 @@ class MenuWidget(BoxLayout, TransitionsMixin):
     def render_items(self: MenuWidget, *_: object) -> None:
         """Render the items of the current menu."""
         self.clear_widget_subscriptions()
+        if not self.current_menu:
+            return
         if self.page_index == 0 and isinstance(self.current_menu, HeadedMenu):
-            header_menu_page_widget = HeaderMenuPageWidget(
+            list_widget = HeaderMenuPageWidget(
                 self.current_menu_items[:1],
                 name=f'Page {self.get_depth()} 0',
             )
@@ -301,12 +304,12 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                     'Handle `heading` change...',
                     extra={
                         'new_heading': heading,
-                        'old_heading': header_menu_page_widget.heading,
+                        'old_heading': list_widget.heading,
                         'subscription_level': 'widget',
                     },
                 )
-                if heading != header_menu_page_widget.heading:
-                    header_menu_page_widget.heading = heading
+                if heading != list_widget.heading:
+                    list_widget.heading = heading
 
             self.widget_subscriptions.add(
                 process_subscribable_value(
@@ -320,12 +323,12 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                     'Handle `sub_heading` change...',
                     extra={
                         'new_sub_heading': sub_heading,
-                        'old_sub_heading': header_menu_page_widget.sub_heading,
+                        'old_sub_heading': list_widget.sub_heading,
                         'subscription_level': 'widget',
                     },
                 )
-                if sub_heading != header_menu_page_widget.sub_heading:
-                    header_menu_page_widget.sub_heading = sub_heading
+                if sub_heading != list_widget.sub_heading:
+                    list_widget.sub_heading = sub_heading
 
             self.widget_subscriptions.add(
                 process_subscribable_value(
@@ -334,17 +337,37 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                 ),
             )
 
-            self.current_screen = header_menu_page_widget
+            self.current_screen = list_widget
         else:
             offset = (
                 -(PAGE_SIZE - 1) if isinstance(self.current_menu, HeadedMenu) else 0
             )
-            self.current_screen = NormalMenuPageWidget(
+            list_widget = NormalMenuPageWidget(
                 self.current_menu_items[
                     self.page_index * 3 + offset : self.page_index * 3 + 3 + offset
                 ],
                 name=f'Page {self.get_depth()} 0',
             )
+            self.current_screen = list_widget
+
+        def handle_placeholder_change(placeholder: str | None) -> None:
+            logger.debug(
+                'Handle `placeholder` change...',
+                extra={
+                    'new_placeholder': placeholder,
+                    'old_placeholder': list_widget.placeholder,
+                    'subscription_level': 'widget',
+                },
+            )
+            if placeholder != list_widget.placeholder:
+                list_widget.placeholder = placeholder
+
+        self.widget_subscriptions.add(
+            process_subscribable_value(
+                self.current_menu.placeholder,
+                handle_placeholder_change,
+            ),
+        )
 
     def render(self: MenuWidget, *_: object) -> None:
         """Return the current screen page."""
@@ -424,19 +447,29 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             direction='left',
         )
         application.bind(on_close=self.close_application)
+        application.bind(on_leave=self.leave_application)
 
     def clean_application(self: MenuWidget, application: PageWidget) -> None:
         """Clean up the application bounds."""
         application.unbind(on_close=self.close_application)
+        application.unbind(on_leave=self.leave_application)
 
     def close_application(self: MenuWidget, application: PageWidget) -> None:
         """Close an application after its `on_close` event is fired."""
-        self.clean_application(application)
         while any(
             isinstance(item, StackApplicationItem) and item.application is application
             for item in self.stack
         ):
             self.go_back()
+
+    def leave_application(self: MenuWidget, application: PageWidget) -> None:
+        """Close an application after its `on_close` event is fired."""
+        if any(
+            isinstance(item, StackApplicationItem) and item.application is application
+            for item in self.stack
+        ):
+            return
+        application.dispatch('on_close')
 
     @property
     def top(self: MenuWidget) -> StackItem:
@@ -514,14 +547,11 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         *self.stack, popped = self.stack
         if not keep_subscriptions and isinstance(popped, StackMenuItem):
             popped.clear_subscriptions()
+        elif isinstance(popped, StackApplicationItem):
+            self.clean_application(popped.application)
         target = self.top
         transition_ = self._slide_transition
-        if isinstance(target, PageWidget):
-            transition_ = self._swap_transition
-            if self.current_application:
-                self.clean_application(self.current_application)
-        elif self.current_application:
-            self.clean_application(self.current_application)
+        if isinstance(target, PageWidget) or self.current_application:
             transition_ = self._swap_transition
         self._switch_to(
             self.current_screen,

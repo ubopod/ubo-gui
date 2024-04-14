@@ -1,4 +1,5 @@
 """Module to store constants used in the application."""
+
 from kivy.lang.builder import Builder
 
 PRIMARY_COLOR = '#68B7FF'

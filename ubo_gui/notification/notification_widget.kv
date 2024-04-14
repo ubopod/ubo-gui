@@ -27,14 +27,14 @@
 
         Label:
           padding: dp(20), 0, dp(20), 0
+          font_size: dp(52)
+          text: root.icon
           halign: 'center'
           valign: 'middle'
           color: root.color
           size_hint: 1, None
           height: dp(60)
-          font_size: dp(52)
-          text: root.icon
-          font_name: 'material_symbols'
+          markup: True
 
         Label:
           font_size: dp(22)
@@ -46,6 +46,7 @@
           halign: 'center'
           valign: 'middle'
           strip: True
+          markup: True
 
         Widget:
           size_hint: 1, None
@@ -60,6 +61,7 @@
           halign: 'center'
           shorten: False
           strip: True
+          markup: True
 
         Widget:
           size_hint: 1, 1

@@ -1,4 +1,5 @@
 """Module for the `HeaderMenuPageWidget` class."""
+
 from __future__ import annotations
 
 import pathlib
@@ -20,12 +21,11 @@ class HeaderMenuPageWidget(PageWidget):
 
     heading = StringProperty()
     sub_heading = StringProperty()
+    placeholder = StringProperty(allownone=True)
 
     def __init__(
         self: HeaderMenuPageWidget,
         items: Sequence[Item],
-        heading: str = '',
-        sub_heading: str = '',
         **kwargs: Any,  # noqa: ANN401
     ) -> None:
         """Initialize a `HeaderMenuPageWidget`.
@@ -34,12 +34,6 @@ class HeaderMenuPageWidget(PageWidget):
         ----------
         items: `Sequence`[[`Item`]]
             The item to be shown in this page
-
-        heading: `str`
-            The heading of the page
-
-        sub_heading: `str`
-            The sub-heading of the page
 
         kwargs: Any
             Stuff that will get directly passed to the `__init__` method of Kivy's
@@ -50,8 +44,6 @@ class HeaderMenuPageWidget(PageWidget):
             msg = '`HeaderMenuPageWidget` is initialized with more than one item'
             raise ValueError(msg)
         super().__init__(items, **kwargs)
-        self.heading = heading
-        self.sub_heading = sub_heading
 
     def get_item(self: HeaderMenuPageWidget, index: int) -> Item | None:
         """Get the item at the given index."""

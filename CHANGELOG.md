@@ -1,5 +1,30 @@
 # Changelog
 
+## Version 0.10.5
+
+- refactor: enable `markup` for labels
+
+## Version 0.10.4
+
+- fix(menu): avoid closing all applications when a single application is closed
+
+## Version 0.10.3
+
+- feat(menu): add placeholder for the menu when it's empty
+
+## Version 0.10.2
+
+- fix(regression): keep the menu responsive even with rapid switches of the screen-manager
+
+## Version 0.10.1
+
+- fix: update remaining material symbols icons
+
+## Version 0.10.0
+
+- refactor: drop material symbols font and use `ArimoNerdFont` instead to bring
+  all the icons of fa, md, mdi, etc
+
 ## Version 0.9.9
 
 - chore: update to the latest version of headless-kivy-pi 0.7.1

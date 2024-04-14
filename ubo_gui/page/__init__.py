@@ -1,4 +1,5 @@
 """Module containing the `PageWidget` class."""
+
 from __future__ import annotations
 
 import warnings
@@ -77,8 +78,3 @@ class PageWidget(Screen):
 
     def on_close(self: PageWidget) -> None:
         """Signal when the page is closed."""
-
-    def on_leave(self: PageWidget, *args: object) -> None:
-        """Override `on_leave` to dispatch `on_close` event."""
-        self.dispatch('on_close')
-        return super().on_leave(*args)
