@@ -6,12 +6,17 @@
     spacing: dp(4)
 
     BoxLayout:
-      orientation: 'vertical'
       size_hint: None, 1
       width: dp(UBO_GUI_SHORT_WIDTH)
+      orientation: 'vertical'
+      spacing: dp(7)
 
       ItemWidget:
-        item: root.items[0] if len(root.items) > 0 else None
+        item: root.info_action
+        size_hint: 1, None
+
+      ItemWidget:
+        item: root.dismiss_action
         size_hint: 1, None
 
     Widget:

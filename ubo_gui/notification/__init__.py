@@ -3,13 +3,17 @@
 from __future__ import annotations
 
 import pathlib
-import warnings
 from typing import TYPE_CHECKING, Callable
 
 from immutable import Immutable
 from kivy.lang.builder import Builder
 from kivy.metrics import dp
-from kivy.properties import ColorProperty, ObjectProperty, StringProperty
+from kivy.properties import (
+    AliasProperty,
+    BooleanProperty,
+    ColorProperty,
+    StringProperty,
+)
 
 from ubo_gui.constants import DANGER_COLOR
 from ubo_gui.menu.types import ActionItem
@@ -29,13 +33,31 @@ class NotificationAction(Immutable):
 class NotificationWidget(PageWidget):
     """renders a notification."""
 
-    __events__ = ('on_dismiss',)
+    __events__ = ('on_dismiss', 'on_info')
 
-    notification = ObjectProperty()
     notification_title: str = StringProperty()
     content: str = StringProperty()
+    has_extra_information: bool = BooleanProperty(defaultvalue=False)
     icon: str = StringProperty()
     color = ColorProperty()
+
+    def get_info_action(self: NotificationWidget) -> ActionItem | None:
+        """Return the info action if `info` is available."""
+        if not self.has_extra_information:
+            return None
+        return ActionItem(
+            icon='󰋼',
+            action=lambda: self.dispatch('on_info'),
+            label='',
+            is_short=True,
+            background_color=DANGER_COLOR,
+        )
+
+    info_action: ActionItem = AliasProperty(
+        getter=get_info_action,
+        bind=['has_extra_information'],
+        cache=True,
+    )
 
     def __init__(
         self: NotificationWidget,
@@ -43,17 +65,16 @@ class NotificationWidget(PageWidget):
         **kwargs: object,
     ) -> None:
         """Create a new `NotificationWidget` object."""
+        self.dismiss_action = ActionItem(
+            icon='󰆴',
+            action=lambda: self.dispatch('on_dismiss') and None,
+            label='',
+            is_short=True,
+            background_color=DANGER_COLOR,
+        )
         super().__init__(
             *args,
-            items=[
-                ActionItem(
-                    icon='󰆴',
-                    action=lambda: self.dispatch('on_dismiss') and None,
-                    label='',
-                    is_short=True,
-                    background_color=DANGER_COLOR,
-                ),
-            ],
+            items=[],
             **kwargs,
         )
 
@@ -67,13 +88,17 @@ class NotificationWidget(PageWidget):
 
     def get_item(self: NotificationWidget, index: int) -> Item | None:
         """Get the page item at the given index."""
-        if index != PAGE_MAX_ITEMS - 1:
-            warnings.warn('index must be 2', ResourceWarning, stacklevel=1)
-            return None
-        return self.items[index - 2]
+        if index == PAGE_MAX_ITEMS - 2:
+            return self.info_action
+        if index == PAGE_MAX_ITEMS - 1:
+            return self.dismiss_action
+        return None
 
     def on_dismiss(self: PageWidget) -> None:
         """Signal when the notification is dismissed."""
+
+    def on_info(self: PageWidget) -> None:
+        """Signal when the info action is selected."""
 
 
 Builder.load_file(

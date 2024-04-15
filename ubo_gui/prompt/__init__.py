@@ -52,7 +52,7 @@ class PromptWidget(PageWidget, ABC, metaclass=PromptWidgetMetaClass):
 
     def get_first_item(self: PromptWidget) -> ActionItem | None:
         """Return the first item of the prompt."""
-        if self.first_option_label is None:
+        if not self.first_option_label:
             return None
         return ActionItem(
             label=self.first_option_label,
@@ -65,7 +65,7 @@ class PromptWidget(PageWidget, ABC, metaclass=PromptWidgetMetaClass):
 
     def get_second_item(self: PromptWidget) -> ActionItem | None:
         """Return the second item of the prompt."""
-        if self.second_option_label is None:
+        if not self.second_option_label:
             return None
         return ActionItem(
             label=self.second_option_label,

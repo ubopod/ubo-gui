@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.10.6
+
+- feat: info action for the `NotificationWidget`
+
 ## Version 0.10.5
 
 - refactor: enable `markup` for labels
