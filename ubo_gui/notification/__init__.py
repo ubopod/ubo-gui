@@ -15,7 +15,7 @@ from kivy.properties import (
     StringProperty,
 )
 
-from ubo_gui.constants import DANGER_COLOR
+from ubo_gui.constants import DANGER_COLOR, INFO_COLOR
 from ubo_gui.menu.types import ActionItem
 from ubo_gui.page import PAGE_MAX_ITEMS, PageWidget
 
@@ -45,12 +45,16 @@ class NotificationWidget(PageWidget):
         """Return the info action if `info` is available."""
         if not self.has_extra_information:
             return None
+
+        def dispatch_info() -> None:
+            self.dispatch('on_info')
+
         return ActionItem(
             icon='󰋼',
-            action=lambda: self.dispatch('on_info'),
+            action=dispatch_info,
             label='',
             is_short=True,
-            background_color=DANGER_COLOR,
+            background_color=INFO_COLOR,
         )
 
     info_action: ActionItem = AliasProperty(
@@ -65,9 +69,13 @@ class NotificationWidget(PageWidget):
         **kwargs: object,
     ) -> None:
         """Create a new `NotificationWidget` object."""
+
+        def dispatch_dismiss() -> None:
+            self.dispatch('on_dismiss')
+
         self.dismiss_action = ActionItem(
             icon='󰆴',
-            action=lambda: self.dispatch('on_dismiss') and None,
+            action=dispatch_dismiss,
             label='',
             is_short=True,
             background_color=DANGER_COLOR,

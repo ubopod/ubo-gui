@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.10.7
+
+- fix(menu): not assume the return value of the action in `ActionItem` is a `Menu`
+  if it is not an `application`
+
 ## Version 0.10.6
 
 - feat: info action for the `NotificationWidget`

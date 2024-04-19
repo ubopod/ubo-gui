@@ -221,9 +221,8 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         if not result:
             return
         if isinstance(result, type) and issubclass(result, PageWidget):
-            application_instance = result(name=uuid.uuid4().hex)
-            self.open_application(application_instance)
-        else:
+            self.open_application(result())
+        elif isinstance(result, Menu):
             self.open_menu(result)
 
     def select_application_item(self: MenuWidget, item: ApplicationItem) -> None:
@@ -243,8 +242,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             )
             if application_instance:
                 self.close_application(application_instance)
-            application_instance = application(name=uuid.uuid4().hex)
-            self.open_application(application_instance)
+            self.open_application(application())
 
         subscription = process_subscribable_value(
             item.application,
@@ -440,6 +438,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         headless_widget = HeadlessWidget.get_instance(self)
         if headless_widget:
             headless_widget.activate_high_fps_mode()
+        application.name = uuid.uuid4().hex
         self.push(
             application,
             transition=self._swap_transition,
@@ -551,7 +550,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             self.clean_application(popped.application)
         target = self.top
         transition_ = self._slide_transition
-        if isinstance(target, PageWidget) or self.current_application:
+        if isinstance(target, StackApplicationItem) or self.current_application:
             transition_ = self._swap_transition
         self._switch_to(
             self.current_screen,
