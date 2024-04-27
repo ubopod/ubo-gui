@@ -26,19 +26,19 @@
       BoxLayout:
         pos: container.pos
         orientation: 'vertical'
-        height: self.minimum_height
+        height: max(container.height, self.minimum_height)
         width: container.width
         id: scrollable_widget
 
         Label:
           padding: dp(20), 0, dp(20), 0
-          font_size: dp(52)
+          font_size: dp(42)
           text: root.icon
           halign: 'center'
           valign: 'middle'
           color: root.color
           size_hint: 1, None
-          height: dp(60)
+          height: dp(46)
           markup: True
 
         Label:

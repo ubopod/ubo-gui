@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.10.8
+
+- fix(regression): handle return value of the action in `ActionItem` when it's callable
+- refactor(notification): make the icon smaller and make sure it is rendered on top
+
 ## Version 0.10.7
 
 - fix(menu): not assume the return value of the action in `ActionItem` is a `Menu`
