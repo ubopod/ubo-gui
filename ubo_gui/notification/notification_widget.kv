@@ -3,7 +3,7 @@
 <NotificationWidget>:
   BoxLayout:
     orientation: 'horizontal'
-    padding: 0, 0 if root.title is None else root.padding_top, 0, root.padding_bottom
+    padding: 0, dp(6) if root.title is None else root.padding_top + dp(2), 0, root.padding_bottom
     spacing: dp(4)
 
     BoxLayout:
@@ -27,7 +27,7 @@
       BoxLayout:
         pos: container.pos
         orientation: 'vertical'
-        height: max(container.height, self.minimum_height) - dp(10)
+        height: max(container.height, self.minimum_height)
         width: container.width
         id: scrollable_widget
 
@@ -36,19 +36,19 @@
           font_size: dp(42)
           text: root.icon
           halign: 'center'
-          valign: 'middle'
+          valign: 'top'
           color: root.color
           size_hint: 1, None if root.icon else 0
-          height: dp(46)
+          height: dp(42) if root.icon else 0
           markup: True
 
         Label:
           font_size: dp(22)
           text: root.notification_title
-          size_hint: None, None if root.title else 0
+          size_hint: None, None if root.notification_title else 0
           width: container.width
           text_size: self.width, None
-          height: self.texture_size[1] + dp(8)
+          height: self.texture_size[1] + dp(8) if root.notification_title else 0
           halign: 'center'
           valign: 'middle'
           strip: True
@@ -58,17 +58,17 @@
           font_size: dp(16)
           text: root.content
           text_size: self.size[0], None
-          height: self.texture_size[1]
+          height: self.texture_size[1] + dp(4) if root.content else 0
           size_hint: 1, None if root.content else 0
           halign: 'center'
-          valign: 'top'
+          valign: 'bottom'
           shorten: False
           strip: True
           markup: True
 
         Widget:
-          size_hint: 1, None
-          height: max(container.height - scrollable_widget.height, 0)
+          size_hint: 1, 1
+          height: max(container.height - scrollable_widget.minimum_height, 0)
 
     AnchorLayout:
       size_hint: (None, 1) if scrollable_widget.height - container.height else (None, None)

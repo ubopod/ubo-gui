@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.11.2
+
+- refactor(NotificationWidget): improve layout of the notification widget
+
 ## Version 0.11.1
 
 - fix(menu): use application's title as the title of the menu if it's provided
