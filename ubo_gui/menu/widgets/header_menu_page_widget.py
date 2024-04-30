@@ -10,6 +10,7 @@ from kivy.lang.builder import Builder
 from kivy.properties import StringProperty
 
 from ubo_gui.menu.constants import PAGE_SIZE
+from ubo_gui.menu.widgets.item_widget import ItemWidget
 from ubo_gui.page import PageWidget
 
 if TYPE_CHECKING:
@@ -21,11 +22,10 @@ class HeaderMenuPageWidget(PageWidget):
 
     heading = StringProperty()
     sub_heading = StringProperty()
-    placeholder = StringProperty(allownone=True)
 
     def __init__(
         self: HeaderMenuPageWidget,
-        items: Sequence[Item],
+        items: Sequence[Item | None],
         **kwargs: Any,  # noqa: ANN401
     ) -> None:
         """Initialize a `HeaderMenuPageWidget`.
@@ -40,10 +40,26 @@ class HeaderMenuPageWidget(PageWidget):
         `Screen`.
 
         """
-        if len(items) > 1:
-            msg = '`HeaderMenuPageWidget` is initialized with more than one item'
-            raise ValueError(msg)
+        self.bind(on_kv_post=self.render)
         super().__init__(items, **kwargs)
+        if len(items) > self.count - 2:
+            msg = (
+                '`HeaderMenuPageWidget` is initialized with more than '
+                f'`{self.count - 2}` items'
+            )
+            raise ValueError(msg)
+        self.bind(items=self.render)
+
+    def render(self: HeaderMenuPageWidget, *_: object) -> None:
+        """Render the widget."""
+        self.ids.layout.clear_widgets()
+        for i in range(self.count - 2):
+            self.ids.layout.add_widget(
+                ItemWidget(
+                    item=self.items[i] if i < len(self.items) else None,
+                    size_hint=(1, None),
+                ),
+            )
 
     def get_item(self: HeaderMenuPageWidget, index: int) -> Item | None:
         """Get the item at the given index."""

@@ -1,4 +1,4 @@
-#:kivy 2.2.1
+#:kivy 2.3.0
 
 <GaugeWidget>:
   _size: (self.width, self.width) if self.width < (self.height - dp(24)) * 2 else ((self.height - dp(24)) * 2, (self.height - dp(24)) * 2)
@@ -24,7 +24,7 @@
       angle_end: 270 + (self.value - self.min_value) / (self.max_value - self.min_value) * 180
 
     Color:
-      rgba: 0, 0, 0, 1
+      rgb: 0, 0, 0
 
     Ellipse:
       pos: root._pos[0] + root._size[0] / 4, root._pos[1] + root._size[1] / 4

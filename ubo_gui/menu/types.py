@@ -116,6 +116,9 @@ class Item(Immutable):
     icon of the item is rendered and its label is hidden.
         Optionally it can be a callable returning the is_short value.
 
+    opacity: `float`
+        Between 0 and 1, sets the transparency channel of the item.
+
     """
 
     label: str | Callable[[], str] = ''
@@ -123,6 +126,7 @@ class Item(Immutable):
     background_color: Color | Callable[[], Color] = PRIMARY_COLOR
     icon: str | None | Callable[[], str | None] = None
     is_short: bool | Callable[[], bool] = False
+    opacity: float | None = None
 
 
 class ActionItem(Item):

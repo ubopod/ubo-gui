@@ -1,14 +1,14 @@
-#:kivy 2.2.1
+#:kivy 2.3.0
 
 <PromptWidget>:
   BoxLayout:
     id: layout
+    padding: 0, root.padding_top, 0, root.padding_bottom
     orientation: 'vertical'
-    spacing: dp(7)
+    spacing: dp(UBO_GUI_MENU_ITEM_GAP)
 
     Label:
-      padding: dp(50), 0, dp(50), 0
-      text: root.heading
+      padding: dp(10), 0, dp(10), 0
       text_size: self.size
       halign: 'center'
       valign: 'bottom'
@@ -20,16 +20,17 @@
       markup: True
 
     Label:
+      padding: dp(10), 0, dp(10), 0
       text: root.prompt
-      text_size: self.size
+      text_size: self.size[0], None
       font_size: dp(18)
       halign: 'center'
       valign: 'middle'
       color: 1, 1, 1
       size_hint: 1, None
       height: dp(20)
-      shorten: True
-      shorten_from: 'right'
+      shorten: False
+      strip: True
       markup: True
 
     ItemWidget:

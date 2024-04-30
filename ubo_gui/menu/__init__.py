@@ -14,11 +14,16 @@ import threading
 import uuid
 import warnings
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, Callable, Self, Sequence, cast
+from typing import TYPE_CHECKING, Callable, Self, Sequence, cast
 
 from headless_kivy_pi import HeadlessWidget
 from kivy.lang.builder import Builder
-from kivy.properties import AliasProperty, ListProperty
+from kivy.properties import (
+    AliasProperty,
+    BooleanProperty,
+    ListProperty,
+    NumericProperty,
+)
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen, ScreenManager, TransitionBase
 
@@ -41,6 +46,8 @@ from .widgets.header_menu_page_widget import HeaderMenuPageWidget
 from .widgets.normal_menu_page_widget import NormalMenuPageWidget
 
 if TYPE_CHECKING:
+    from kivy.uix.widget import Widget
+
     from ubo_gui.animated_slider import AnimatedSlider
 
 
@@ -113,7 +120,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
     screen_manager: ScreenManager
     slider: AnimatedSlider
 
-    def __init__(self: MenuWidget, **kwargs: dict[str, Any]) -> None:
+    def __init__(self: MenuWidget, **kwargs: object) -> None:
         """Initialize a `MenuWidget`."""
         self._current_menu_items = []
         self.widget_subscriptions = set()
@@ -159,7 +166,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             self.current_application.go_down()
             return
 
-        if self.pages <= 1:
+        if self.pages == 1:
             return
         self.page_index = (self.page_index + 1) % self.pages
         self.render_items()
@@ -178,7 +185,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             self.current_application.go_up()
             return
 
-        if self.pages <= 1:
+        if self.pages == 1:
             return
         self.page_index = (self.page_index - 1) % self.pages
         self.render_items()
@@ -289,67 +296,137 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             headless_widget.activate_high_fps_mode()
         self.pop()
 
+    def render_header_menu(self: MenuWidget, menu: HeadedMenu) -> HeaderMenuPageWidget:
+        """Render a header menu."""
+        next_item = (
+            None
+            if self.page_index == self.pages - 1
+            else (padding_item := self.current_menu_items[PAGE_SIZE - 2])
+            and Item(
+                label=padding_item.label,
+                icon=padding_item.icon,
+                background_color=padding_item.background_color,
+                is_short=padding_item.is_short,
+                opacity=0.6,
+            )
+        )
+        list_widget = HeaderMenuPageWidget(
+            [*self.current_menu_items[: PAGE_SIZE - 2], next_item],
+            name=f'Page {self.get_depth()} 0',
+            count=PAGE_SIZE + 1 if self.render_surroundings else PAGE_SIZE,
+            offset=1 if self.render_surroundings else 0,
+            render_surroundings=self.render_surroundings,
+            padding_bottom=self.padding_bottom,
+            padding_top=self.padding_top,
+        )
+
+        def handle_heading_change(heading: str) -> None:
+            logger.debug(
+                'Handle `heading` change...',
+                extra={
+                    'new_heading': heading,
+                    'old_heading': list_widget.heading,
+                    'subscription_level': 'widget',
+                },
+            )
+            if heading != list_widget.heading:
+                list_widget.heading = heading
+
+        self.widget_subscriptions.add(
+            process_subscribable_value(
+                menu.heading,
+                handle_heading_change,
+            ),
+        )
+
+        def handle_sub_heading_change(sub_heading: str) -> None:
+            logger.debug(
+                'Handle `sub_heading` change...',
+                extra={
+                    'new_sub_heading': sub_heading,
+                    'old_sub_heading': list_widget.sub_heading,
+                    'subscription_level': 'widget',
+                },
+            )
+            if sub_heading != list_widget.sub_heading:
+                list_widget.sub_heading = sub_heading
+
+        self.widget_subscriptions.add(
+            process_subscribable_value(
+                menu.sub_heading,
+                handle_sub_heading_change,
+            ),
+        )
+
+        return list_widget
+
+    def render_normal_menu(self: MenuWidget, menu: Menu) -> NormalMenuPageWidget:
+        """Render a normal menu."""
+        offset = -(PAGE_SIZE - 1) if isinstance(menu, HeadedMenu) else 0
+        items: list[Item | None] = list(
+            self.current_menu_items[
+                self.page_index * PAGE_SIZE + offset : self.page_index * PAGE_SIZE
+                + PAGE_SIZE
+                + offset
+            ],
+        )
+        if self.render_surroundings:
+            previous_item = (
+                None
+                if self.page_index == 0
+                else (
+                    padding_item := self.current_menu_items[
+                        self.page_index * PAGE_SIZE + offset - 1
+                    ]
+                )
+                and Item(
+                    label=padding_item.label,
+                    icon=padding_item.icon,
+                    background_color=padding_item.background_color,
+                    is_short=padding_item.is_short,
+                    opacity=0.6,
+                )
+            )
+            next_item = (
+                None
+                if self.page_index == self.pages - 1
+                else (
+                    padding_item := self.current_menu_items[
+                        self.page_index * PAGE_SIZE + PAGE_SIZE + offset
+                    ]
+                )
+                and Item(
+                    label=padding_item.label,
+                    icon=padding_item.icon,
+                    background_color=padding_item.background_color,
+                    is_short=padding_item.is_short,
+                    opacity=0.6,
+                )
+            )
+            items = [previous_item, *items, next_item]
+        return NormalMenuPageWidget(
+            items,
+            name=f'Page {self.get_depth()} 0',
+            count=PAGE_SIZE + 2 if self.render_surroundings else PAGE_SIZE,
+            offset=1 if self.render_surroundings else 0,
+            render_surroundings=self.render_surroundings,
+            padding_bottom=self.padding_bottom,
+            padding_top=self.padding_top,
+        )
+
     def render_items(self: MenuWidget, *_: object) -> None:
         """Render the items of the current menu."""
         self.clear_widget_subscriptions()
+        if self.page_index >= self.pages:
+            self.page_index = self.pages - 1
         if not self.current_menu:
             return
         if self.page_index == 0 and isinstance(self.current_menu, HeadedMenu):
-            list_widget = HeaderMenuPageWidget(
-                self.current_menu_items[:1],
-                name=f'Page {self.get_depth()} 0',
-            )
-
-            def handle_heading_change(heading: str) -> None:
-                logger.debug(
-                    'Handle `heading` change...',
-                    extra={
-                        'new_heading': heading,
-                        'old_heading': list_widget.heading,
-                        'subscription_level': 'widget',
-                    },
-                )
-                if heading != list_widget.heading:
-                    list_widget.heading = heading
-
-            self.widget_subscriptions.add(
-                process_subscribable_value(
-                    self.current_menu.heading,
-                    handle_heading_change,
-                ),
-            )
-
-            def handle_sub_heading_change(sub_heading: str) -> None:
-                logger.debug(
-                    'Handle `sub_heading` change...',
-                    extra={
-                        'new_sub_heading': sub_heading,
-                        'old_sub_heading': list_widget.sub_heading,
-                        'subscription_level': 'widget',
-                    },
-                )
-                if sub_heading != list_widget.sub_heading:
-                    list_widget.sub_heading = sub_heading
-
-            self.widget_subscriptions.add(
-                process_subscribable_value(
-                    self.current_menu.sub_heading,
-                    handle_sub_heading_change,
-                ),
-            )
-
-            self.current_screen = list_widget
+            list_widget = self.render_header_menu(self.current_menu)
         else:
-            offset = (
-                -(PAGE_SIZE - 1) if isinstance(self.current_menu, HeadedMenu) else 0
-            )
-            list_widget = NormalMenuPageWidget(
-                self.current_menu_items[
-                    self.page_index * 3 + offset : self.page_index * 3 + 3 + offset
-                ],
-                name=f'Page {self.get_depth()} 0',
-            )
-            self.current_screen = list_widget
+            list_widget = self.render_normal_menu(self.current_menu)
+
+        self.current_screen = list_widget
 
         def handle_placeholder_change(placeholder: str | None) -> None:
             logger.debug(
@@ -442,14 +519,18 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         if headless_widget:
             headless_widget.activate_high_fps_mode()
         application.name = uuid.uuid4().hex
+        application.padding_bottom = self.padding_bottom
+        application.padding_top = self.padding_top
         self.push(
             application,
             transition=self._swap_transition,
             duration=0.2,
             direction='left',
         )
-        application.bind(on_close=self.close_application)
-        application.bind(on_leave=self.leave_application)
+        application.bind(
+            on_close=self.close_application,
+            on_leave=self.leave_application,
+        )
 
     def clean_application(self: MenuWidget, application: PageWidget) -> None:
         """Clean up the application bounds."""
@@ -566,8 +647,8 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         """Return whether scroll-bar is needed or not."""
         return not self.current_application and self.pages > 1
 
-    def on_kv_post(self: MenuWidget, base_widget: Any) -> None:  # noqa: ANN401
-        """Activate low fps mode when transition is done."""
+    def on_kv_post(self: MenuWidget, base_widget: Widget) -> None:
+        """Run after the widget is fully constructed."""
         _ = base_widget
         self.screen_manager = cast(ScreenManager, self.ids.screen_manager)
         self.slider = self.ids.slider
@@ -619,9 +700,9 @@ class MenuWidget(BoxLayout, TransitionsMixin):
     def get_pages(self: MenuWidget) -> int:
         """Return the number of pages of the currently active menu."""
         if isinstance(self.current_menu, HeadedMenu):
-            return math.ceil((len(self.current_menu_items) + 2) / 3)
+            return max(math.ceil((len(self.current_menu_items) + 2) / 3), 1)
         if isinstance(self.current_menu, HeadlessMenu):
-            return math.ceil(len(self.current_menu_items) / 3)
+            return max(math.ceil(len(self.current_menu_items) / 3), 1)
         return 0
 
     def get_current_menu_items(self: MenuWidget) -> Sequence[Item] | None:
@@ -631,7 +712,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
     def set_current_menu_items(self: MenuWidget, items: Sequence[Item]) -> bool:
         """Set current menu items."""
         self._current_menu_items = items
-        self.slider.value = self.get_pages() - 1
+        self.slider.value = self.get_pages() - 1 - self.page_index
         return True
 
     stack: list[StackItem] = ListProperty()
@@ -643,7 +724,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
     depth: int = AliasProperty(getter=get_depth, bind=['stack'], cache=True)
     pages: int = AliasProperty(
         getter=get_pages,
-        bind=['current_menu_items'],
+        bind=['current_menu_items', 'current_menu'],
         cache=True,
     )
     page_index = AliasProperty(
@@ -674,6 +755,12 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         bind=['pages'],
         cache=True,
     )
+    render_surroundings = BooleanProperty(
+        default=False,
+        cache=True,
+    )
+    padding_bottom = NumericProperty(default=0)
+    padding_top = NumericProperty(default=0)
 
 
 Builder.load_file(

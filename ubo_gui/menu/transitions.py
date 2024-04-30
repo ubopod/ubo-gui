@@ -59,7 +59,7 @@ class TransitionsMixin:
                     len(self.transition_queue) > 1
                     and transition is not self._no_transition
                 ):
-                    duration = 0.1
+                    duration = 0.08
                 mainthread(
                     lambda *_: self.screen_manager.switch_to(
                         screen,
@@ -106,6 +106,8 @@ class TransitionsMixin:
         duration: float | None = None,
         direction: str | None = None,
     ) -> None:
+        if duration is None:
+            duration = 0.2
         self.screen_manager.switch_to(
             screen,
             transition=transition,
@@ -119,7 +121,7 @@ class TransitionsMixin:
         /,
         *,
         transition: TransitionBase,
-        duration: float | None = None,
+        duration: float | None = 0.3,
         direction: str | None = None,
     ) -> None:
         """Switch to a new screen."""

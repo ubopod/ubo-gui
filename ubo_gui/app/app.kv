@@ -1,7 +1,7 @@
-#:kivy 2.2.1
+#:kivy 2.3.0
 
 <RootWidget>:
-  BoxLayout:
+  FloatLayout:
     id: main_layout
     size: root.size
     pos: root.pos
@@ -10,15 +10,18 @@
     BoxLayout:
       id: header_layout
       size_hint: 1, None
+      pos: 0, root.height - dp(30)
       height: dp(30)
 
     BoxLayout:
       id: central_layout
+      pos: 0, 0
       size_hint: 1, 1
 
     BoxLayout:
       id: footer_layout
       size_hint: 1, None
+      pos: 0, 0
       height: dp(40)
 
 RootWidget:

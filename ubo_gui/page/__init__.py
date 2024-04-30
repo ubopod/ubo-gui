@@ -5,7 +5,12 @@ from __future__ import annotations
 import warnings
 from typing import TYPE_CHECKING, Self, Sequence
 
-from kivy.properties import ListProperty, StringProperty
+from kivy.properties import (
+    BooleanProperty,
+    ListProperty,
+    NumericProperty,
+    StringProperty,
+)
 from kivy.uix.screenmanager import Screen
 
 if TYPE_CHECKING:
@@ -20,8 +25,17 @@ class PageWidget(Screen):
 
     __events__ = ('on_close',)
 
-    items: Sequence[Item] = ListProperty([])
+    items: Sequence[Item | None] = ListProperty([])
     title: str | None = StringProperty(allownone=True, defaultvalue=None)
+    count = NumericProperty(defaultvalue=PAGE_MAX_ITEMS)
+    offset = NumericProperty(defaultvalue=0)
+    placeholder = StringProperty(allownone=True)
+    render_surroundings = BooleanProperty(
+        default=False,
+        cache=True,
+    )
+    padding_top = NumericProperty(default=0)
+    padding_bottom = NumericProperty(default=0)
 
     def go_up(self: Self) -> None:
         """Implement this method to provide custom logic for up key."""
@@ -41,7 +55,7 @@ class PageWidget(Screen):
 
     def __init__(
         self: PageWidget,
-        items: Sequence[Item] | None = None,
+        items: Sequence[Item | None] | None = None,
         *args: object,
         **kwargs: object,
     ) -> None:
@@ -60,15 +74,16 @@ class PageWidget(Screen):
         `Screen`.
 
         """
-        if items and len(items) > PAGE_MAX_ITEMS:
-            msg = f"""`PageWidget` is initialized with more than `MAX_ITEMS`={
-            PAGE_MAX_ITEMS} items"""
-            raise ValueError(msg)
         self.items = items or []
         super().__init__(*args, **kwargs)
+        if items and len(items) > self.count:
+            msg = f"""`PageWidget` is initialized with more than `MAX_ITEMS`={
+            self.count} items"""
+            raise ValueError(msg)
 
     def get_item(self: PageWidget, index: int) -> Item | None:
         """Get the page item at the given index."""
+        index += self.offset
         if not 0 <= index < len(self.items):
             msg = f"""index must be greater than or equal to 0 and less than {
             len(self.items)}"""

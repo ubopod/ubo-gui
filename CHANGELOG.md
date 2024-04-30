@@ -1,5 +1,15 @@
 # Changelog
 
+## Version 0.11.0
+
+- feat(Menu): render faded next and previous menu items to induce there are more
+  items in the menu and it can be scrolled
+- refactor(core): add colors to list of global constants to avoid hardcoding
+- refactor(AnimatedSlider): not using the default look, replaced with the one designed
+  in figma
+- refactor(ItemWidget): add `opacity` field
+- ci(github): add changelog to the release notes
+
 ## Version 0.10.8
 
 - fix(regression): handle return value of the action in `ActionItem` when it's callable

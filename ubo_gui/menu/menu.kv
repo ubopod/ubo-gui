@@ -1,20 +1,25 @@
-#:kivy 2.2.1
+#:kivy 2.3.0
 
 <MenuWidget>:
   orientation: 'horizontal'
-  
   ScreenManager:
     id: screen_manager
     size_hint: 1, 1
 
-  AnimatedSlider:
-    id: slider
-    min: 0
-    max: root.pages - 1
-    animated_value: root.pages - 1 - root.page_index
+  BoxLayout:
     orientation: 'vertical'
-    size_hint: (None, 1) if root.is_scrollbar_visible else (None, None)
+    padding: 0, root.padding_top, 0, root.padding_bottom
+    size_hint: (None, 1) if root.is_scrollbar_visible else (0, None)
     width: dp(30) if root.is_scrollbar_visible else 0
-    height: 0
-    opacity: 1 if root.is_scrollbar_visible else 0
-    disabled: not root.is_scrollbar_visible
+
+    AnimatedSlider:
+      id: slider
+      min: 0
+      max: root.pages - 1
+      animated_value: root.pages - 1 - root.page_index
+      orientation: 'vertical'
+      size_hint: (None, 1) if root.is_scrollbar_visible else (None, None)
+      width: dp(30) if root.is_scrollbar_visible else 0
+      height: 0
+      opacity: 1 if root.is_scrollbar_visible else 0
+      disabled: not root.is_scrollbar_visible

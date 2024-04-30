@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ubo-gui"
-version = "0.10.8"
+version = "0.11.0"
 description = "GUI sdk for Ubo Pod"
 authors = ["Sassan Haradji <sassanh@gmail.com>"]
 license = "Apache-2.0"
@@ -26,8 +26,8 @@ optional = true
 
 [tool.poetry.group.dev.dependencies]
 poethepoet = "^0.24.4"
-pyright = "^1.1.359"
-ruff = "^0.4.1"
+pyright = "^1.1.360"
+ruff = "^0.4.2"
 
 [tool.poetry.extras]
 dev = ['headless-kivy-pi']

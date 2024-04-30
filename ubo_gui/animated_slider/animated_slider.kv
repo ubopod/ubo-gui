@@ -1,0 +1,19 @@
+#:kivy 2.3.0
+#:import utils kivy.utils
+
+<-AnimatedSlider@Slider>:
+  background_width: dp(2)
+  cursor_size: ((dp(13), dp(28)) if self.orientation == 'horizontal' else (dp(28), dp(13)))
+  padding: min(*self.cursor_size) / 2
+  canvas:
+    Color:
+      rgb: utils.get_color_from_hex(UBO_GUI_SECONDARY_COLOR_LIGHT)
+    Rectangle:
+      pos: (self.x, self.center_y - self.background_width/2) if self.orientation == 'horizontal' else (self.center_x - self.background_width/2, self.y)
+      size: (self.width, self.background_width) if self.orientation == 'horizontal' else (self.background_width, self.height)
+    Color:
+      rgb: utils.get_color_from_hex(UBO_GUI_PRIMARY_COLOR)
+    RoundedRectangle:
+      pos: (root.value_pos[0] - root.cursor_width/2, root.center_y - root.cursor_height/2) if root.orientation == 'horizontal' else (root.center_x - root.cursor_width/2, root.value_pos[1] - root.cursor_height/2)
+      size: root.cursor_size
+      radius: (min(*root.cursor_size) / 2,) * 2

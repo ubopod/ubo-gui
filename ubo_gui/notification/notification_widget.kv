@@ -1,15 +1,16 @@
-#:kivy 2.2.1
+#:kivy 2.3.0
 
 <NotificationWidget>:
   BoxLayout:
     orientation: 'horizontal'
+    padding: 0, root.padding_top, 0, root.padding_bottom
     spacing: dp(4)
 
     BoxLayout:
       size_hint: None, 1
       width: dp(UBO_GUI_SHORT_WIDTH)
       orientation: 'vertical'
-      spacing: dp(7)
+      spacing: dp(UBO_GUI_MENU_ITEM_GAP)
 
       ItemWidget:
         item: root.info_action
@@ -19,7 +20,7 @@
         item: root.dismiss_action
         size_hint: 1, None
 
-    Widget:
+    StencilView:
       id: container
       size_hint: 1, 1
 
@@ -37,25 +38,21 @@
           halign: 'center'
           valign: 'middle'
           color: root.color
-          size_hint: 1, None
+          size_hint: 1, None if root.icon else 0
           height: dp(46)
           markup: True
 
         Label:
           font_size: dp(22)
           text: root.notification_title
-          size_hint: None, None
+          size_hint: None, None if root.title else 0
           width: container.width
           text_size: self.width, None
-          height: self.texture_size[1] + dp(16)
+          height: self.texture_size[1] + dp(8)
           halign: 'center'
           valign: 'middle'
           strip: True
           markup: True
-
-        Widget:
-          size_hint: 1, None
-          height: dp(4)
 
         Label:
           font_size: dp(16)
@@ -64,26 +61,28 @@
           height: self.texture_size[1]
           size_hint: 1, None
           halign: 'center'
+          valign: 'top'
           shorten: False
           strip: True
           markup: True
 
         Widget:
           size_hint: 1, 1
+          height: 0
 
-    BoxLayout:
-      size_hint: None, 1
-      orientation: 'vertical'
-      width: dp(UBO_GUI_SHORT_WIDTH)
-      padding: 0, dp(16), 0, dp(16)
+    AnchorLayout:
+      size_hint: (None, 1) if scrollable_widget.height - container.height else (0, None)
+      width: dp(UBO_GUI_SHORT_WIDTH - 2)
 
       AnimatedSlider:
         id: slider
+        anchor_x: 'center'
         min: 0
         max: max(scrollable_widget.height - container.height, 0)
         animated_value: self.max
         orientation: 'vertical'
-        size_hint: (1, 1) if scrollable_widget.height - container.height > 0 else (None, None)
+        size_hint: (None, 1) if scrollable_widget.height - container.height > 0 else (None, None)
+        width: dp(30) if scrollable_widget.height - container.height > 0 else 0
         height: root.height
         opacity: 1 if scrollable_widget.height - container.height > 0 else 0
         disabled: scrollable_widget.height - container.height <= 0

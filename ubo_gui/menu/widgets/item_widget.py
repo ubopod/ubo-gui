@@ -9,6 +9,7 @@ from kivy.lang.builder import Builder
 from kivy.properties import (
     BooleanProperty,
     ColorProperty,
+    NumericProperty,
     ObjectProperty,
     StringProperty,
 )
@@ -50,12 +51,13 @@ class ItemWidget(BoxLayout):
     background_color: Color = ColorProperty(PRIMARY_COLOR)
     icon: str = StringProperty(defaultvalue='')
     is_short: bool = BooleanProperty(defaultvalue=False)
-    item: Item = ObjectProperty()
+    item: Item = ObjectProperty(allownone=True)
+    opacity: float = NumericProperty(default=1, min=0, max=1)
 
-    def __init__(self: ItemWidget, **kwargs: dict[str, Any]) -> None:
+    def __init__(self: ItemWidget, item: Item | None = None, **kwargs: Any) -> None:  # noqa: ANN401
         """Initialize an `ItemWidget`."""
-        super().__init__(**kwargs)
         self._subscriptions = []
+        super().__init__(item=item, **kwargs)
 
     def __del__(self: ItemWidget) -> None:
         """Unsubscribe from the item."""
@@ -117,6 +119,8 @@ class ItemWidget(BoxLayout):
                     lambda value: setattr(instance, 'icon', value or ''),
                 ),
             )
+
+            instance.opacity = value.opacity or 1
         else:
             instance.is_set = False
 
