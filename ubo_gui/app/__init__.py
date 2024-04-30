@@ -10,7 +10,6 @@ from headless_kivy_pi import HeadlessWidget
 from kivy.app import App
 from kivy.core.text import DEFAULT_FONT, LabelBase
 from kivy.lang.builder import Builder
-from kivy.metrics import dp
 from kivy.properties import StringProperty
 from kivy.uix.label import Label
 
@@ -81,10 +80,10 @@ class UboApp(App):
         header_layout: BoxLayout = self.root.ids.header_layout
         if title is not None:
             self.header_label.text = title
-            header_layout.height = dp(30)
+            header_layout.opacity = 1
         else:
             self.header_label.text = ''
-            header_layout.height = 0
+            header_layout.opacity = 0
 
     @cached_property
     def header(self: UboApp) -> Widget | None:

@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.11.1
+
+- fix(menu): use application's title as the title of the menu if it's provided
+- fix(menu): add the title space to the application if it has no title
+
 ## Version 0.11.0
 
 - feat(Menu): render faded next and previous menu items to induce there are more

@@ -454,8 +454,10 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         if not self.stack:
             return
 
+        title = None
         if isinstance(self.top, StackApplicationItem):
             self.current_screen = self.top.application
+            title = self.top.application.title
         if isinstance(self.top, StackMenuItem):
             menu = self.top.menu
             last_items = None
@@ -484,21 +486,23 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                 process_subscribable_value(menu.items, handle_items_change),
             )
 
-            def handle_title_change(title: str) -> None:
-                logger.debug(
-                    'Handle `title` change...',
-                    extra={
-                        'new_title': title,
-                        'old_title': self.title,
-                        'subscription_level': 'screen',
-                    },
-                )
-                if self._title != title:
-                    self.title = title
+            title = menu.title
 
-            self.screen_subscriptions.add(
-                process_subscribable_value(menu.title, handle_title_change),
+        def handle_title_change(title: str | None) -> None:
+            logger.debug(
+                'Handle `title` change...',
+                extra={
+                    'new_title': title,
+                    'old_title': self.title,
+                    'subscription_level': 'screen',
+                },
             )
+            if self._title != title:
+                self.title = title
+
+        self.screen_subscriptions.add(
+            process_subscribable_value(title, handle_title_change),
+        )
 
     def get_current_screen(self: MenuWidget) -> Screen | None:
         """Return current screen."""
