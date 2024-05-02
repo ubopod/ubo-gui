@@ -50,13 +50,13 @@ adafruit-circuitpython-typing = "*"
 
 [[package]]
 name = "adafruit-circuitpython-connectionmanager"
-version = "1.2.1"
+version = "2.0.0"
 description = "A urllib3.poolmanager/urllib3.connectionpool-like library for managing sockets and connections"
 optional = true
 python-versions = "*"
 files = [
-    {file = "adafruit_circuitpython_connectionmanager-1.2.1-py3-none-any.whl", hash = "sha256:fc3588b931583e8759600217d779dafc617bc83430e425f4967b2804221a7dbc"},
-    {file = "adafruit_circuitpython_connectionmanager-1.2.1.tar.gz", hash = "sha256:586742d29f335df5c99e940a16c34346b441be7e43ba3ec994f1da88495e8b7b"},
+    {file = "adafruit_circuitpython_connectionmanager-2.0.0-py3-none-any.whl", hash = "sha256:a7164831e02c02792c65123d2931dfeb6e998456aa0da48a0effaaddc8af7691"},
+    {file = "adafruit_circuitpython_connectionmanager-2.0.0.tar.gz", hash = "sha256:32b0a2e38f703bf6e22d93e6929a301fe4e18fff6f68ad251521b8d250ef6436"},
 ]
 
 [package.dependencies]
@@ -698,13 +698,13 @@ files = [
 
 [[package]]
 name = "pyright"
-version = "1.1.360"
+version = "1.1.361"
 description = "Command line wrapper for pyright"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "pyright-1.1.360-py3-none-any.whl", hash = "sha256:7637f75451ac968b7cf1f8c51cfefb6d60ac7d086eb845364bc8ac03a026efd7"},
-    {file = "pyright-1.1.360.tar.gz", hash = "sha256:784ddcda9745e9f5610483d7b963e9aa8d4f50d7755a9dffb28ccbeb27adce32"},
+    {file = "pyright-1.1.361-py3-none-any.whl", hash = "sha256:c50fc94ce92b5c958cfccbbe34142e7411d474da43d6c14a958667e35b9df7ea"},
+    {file = "pyright-1.1.361.tar.gz", hash = "sha256:1d67933315666b05d230c85ea8fb97aaa2056e4092a13df87b7765bb9e8f1a8d"},
 ]
 
 [package.dependencies]

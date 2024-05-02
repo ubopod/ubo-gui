@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.11.3
+
+- feat(Menu): action items can now return not only the application class, but also
+  instances of applications too
+- fix(QRCodeWidget): set default value of `fit_mode` to `contain`
+
 ## Version 0.11.2
 
 - refactor(NotificationWidget): improve layout of the notification widget

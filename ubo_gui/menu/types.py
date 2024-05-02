@@ -139,7 +139,10 @@ class ActionItem(Item):
 
     """
 
-    action: Callable[[], Menu | Callable[[], Menu] | type[PageWidget] | None]
+    action: Callable[
+        [],
+        Menu | Callable[[], Menu] | type[PageWidget] | PageWidget | None,
+    ]
 
 
 class ApplicationItem(Item):

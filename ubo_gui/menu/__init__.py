@@ -229,6 +229,8 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             return
         if isinstance(result, type) and issubclass(result, PageWidget):
             self.open_application(result())
+        if isinstance(result, PageWidget):
+            self.open_application(result)
         elif isinstance(result, Menu) or callable(result):
             self.open_menu(result)
         else:
@@ -550,7 +552,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             self.go_back()
 
     def leave_application(self: MenuWidget, application: PageWidget) -> None:
-        """Close an application after its `on_close` event is fired."""
+        """Close an application after its `on_leave` event is fired."""
         if any(
             isinstance(item, StackApplicationItem) and item.application is application
             for item in self.stack
