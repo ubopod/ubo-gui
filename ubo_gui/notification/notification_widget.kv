@@ -13,11 +13,15 @@
       spacing: dp(UBO_GUI_MENU_ITEM_GAP)
 
       ItemWidget:
-        item: root.info_action
+        item: root.items[0]
         size_hint: 1, None
 
       ItemWidget:
-        item: root.dismiss_action
+        item: root.items[1]
+        size_hint: 1, None
+
+      ItemWidget:
+        item: root.items[2]
         size_hint: 1, None
 
     StencilView:
@@ -72,7 +76,7 @@
 
     AnchorLayout:
       size_hint: (None, 1) if scrollable_widget.height - container.height else (None, None)
-      width: dp(UBO_GUI_SHORT_WIDTH - 2)
+      width: dp(UBO_GUI_SHORT_WIDTH)
 
       AnimatedSlider:
         id: slider

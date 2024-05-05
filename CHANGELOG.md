@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.11.4
+
+- refactor(NotificationWidget): remove all the logic and make it solely a view
+
 ## Version 0.11.3
 
 - feat(Menu): action items can now return not only the application class, but also
