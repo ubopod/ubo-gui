@@ -113,6 +113,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
     widget_subscriptions_lock: threading.Lock
     screen_subscriptions: set[Callable[[], None]]
     screen_subscriptions_lock: threading.Lock
+    stack_lock: threading.Lock
 
     _current_menu_items: Sequence[Item]
     _current_screen: Screen | None = None
@@ -127,6 +128,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         self.widget_subscriptions_lock = threading.Lock()
         self.screen_subscriptions = set()
         self.screen_subscriptions_lock = threading.Lock()
+        self.stack_lock = threading.Lock()
         super().__init__(**kwargs)
         self.bind(stack=self.render)
 
@@ -229,7 +231,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             return
         if isinstance(result, type) and issubclass(result, PageWidget):
             self.open_application(result())
-        if isinstance(result, PageWidget):
+        elif isinstance(result, PageWidget):
             self.open_application(result)
         elif isinstance(result, Menu) or callable(result):
             self.open_menu(result)
@@ -291,12 +293,11 @@ class MenuWidget(BoxLayout, TransitionsMixin):
 
     def go_back(self: MenuWidget) -> None:
         """Go back to the previous menu."""
-        if self.current_application and self.current_application.go_back():
-            return
-        headless_widget = HeadlessWidget.get_instance(self)
-        if headless_widget:
-            headless_widget.activate_high_fps_mode()
-        self.pop()
+        if self.current_application:
+            if not self.current_application.go_back():
+                self.close_application(self.current_application)
+        elif self.current_menu:
+            self.pop()
 
     def render_header_menu(self: MenuWidget, menu: HeadedMenu) -> HeaderMenuPageWidget:
         """Render a header menu."""
@@ -521,22 +522,23 @@ class MenuWidget(BoxLayout, TransitionsMixin):
 
     def open_application(self: MenuWidget, application: PageWidget) -> None:
         """Open an application."""
-        headless_widget = HeadlessWidget.get_instance(self)
-        if headless_widget:
-            headless_widget.activate_high_fps_mode()
-        application.name = uuid.uuid4().hex
-        application.padding_bottom = self.padding_bottom
-        application.padding_top = self.padding_top
-        self.push(
-            application,
-            transition=self._swap_transition,
-            duration=0.2,
-            direction='left',
-        )
-        application.bind(
-            on_close=self.close_application,
-            on_leave=self.leave_application,
-        )
+        with self.stack_lock:
+            headless_widget = HeadlessWidget.get_instance(self)
+            if headless_widget:
+                headless_widget.activate_high_fps_mode()
+            application.name = uuid.uuid4().hex
+            application.padding_bottom = self.padding_bottom
+            application.padding_top = self.padding_top
+            self.push(
+                application,
+                transition=self._swap_transition,
+                duration=0.2,
+                direction='left',
+            )
+            application.bind(
+                on_close=self.close_application,
+                on_leave=self.leave_application,
+            )
 
     def clean_application(self: MenuWidget, application: PageWidget) -> None:
         """Clean up the application bounds."""
@@ -545,11 +547,35 @@ class MenuWidget(BoxLayout, TransitionsMixin):
 
     def close_application(self: MenuWidget, application: PageWidget) -> None:
         """Close an application after its `on_close` event is fired."""
-        while any(
-            isinstance(item, StackApplicationItem) and item.application is application
-            for item in self.stack
-        ):
-            self.go_back()
+        # Remove `application` and all applications in the stack with their `root` being
+        # `application` from stack and clear their bindings and subscriptions.
+        # If any of these applications are the top of the stack, remove it with `pop` to
+        # ensure the animation is played.
+        with self.stack_lock:
+            if any(
+                isinstance(item.root, StackApplicationItem)
+                and item.root.application is application
+                for item in self.stack
+            ):
+                to_be_removed = [
+                    cast(StackApplicationItem, item)
+                    for item in self.stack
+                    if isinstance(item.root, StackApplicationItem)
+                    and item.root.application is application
+                    and item is not self.top
+                ]
+
+                for item in to_be_removed:
+                    item.clear_subscriptions()
+                    self.clean_application(item.application)
+
+                self.stack = [item for item in self.stack if item not in to_be_removed]
+
+                if (
+                    isinstance(self.top.root, StackApplicationItem)
+                    and self.top.root.application is application
+                ):
+                    self.pop()
 
     def leave_application(self: MenuWidget, application: PageWidget) -> None:
         """Close an application after its `on_leave` event is fired."""

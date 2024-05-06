@@ -1,6 +1,7 @@
 #:kivy 2.3.0
 
 <ItemWidget>:
+  orientation: 'horizontal'
   height: dp(UBO_GUI_MENU_ITEM_HEIGHT)
   opacity: root.opacity
 
@@ -10,7 +11,7 @@
 
     RoundedRectangle:
       pos: self.pos
-      size: (dp(UBO_GUI_SHORT_WIDTH) if self.is_short else self.width - dp(30), self.height) if root.is_set else (0, 0)
+      size: (dp(UBO_GUI_SHORT_WIDTH) if self.is_short else self.width - dp(6), self.height) if root.is_set else (0, 0)
       radius: (0, 0), (dp(26), dp(26)), (dp(26), dp(26)), (0, 0)
 
   orientation: 'horizontal'
@@ -21,7 +22,6 @@
     size_hint: None, 1
 
   Label:
-    pos: root.pos
     color: root.color
     font_size: dp(26)
     text: root.icon if root.icon is not None else ''
@@ -31,7 +31,6 @@
     markup: True
 
   Label:
-    pos: root.pos
     color: root.color
     font_size: dp(18)
     text: '' if root.is_short else root.label
@@ -42,7 +41,3 @@
     shorten: True
     shorten_from: 'right'
     markup: True
-
-  Widget:
-    width: dp(34)
-    size_hint: (None, 1) if root.is_short else (0, 1)

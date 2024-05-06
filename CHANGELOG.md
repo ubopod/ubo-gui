@@ -1,5 +1,15 @@
 # Changelog
 
+## Version 0.11.5
+
+- fix(MenuWidget): avoid opening an `ActionItem`'s `action` return value twice if
+  it is a `PageWidget` class
+- refactor(MenuWidget): improve opening/closing application logic to avoid race conditions
+- refactor(PageWidget): add `__repr__` to help debugging and logging `PageWidget`s
+- refactor(MenuWidget): use `mainthread` decorator in transitions only when necessary
+- refactor(ItemWidget): increase the length of non-short items (decrease the right
+  margin from 30 to 6)
+
 ## Version 0.11.4
 
 - refactor(NotificationWidget): remove all the logic and make it solely a view

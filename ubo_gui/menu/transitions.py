@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import threading
 from functools import cached_property
-from typing import Any
+from typing import Any, NotRequired, TypedDict
 
 from headless_kivy_pi import HeadlessWidget
 from kivy.clock import mainthread
@@ -17,6 +17,13 @@ from kivy.uix.screenmanager import (
     TransitionBase,
 )
 from kivy.uix.widget import Widget
+
+
+class SwitchParameters(TypedDict):
+    """Parameters for switching screens."""
+
+    duration: NotRequired[float | None]
+    direction: NotRequired[str | None]
 
 
 class TransitionsMixin:
@@ -60,14 +67,16 @@ class TransitionsMixin:
                     and transition is not self._no_transition
                 ):
                     duration = 0.08
-                mainthread(
-                    lambda *_: self.screen_manager.switch_to(
-                        screen,
-                        transition=transition,
-                        **({'duration': duration} if duration else {}),
-                        **({'direction': direction} if direction else {}),
-                    ),
-                )()
+                switch_parameters: SwitchParameters = {}
+                if duration:
+                    switch_parameters['duration'] = duration
+                if direction:
+                    switch_parameters['direction'] = direction
+                self._perform_switch(
+                    screen,
+                    transition=transition,
+                    **switch_parameters,
+                )
             else:
                 if isinstance(self, Widget):
                     headless_widget = HeadlessWidget.get_instance(self)
@@ -108,7 +117,7 @@ class TransitionsMixin:
     ) -> None:
         if duration is None:
             duration = 0.2
-        self.screen_manager.switch_to(
+        mainthread(self.screen_manager.switch_to)(
             screen,
             transition=transition,
             **({'duration': duration} if duration else {}),
@@ -132,7 +141,7 @@ class TransitionsMixin:
                     if headless_widget:
                         headless_widget.activate_high_fps_mode()
                 self._is_transition_in_progress = transition is not self._no_transition
-                mainthread(self._perform_switch)(
+                self._perform_switch(
                     screen,
                     transition=transition,
                     duration=duration,

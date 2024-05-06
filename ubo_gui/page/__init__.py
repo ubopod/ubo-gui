@@ -93,3 +93,10 @@ class PageWidget(Screen):
 
     def on_close(self: PageWidget) -> None:
         """Signal when the page is closed."""
+
+    def __repr__(self: PageWidget) -> str:
+        """Return a string representation of the `PageWidget`."""
+        return (
+            f'<{self.__class__.__name__}@PageWidget name="{self.name}" '
+            f'title="{self.title}">'
+        )
