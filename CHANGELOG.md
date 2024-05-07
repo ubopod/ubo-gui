@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.11.6
+
+- refactor(MenuWidget): dispatch `on_close` event on the `PageWidget` instance when
+  it is closed, to close a `PageWidget` instance, one should call `close_application`
+
 ## Version 0.11.5
 
 - fix(MenuWidget): avoid opening an `ActionItem`'s `action` return value twice if

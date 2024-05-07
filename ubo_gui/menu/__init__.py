@@ -535,15 +535,6 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                 duration=0.2,
                 direction='left',
             )
-            application.bind(
-                on_close=self.close_application,
-                on_leave=self.leave_application,
-            )
-
-    def clean_application(self: MenuWidget, application: PageWidget) -> None:
-        """Clean up the application bounds."""
-        application.unbind(on_close=self.close_application)
-        application.unbind(on_leave=self.leave_application)
 
     def close_application(self: MenuWidget, application: PageWidget) -> None:
         """Close an application after its `on_close` event is fired."""
@@ -567,7 +558,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
 
                 for item in to_be_removed:
                     item.clear_subscriptions()
-                    self.clean_application(item.application)
+                    item.application.dispatch('on_close')
 
                 self.stack = [item for item in self.stack if item not in to_be_removed]
 
@@ -576,15 +567,6 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                     and self.top.root.application is application
                 ):
                     self.pop()
-
-    def leave_application(self: MenuWidget, application: PageWidget) -> None:
-        """Close an application after its `on_leave` event is fired."""
-        if any(
-            isinstance(item, StackApplicationItem) and item.application is application
-            for item in self.stack
-        ):
-            return
-        application.dispatch('on_close')
 
     @property
     def top(self: MenuWidget) -> StackItem:
@@ -660,10 +642,10 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         if self.depth == 1:
             return
         *self.stack, popped = self.stack
-        if not keep_subscriptions and isinstance(popped, StackMenuItem):
+        if not keep_subscriptions:
             popped.clear_subscriptions()
-        elif isinstance(popped, StackApplicationItem):
-            self.clean_application(popped.application)
+        if isinstance(popped, StackApplicationItem):
+            popped.application.dispatch('on_close')
         target = self.top
         transition_ = self._slide_transition
         if isinstance(target, StackApplicationItem) or self.current_application:
