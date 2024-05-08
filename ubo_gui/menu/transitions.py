@@ -10,6 +10,7 @@ from headless_kivy_pi import HeadlessWidget
 from kivy.clock import mainthread
 from kivy.uix.screenmanager import (
     NoTransition,
+    RiseInTransition,
     Screen,
     ScreenManager,
     SlideTransition,
@@ -97,6 +98,12 @@ class TransitionsMixin:
     @cached_property
     def _slide_transition(self: TransitionsMixin) -> SlideTransition:
         transition = SlideTransition()
+        self._setup_transition(transition)
+        return transition
+
+    @cached_property
+    def _rise_in_transition(self: TransitionsMixin) -> RiseInTransition:
+        transition = RiseInTransition()
         self._setup_transition(transition)
         return transition
 

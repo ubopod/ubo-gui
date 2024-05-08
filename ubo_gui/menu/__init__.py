@@ -130,17 +130,18 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         self.screen_subscriptions_lock = threading.Lock()
         self.stack_lock = threading.Lock()
         super().__init__(**kwargs)
-        self.bind(stack=self.render)
+        self.bind(stack=self._render)
 
     def __del__(self: MenuWidget) -> None:
         """Clear all subscriptions."""
-        self.clear_widget_subscriptions()
-        self.clear_screen_subscriptions()
+        self._clear_widget_subscriptions()
+        self._clear_screen_subscriptions()
 
     def set_root_menu(self: MenuWidget, root_menu: Menu) -> None:
         """Set the root menu."""
-        self.stack = []
-        self.push(root_menu, transition=self._no_transition)
+        with self.stack_lock:
+            self.stack = []
+            self._push(root_menu, transition=self._no_transition)
 
     def get_depth(self: MenuWidget) -> int:
         """Return depth of the current screen."""
@@ -171,7 +172,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         if self.pages == 1:
             return
         self.page_index = (self.page_index + 1) % self.pages
-        self.render_items()
+        self._render_items()
         self._switch_to(
             self.current_screen,
             transition=self._slide_transition,
@@ -190,7 +191,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         if self.pages == 1:
             return
         self.page_index = (self.page_index - 1) % self.pages
-        self.render_items()
+        self._render_items()
         self._switch_to(
             self.current_screen,
             transition=self._slide_transition,
@@ -211,10 +212,15 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                     'subscription_level': 'parent',
                 },
             )
-            if last_sub_menu:
-                self.replace(menu)
-            else:
-                self.push(menu, transition=self._slide_transition, direction='left')
+            with self.stack_lock:
+                if last_sub_menu:
+                    self._replace(menu)
+                else:
+                    self._push(
+                        menu,
+                        transition=self._slide_transition,
+                        direction='left',
+                    )
             last_sub_menu = menu
 
         susbscription = process_subscribable_value(
@@ -297,9 +303,19 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             if not self.current_application.go_back():
                 self.close_application(self.current_application)
         elif self.current_menu:
-            self.pop()
+            with self.stack_lock:
+                self._pop()
 
-    def render_header_menu(self: MenuWidget, menu: HeadedMenu) -> HeaderMenuPageWidget:
+    def go_home(self: MenuWidget) -> None:
+        """Go back to the root menu."""
+        with self.stack_lock:
+            self.stack = self.stack[:1]
+            self._switch_to(
+                self.current_screen,
+                transition=self._rise_in_transition,
+            )
+
+    def _render_header_menu(self: MenuWidget, menu: HeadedMenu) -> HeaderMenuPageWidget:
         """Render a header menu."""
         next_item = (
             None
@@ -363,7 +379,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
 
         return list_widget
 
-    def render_normal_menu(self: MenuWidget, menu: Menu) -> NormalMenuPageWidget:
+    def _render_normal_menu(self: MenuWidget, menu: Menu) -> NormalMenuPageWidget:
         """Render a normal menu."""
         offset = -(PAGE_SIZE - 1) if isinstance(menu, HeadedMenu) else 0
         items: list[Item | None] = list(
@@ -417,17 +433,17 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             padding_top=self.padding_top,
         )
 
-    def render_items(self: MenuWidget, *_: object) -> None:
+    def _render_items(self: MenuWidget, *_: object) -> None:
         """Render the items of the current menu."""
-        self.clear_widget_subscriptions()
+        self._clear_widget_subscriptions()
         if self.page_index >= self.pages:
             self.page_index = self.pages - 1
         if not self.current_menu:
             return
         if self.page_index == 0 and isinstance(self.current_menu, HeadedMenu):
-            list_widget = self.render_header_menu(self.current_menu)
+            list_widget = self._render_header_menu(self.current_menu)
         else:
-            list_widget = self.render_normal_menu(self.current_menu)
+            list_widget = self._render_normal_menu(self.current_menu)
 
         self.current_screen = list_widget
 
@@ -450,9 +466,9 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             ),
         )
 
-    def render(self: MenuWidget, *_: object) -> None:
+    def _render(self: MenuWidget, *_: object) -> None:
         """Return the current screen page."""
-        self.clear_screen_subscriptions()
+        self._clear_screen_subscriptions()
 
         if not self.stack:
             return
@@ -477,7 +493,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                 )
                 if items != last_items:
                     self.current_menu_items = items
-                    self.render_items()
+                    self._render_items()
                     if last_items:
                         self._switch_to(
                             self.current_screen,
@@ -529,7 +545,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             application.name = uuid.uuid4().hex
             application.padding_bottom = self.padding_bottom
             application.padding_top = self.padding_top
-            self.push(
+            self._push(
                 application,
                 transition=self._swap_transition,
                 duration=0.2,
@@ -566,7 +582,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                     isinstance(self.top.root, StackApplicationItem)
                     and self.top.root.application is application
                 ):
-                    self.pop()
+                    self._pop()
 
     @property
     def top(self: MenuWidget) -> StackItem:
@@ -576,7 +592,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             raise IndexError(msg)
         return self.stack[-1]
 
-    def replace(
+    def _replace(
         self: MenuWidget,
         item: Menu | PageWidget,
     ) -> None:
@@ -600,7 +616,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             transition=self._no_transition,
         )
 
-    def push(  # noqa: PLR0913
+    def _push(  # noqa: PLR0913
         self: MenuWidget,
         item: Menu | PageWidget,
         /,
@@ -629,7 +645,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             direction=direction,
         )
 
-    def pop(
+    def _pop(
         self: MenuWidget,
         /,
         *,
@@ -667,7 +683,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         self.screen_manager = cast(ScreenManager, self.ids.screen_manager)
         self.slider = self.ids.slider
 
-    def clear_widget_subscriptions(self: MenuWidget) -> None:
+    def _clear_widget_subscriptions(self: MenuWidget) -> None:
         """Clear widget subscriptions."""
         with self.widget_subscriptions_lock:
             subscriptions = self.widget_subscriptions.copy()
@@ -675,7 +691,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             for subscription in subscriptions:
                 subscription()
 
-    def clear_screen_subscriptions(self: MenuWidget) -> None:
+    def _clear_screen_subscriptions(self: MenuWidget) -> None:
         """Clear screen subscriptions."""
         # lock the mutex to do it atomic
         with self.screen_subscriptions_lock:

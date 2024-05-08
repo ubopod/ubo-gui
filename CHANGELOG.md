@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.11.7
+
+- feat(MenuWidget): add `go_home` method, resetting the stack to a single element
+  root menu
+
 ## Version 0.11.6
 
 - refactor(MenuWidget): dispatch `on_close` event on the `PageWidget` instance when
