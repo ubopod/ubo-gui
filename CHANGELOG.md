@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.11.8
+
+- fix(MenuWidget): align items with the physical buttons
+
 ## Version 0.11.7
 
 - feat(MenuWidget): add `go_home` method, resetting the stack to a single element

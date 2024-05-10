@@ -37,7 +37,7 @@ curl -sSL https://install.python-poetry.org | python3 -
 After having poetry, to install the required dependencies, run the following command:
 
 ```sh
-poetry install --with development
+poetry install --with dev
 ```
 
 Also be aware of [this issue](https://github.com/python-poetry/poetry/issues/1917) and until it is resolved you can manually disable keyring by prefixing your poetry commands like this:
