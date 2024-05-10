@@ -26,8 +26,8 @@ optional = true
 
 [tool.poetry.group.dev.dependencies]
 poethepoet = "^0.24.4"
-pyright = "^1.1.360"
-ruff = "^0.4.2"
+pyright = "^1.1.362"
+ruff = "^0.4.4"
 
 [tool.poetry.extras]
 dev = ['headless-kivy-pi']
