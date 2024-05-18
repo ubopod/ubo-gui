@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.11.9
+
+- feat(MenuWidget): add methods for directly selecting an `Item`
+
 ## Version 0.11.8
 
 - fix(MenuWidget): align items with the physical buttons

@@ -274,8 +274,24 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         """Select a submenu item."""
         self.open_menu(item.sub_menu)
 
+    def select_item(self: MenuWidget, item: Item) -> None:
+        """Select an item.
+
+        Parameters
+        ----------
+        item: `Item`
+            The item to select
+
+        """
+        if isinstance(item, ActionItem):
+            self.select_action_item(item)
+        if isinstance(item, ApplicationItem):
+            self.select_application_item(item)
+        if isinstance(item, SubMenuItem):
+            self.select_submenu_item(item)
+
     def select(self: MenuWidget, index: int) -> None:
-        """Select one of the items currently visible on the screen.
+        """Select one of the items currently visible on the screen based on its index.
 
         Parameters
         ----------
@@ -289,13 +305,8 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             return
         current_page = cast(PageWidget, self.screen_manager.current_screen)
         item = current_page.get_item(index)
-
-        if isinstance(item, ActionItem):
-            self.select_action_item(item)
-        if isinstance(item, ApplicationItem):
-            self.select_application_item(item)
-        if isinstance(item, SubMenuItem):
-            self.select_submenu_item(item)
+        if item:
+            self.select_item(item)
 
     def go_back(self: MenuWidget) -> None:
         """Go back to the previous menu."""
