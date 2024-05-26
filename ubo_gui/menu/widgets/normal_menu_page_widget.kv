@@ -3,12 +3,12 @@
 <NormalMenuPageWidget>:
   BoxLayout:
     id: layout
-    pos: 0, root.padding_bottom - dp(UBO_GUI_MENU_ITEM_HEIGHT + UBO_GUI_MENU_ITEM_GAP if root.render_surroundings else 0)
+    pos: 0, 0 if root.is_empty else (root.padding_bottom - dp(UBO_GUI_MENU_ITEM_HEIGHT + UBO_GUI_MENU_ITEM_GAP if root.render_surroundings else 0))
     size: root.size
     orientation: 'vertical'
 
     Label:
-      text: '' if root.items else ('Nothing here yet' if root.placeholder is None else root.placeholder)
+      text: ('Nothing here yet' if root.placeholder is None else root.placeholder) if root.is_empty else ''
       text_size: self.size
       font_size: dp(20)
       halign: 'center'
@@ -20,7 +20,7 @@
 
     BoxLayout:
       id: layout
-      height: self.minimum_height if root.items else 0
-      size_hint_y: None if root.items else 0
+      height: 0 if root.is_empty else self.minimum_height
+      size_hint_y: 0 if root.is_empty else None
       orientation: 'vertical'
       spacing: dp(UBO_GUI_MENU_ITEM_GAP)

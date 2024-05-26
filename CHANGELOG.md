@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.11.10
+
+- fix(MenuWidget): render placeholder when the menu is empty and `render_surroundings`
+  is `True`
+
 ## Version 0.11.9
 
 - feat(MenuWidget): add methods for directly selecting an `Item`

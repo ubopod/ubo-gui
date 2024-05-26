@@ -6,6 +6,7 @@ import warnings
 from typing import TYPE_CHECKING, Self, Sequence
 
 from kivy.properties import (
+    AliasProperty,
     BooleanProperty,
     ListProperty,
     NumericProperty,
@@ -36,6 +37,12 @@ class PageWidget(Screen):
     )
     padding_top = NumericProperty(default=0)
     padding_bottom = NumericProperty(default=0)
+
+    def get_is_empty(self: PageWidget) -> bool:
+        """Check if there is no item in items or all of them are `None`."""
+        return all(i is None for i in self.items)
+
+    is_empty: bool = AliasProperty(getter=get_is_empty, bind=('items',))
 
     def go_up(self: Self) -> None:
         """Implement this method to provide custom logic for up key."""
