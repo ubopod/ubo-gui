@@ -223,12 +223,12 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                     )
             last_sub_menu = menu
 
-        susbscription = process_subscribable_value(
-            menu,
-            handle_menu_change,
+        self.top.subscriptions.add(
+            process_subscribable_value(
+                menu,
+                handle_menu_change,
+            ),
         )
-
-        self.top.subscriptions.add(susbscription)
 
     def select_action_item(self: MenuWidget, item: ActionItem) -> None:
         """Select an action item."""
@@ -262,13 +262,15 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             )
             if application_instance:
                 self.close_application(application_instance)
-            self.open_application(application())
+            application_instance = application()
+            self.open_application(application_instance)
 
-        subscription = process_subscribable_value(
-            item.application,
-            handle_application_change,
+        self.top.subscriptions.add(
+            process_subscribable_value(
+                item.application,
+                handle_application_change,
+            ),
         )
-        self.top.subscriptions.add(subscription)
 
     def select_submenu_item(self: MenuWidget, item: SubMenuItem) -> None:
         """Select a submenu item."""
@@ -351,15 +353,15 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         )
 
         def handle_heading_change(heading: str) -> None:
-            logger.debug(
-                'Handle `heading` change...',
-                extra={
-                    'new_heading': heading,
-                    'old_heading': list_widget.heading,
-                    'subscription_level': 'widget',
-                },
-            )
             if heading != list_widget.heading:
+                logger.debug(
+                    'Handle `heading` change...',
+                    extra={
+                        'new_heading': heading,
+                        'old_heading': list_widget.heading,
+                        'subscription_level': 'widget',
+                    },
+                )
                 list_widget.heading = heading
 
         self.widget_subscriptions.add(
@@ -370,15 +372,15 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         )
 
         def handle_sub_heading_change(sub_heading: str) -> None:
-            logger.debug(
-                'Handle `sub_heading` change...',
-                extra={
-                    'new_sub_heading': sub_heading,
-                    'old_sub_heading': list_widget.sub_heading,
-                    'subscription_level': 'widget',
-                },
-            )
             if sub_heading != list_widget.sub_heading:
+                logger.debug(
+                    'Handle `sub_heading` change...',
+                    extra={
+                        'new_sub_heading': sub_heading,
+                        'old_sub_heading': list_widget.sub_heading,
+                        'subscription_level': 'widget',
+                    },
+                )
                 list_widget.sub_heading = sub_heading
 
         self.widget_subscriptions.add(
@@ -459,15 +461,15 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         self.current_screen = list_widget
 
         def handle_placeholder_change(placeholder: str | None) -> None:
-            logger.debug(
-                'Handle `placeholder` change...',
-                extra={
-                    'new_placeholder': placeholder,
-                    'old_placeholder': list_widget.placeholder,
-                    'subscription_level': 'widget',
-                },
-            )
             if placeholder != list_widget.placeholder:
+                logger.debug(
+                    'Handle `placeholder` change...',
+                    extra={
+                        'new_placeholder': placeholder,
+                        'old_placeholder': list_widget.placeholder,
+                        'subscription_level': 'widget',
+                    },
+                )
                 list_widget.placeholder = placeholder
 
         self.widget_subscriptions.add(
@@ -484,25 +486,28 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         if not self.stack:
             return
 
+        print('Rendering, subscriptions cleared')
         title = None
         if isinstance(self.top, StackApplicationItem):
+            print("It's application")
             self.current_screen = self.top.application
             title = self.top.application.title
         if isinstance(self.top, StackMenuItem):
+            print("It's menu")
             menu = self.top.menu
             last_items = None
 
             def handle_items_change(items: Sequence[Item]) -> None:
                 nonlocal last_items
-                logger.debug(
-                    'Handle `items` change...',
-                    extra={
-                        'new_items': items,
-                        'old_items': last_items,
-                        'subscription_level': 'screen',
-                    },
-                )
                 if items != last_items:
+                    logger.debug(
+                        'Handle `items` change...',
+                        extra={
+                            'new_items': items,
+                            'old_items': last_items,
+                            'subscription_level': 'screen',
+                        },
+                    )
                     self.current_menu_items = items
                     self._render_items()
                     if last_items:
@@ -519,15 +524,15 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             title = menu.title
 
         def handle_title_change(title: str | None) -> None:
-            logger.debug(
-                'Handle `title` change...',
-                extra={
-                    'new_title': title,
-                    'old_title': self.title,
-                    'subscription_level': 'screen',
-                },
-            )
             if self._title != title:
+                logger.debug(
+                    'Handle `title` change...',
+                    extra={
+                        'new_title': title,
+                        'old_title': self.title,
+                        'subscription_level': 'screen',
+                    },
+                )
                 self.title = title
 
         self.screen_subscriptions.add(

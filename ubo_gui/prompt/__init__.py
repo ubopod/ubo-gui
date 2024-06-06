@@ -8,7 +8,7 @@ from __future__ import annotations
 import pathlib
 import warnings
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Sequence
 
 from kivy.lang.builder import Builder
 from kivy.properties import (
@@ -98,6 +98,21 @@ class PromptWidget(PageWidget, ABC, metaclass=PromptWidgetMetaClass):
             'second_option_color',
         ],
         cache=True,
+    )
+
+    def _items_getter(self: PromptWidget) -> Sequence[Item | None]:
+        return [self.first_item, self.second_item]
+
+    def _items_setter(self: PromptWidget, value: Sequence[Item | None]) -> None:
+        if len(value) == 0:
+            return
+        msg = 'Cannot set items'
+        raise ValueError(msg)
+
+    items: Sequence[Item | None] = AliasProperty(
+        getter=_items_getter,
+        setter=_items_setter,
+        bind=['first_item', 'second_item'],
     )
 
     @abstractmethod
