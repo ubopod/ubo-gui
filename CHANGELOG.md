@@ -1,5 +1,14 @@
 # Changelog
 
+## Version 0.11.11
+
+- fix(MenuWidget): the menu doesn't override the top-most item whenever an arbitrary
+  sub-menu's subscription reports a change, instead, it updates the item in the stack
+  for which the change was reported
+- refactor(PromptWidget): `PromptWidget` now exposes an `items` list property to
+  be compatible with other subclasses of `PageWidget` so that tests can interact
+  with it easier
+
 ## Version 0.11.10
 
 - fix(MenuWidget): render placeholder when the menu is empty and `render_surroundings`

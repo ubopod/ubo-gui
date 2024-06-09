@@ -14,7 +14,7 @@ import threading
 import uuid
 import warnings
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Callable, Self, Sequence, cast
+from typing import TYPE_CHECKING, Callable, Self, Sequence, cast, overload
 
 from headless_kivy_pi import HeadlessWidget
 from kivy.lang.builder import Builder
@@ -200,35 +200,37 @@ class MenuWidget(BoxLayout, TransitionsMixin):
 
     def open_menu(self: MenuWidget, menu: Menu | Callable[[], Menu]) -> None:
         """Open a menu."""
-        last_sub_menu: Menu | None = None
+        last_item: StackMenuItem | None = None
+        subscription: Callable[[], None] | None = None
 
         def handle_menu_change(menu: Menu) -> None:
-            nonlocal last_sub_menu
+            nonlocal last_item, subscription
             logger.debug(
                 'Handle `sub_menu` change...',
                 extra={
                     'new_sub_menu': menu,
-                    'old_sub_menu': last_sub_menu,
+                    'old_sub_menu': last_item.menu if last_item else None,
                     'subscription_level': 'parent',
                 },
             )
             with self.stack_lock:
-                if last_sub_menu:
-                    self._replace(menu)
+                if last_item:
+                    last_item = self._replace(last_item, menu)
                 else:
-                    self._push(
+                    last_item = self._push(
                         menu,
                         transition=self._slide_transition,
                         direction='left',
                     )
-            last_sub_menu = menu
+                    if subscription:
+                        last_item.subscriptions.add(subscription)
 
-        susbscription = process_subscribable_value(
+        subscription = process_subscribable_value(
             menu,
             handle_menu_change,
         )
-
-        self.top.subscriptions.add(susbscription)
+        if last_item:
+            last_item.subscriptions.add(subscription)
 
     def select_action_item(self: MenuWidget, item: ActionItem) -> None:
         """Select an action item."""
@@ -262,13 +264,15 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             )
             if application_instance:
                 self.close_application(application_instance)
-            self.open_application(application())
+            application_instance = application()
+            self.open_application(application_instance)
 
-        subscription = process_subscribable_value(
-            item.application,
-            handle_application_change,
+        self.top.subscriptions.add(
+            process_subscribable_value(
+                item.application,
+                handle_application_change,
+            ),
         )
-        self.top.subscriptions.add(subscription)
 
     def select_submenu_item(self: MenuWidget, item: SubMenuItem) -> None:
         """Select a submenu item."""
@@ -359,8 +363,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                     'subscription_level': 'widget',
                 },
             )
-            if heading != list_widget.heading:
-                list_widget.heading = heading
+            list_widget.heading = heading
 
         self.widget_subscriptions.add(
             process_subscribable_value(
@@ -378,8 +381,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                     'subscription_level': 'widget',
                 },
             )
-            if sub_heading != list_widget.sub_heading:
-                list_widget.sub_heading = sub_heading
+            list_widget.sub_heading = sub_heading
 
         self.widget_subscriptions.add(
             process_subscribable_value(
@@ -467,8 +469,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                     'subscription_level': 'widget',
                 },
             )
-            if placeholder != list_widget.placeholder:
-                list_widget.placeholder = placeholder
+            list_widget.placeholder = placeholder
 
         self.widget_subscriptions.add(
             process_subscribable_value(
@@ -502,15 +503,14 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                         'subscription_level': 'screen',
                     },
                 )
-                if items != last_items:
-                    self.current_menu_items = items
-                    self._render_items()
-                    if last_items:
-                        self._switch_to(
-                            self.current_screen,
-                            transition=self._no_transition,
-                        )
-                    last_items = items
+                self.current_menu_items = items
+                self._render_items()
+                if last_items:
+                    self._switch_to(
+                        self.current_screen,
+                        transition=self._no_transition,
+                    )
+                last_items = items
 
             self.screen_subscriptions.add(
                 process_subscribable_value(menu.items, handle_items_change),
@@ -527,8 +527,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                     'subscription_level': 'screen',
                 },
             )
-            if self._title != title:
-                self.title = title
+            self.title = title
 
         self.screen_subscriptions.add(
             process_subscribable_value(title, handle_title_change),
@@ -603,30 +602,72 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             raise IndexError(msg)
         return self.stack[-1]
 
+    @overload
     def _replace(
         self: MenuWidget,
+        stack_item: StackItem,
+        item: Menu,
+    ) -> StackMenuItem: ...
+    @overload
+    def _replace(  # pyright: ignore[reportOverlappingOverload]
+        self: MenuWidget,
+        stack_item: StackItem,
+        item: PageWidget,
+    ) -> StackApplicationItem: ...
+    def _replace(
+        self: MenuWidget,
+        stack_item: StackItem,
         item: Menu | PageWidget,
-    ) -> None:
+    ) -> StackItem:
         """Replace the current menu or application."""
+        try:
+            item_index = self.stack.index(stack_item)
+        except ValueError:
+            msg = '`stack_item` not found in stack'
+            raise ValueError(msg) from None
         subscriptions = self.top.subscriptions.copy()
         if isinstance(item, Menu):
-            self.stack[-1] = StackMenuItem(
+            new_item = StackMenuItem(
                 menu=item,
                 page_index=0,
                 parent=self.top.parent,
             )
 
         elif isinstance(item, PageWidget):
-            self.stack[-1] = StackApplicationItem(
+            new_item = StackApplicationItem(
                 application=item,
                 parent=self.top.parent,
             )
+        self.stack[item_index] = new_item
         self.top.subscriptions = subscriptions
         self._switch_to(
             self.current_screen,
             transition=self._no_transition,
         )
+        return new_item
 
+    @overload
+    def _push(
+        self: MenuWidget,
+        item: Menu,
+        /,
+        *,
+        transition: TransitionBase | None,
+        duration: float | None = None,
+        direction: str | None = None,
+        parent: StackItem | None = None,
+    ) -> StackMenuItem: ...
+    @overload
+    def _push(  # pyright: ignore[reportOverlappingOverload]
+        self: MenuWidget,
+        item: PageWidget,
+        /,
+        *,
+        transition: TransitionBase | None,
+        duration: float | None = None,
+        direction: str | None = None,
+        parent: StackItem | None = None,
+    ) -> StackApplicationItem: ...
     def _push(  # noqa: PLR0913
         self: MenuWidget,
         item: Menu | PageWidget,
@@ -636,18 +677,13 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         duration: float | None = None,
         direction: str | None = None,
         parent: StackItem | None = None,
-    ) -> None:
+    ) -> StackItem:
         """Go one level deeper in the menu stack."""
         if isinstance(item, Menu):
-            self.stack = [
-                *self.stack,
-                StackMenuItem(menu=item, page_index=0, parent=parent),
-            ]
+            new_top = StackMenuItem(menu=item, page_index=0, parent=parent)
         elif isinstance(item, PageWidget):
-            self.stack = [
-                *self.stack,
-                StackApplicationItem(application=item, parent=parent),
-            ]
+            new_top = StackApplicationItem(application=item, parent=parent)
+        self.stack = [*self.stack, new_top]
 
         self._switch_to(
             self.current_screen,
@@ -655,6 +691,8 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             duration=duration,
             direction=direction,
         )
+
+        return new_top
 
     def _pop(
         self: MenuWidget,
