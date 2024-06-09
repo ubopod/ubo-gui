@@ -15,7 +15,7 @@ from kivy.properties import (
 from kivy.uix.screenmanager import Screen
 
 if TYPE_CHECKING:
-    from menu.types import Item
+    from ubo_gui.menu.types import Item
 
 
 PAGE_MAX_ITEMS = 3
