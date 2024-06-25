@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.11.12
+
+- build: update headless-kivy-pi to the latest version
+
 ## Version 0.11.11
 
 - fix(MenuWidget): the menu doesn't override the top-most item whenever an arbitrary

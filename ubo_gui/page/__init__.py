@@ -28,15 +28,15 @@ class PageWidget(Screen):
 
     items: Sequence[Item | None] = ListProperty([])
     title: str | None = StringProperty(allownone=True, defaultvalue=None)
-    count = NumericProperty(defaultvalue=PAGE_MAX_ITEMS)
-    offset = NumericProperty(defaultvalue=0)
-    placeholder = StringProperty(allownone=True)
-    render_surroundings = BooleanProperty(
+    count: int = NumericProperty(defaultvalue=PAGE_MAX_ITEMS)
+    offset: int = NumericProperty(defaultvalue=0)
+    placeholder: str | None = StringProperty(allownone=True)
+    render_surroundings: bool = BooleanProperty(
         default=False,
         cache=True,
     )
-    padding_top = NumericProperty(default=0)
-    padding_bottom = NumericProperty(default=0)
+    padding_top: int = NumericProperty(default=0)
+    padding_bottom: int = NumericProperty(default=0)
 
     def get_is_empty(self: PageWidget) -> bool:
         """Check if there is no item in items or all of them are `None`."""
