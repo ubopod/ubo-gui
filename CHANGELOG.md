@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.11.13
+
+- build: update headless-kivy-pi to the latest version
+
 ## Version 0.11.12
 
 - build: update headless-kivy-pi to the latest version

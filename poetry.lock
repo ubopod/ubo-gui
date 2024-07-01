@@ -83,13 +83,13 @@ typing-extensions = ">=4.0,<5.0"
 
 [[package]]
 name = "adafruit-circuitpython-requests"
-version = "4.1.1"
+version = "4.1.2"
 description = "A requests-like library for web interfacing"
 optional = true
 python-versions = "*"
 files = [
-    {file = "adafruit_circuitpython_requests-4.1.1-py3-none-any.whl", hash = "sha256:19f4115f082086af108f8120f8ce348bc6368eb9735daa73b3c03431f049fb26"},
-    {file = "adafruit_circuitpython_requests-4.1.1.tar.gz", hash = "sha256:f032980afcc7f84919cb3772b79eaa2f2ab079749991d4ba6d72d7348a1f57a3"},
+    {file = "adafruit_circuitpython_requests-4.1.2-py3-none-any.whl", hash = "sha256:bc377084cc2b801044a45209fe81cc9741ae8863bf3ee61a805fc144e102ec10"},
+    {file = "adafruit_circuitpython_requests-4.1.2.tar.gz", hash = "sha256:6060c075e3bf63ee4dba20f297f9468250dcb4e6d60f4235bfd46a79c9dfbd2f"},
 ]
 
 [package.dependencies]
@@ -368,13 +368,13 @@ files = [
 
 [[package]]
 name = "headless-kivy-pi"
-version = "0.8.0"
-description = "Headless renderer for Kivy framework on Raspberry Pi"
+version = "0.8.1"
+description = "Headless renderer for Kivy framework"
 optional = true
 python-versions = "<4.0,>=3.11"
 files = [
-    {file = "headless_kivy_pi-0.8.0-py3-none-any.whl", hash = "sha256:5bae90db127539f9ac913f02f8a2f0573810722843d509bd01d0bb57729dbe2b"},
-    {file = "headless_kivy_pi-0.8.0.tar.gz", hash = "sha256:effd86e6eba2cd339fc48ba47c7eefeaadec9700741651388057663a2ff9a65c"},
+    {file = "headless_kivy_pi-0.8.1-py3-none-any.whl", hash = "sha256:201fdc2ed399214c9ba55be1631e0c2fe17601d98b5ef241381127ecfc05ffc7"},
+    {file = "headless_kivy_pi-0.8.1.tar.gz", hash = "sha256:f847f4380342aca96411eac833f221f111928752d7bdf1f8b387a3df499737f4"},
 ]
 
 [package.dependencies]
@@ -716,13 +716,13 @@ files = [
 
 [[package]]
 name = "pyright"
-version = "1.1.368"
+version = "1.1.369"
 description = "Command line wrapper for pyright"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "pyright-1.1.368-py3-none-any.whl", hash = "sha256:4a86e34b61c755b43b367af7fbf927fc6466fff6b81a9dcea07d42416c640af3"},
-    {file = "pyright-1.1.368.tar.gz", hash = "sha256:9b2aa48142d9d9fc9a6aedff743c76873cc4e615f3297cdbf893d5793f75b306"},
+    {file = "pyright-1.1.369-py3-none-any.whl", hash = "sha256:06d5167a8d7be62523ced0265c5d2f1e022e110caf57a25d92f50fb2d07bcda0"},
+    {file = "pyright-1.1.369.tar.gz", hash = "sha256:ad290710072d021e213b98cc7a2f90ae3a48609ef5b978f749346d1a47eb9af8"},
 ]
 
 [package.dependencies]
@@ -762,13 +762,13 @@ typing-extensions = ">=4.10.0,<5.0.0"
 
 [[package]]
 name = "python-strtobool"
-version = "1.0.0"
+version = "1.0.2"
 description = "str_to_bool function for Python"
 optional = true
 python-versions = "<4.0,>=3.9"
 files = [
-    {file = "python_strtobool-1.0.0-py3-none-any.whl", hash = "sha256:a8207d1536ba22a9dd74e1511fe45c233723bb73c65f36686206f244a0239ec1"},
-    {file = "python_strtobool-1.0.0.tar.gz", hash = "sha256:0f72eca34f1e3bc6cc5ba0adcd8fe745c48a4e0a563a46d933147941702c8794"},
+    {file = "python_strtobool-1.0.2-py3-none-any.whl", hash = "sha256:107d93760078a7b7eee91b455077fd6123fd94e6474815dfe306854cdfa47d70"},
+    {file = "python_strtobool-1.0.2.tar.gz", hash = "sha256:0c72ed5391e2aeef11bcbe754b96ed8770066000ea7ef0c2d33555c4538c6139"},
 ]
 
 [[package]]
@@ -950,4 +950,4 @@ dev = ["headless-kivy-pi", "headless-kivy-pi"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "ca13b518032c01a1e3a8d0d124cec7425194c30db88f6e9299f200aaf1fa4e6a"
+content-hash = "59cbcd779960dca13a85b649cf69d3d65c70729546c788ad3e6f2bde5f77676d"
