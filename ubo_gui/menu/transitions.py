@@ -137,10 +137,12 @@ class TransitionsMixin:
         /,
         *,
         transition: TransitionBase,
-        duration: float | None = 0.3,
+        duration: float | None = None,
         direction: str | None = None,
     ) -> None:
         """Switch to a new screen."""
+        if duration is None:
+            duration = 0 if transition is self._no_transition else 0.3
         with self._transition_progress_lock:
             if not self._is_transition_in_progress:
                 if isinstance(self, Widget):

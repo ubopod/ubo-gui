@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.11.15
+
+- fix: set duration of `0` for when `_no_transition` is passed to `_switch_to` method
+
 ## Version 0.11.14
 
 - fix: pass duration with value of `0` to `Screen`'s transition runner to avoid
