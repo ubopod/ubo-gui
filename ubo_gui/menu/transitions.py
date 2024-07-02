@@ -127,8 +127,8 @@ class TransitionsMixin:
         mainthread(self.screen_manager.switch_to)(
             screen,
             transition=transition,
-            **({'duration': duration} if duration else {}),
-            **({'direction': direction} if direction else {}),
+            duration=duration,
+            **({} if direction is None else {'direction': direction}),
         )
 
     def _switch_to(

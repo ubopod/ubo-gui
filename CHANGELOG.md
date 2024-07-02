@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.11.14
+
+- fix: pass duration with value of `0` to `Screen`'s transition runner to avoid
+  flickering of the screen
+
 ## Version 0.11.13
 
 - build: update headless-kivy-pi to the latest version

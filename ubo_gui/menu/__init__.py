@@ -505,7 +505,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                 )
                 self.current_menu_items = items
                 self._render_items()
-                if last_items:
+                if last_items is not None:
                     self._switch_to(
                         self.current_screen,
                         transition=self._no_transition,
