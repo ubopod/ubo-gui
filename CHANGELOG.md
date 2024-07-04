@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.11.16
+
+- build: update `headless-kivy` to the latest version
+
 ## Version 0.11.15
 
 - fix: set duration of `0` for when `_no_transition` is passed to `_switch_to` method

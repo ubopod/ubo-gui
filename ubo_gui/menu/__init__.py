@@ -16,7 +16,7 @@ import warnings
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Callable, Self, Sequence, cast, overload
 
-from headless_kivy_pi import HeadlessWidget
+from headless_kivy import HeadlessWidget
 from kivy.lang.builder import Builder
 from kivy.properties import (
     AliasProperty,
@@ -638,6 +638,9 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                 application=item,
                 parent=self.top.parent,
             )
+        else:
+            msg = f'Unsupported type: {type(item)}'
+            raise TypeError(msg)
         self.stack[item_index] = new_item
         self.top.subscriptions = subscriptions
         self._switch_to(
@@ -683,6 +686,9 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             new_top = StackMenuItem(menu=item, page_index=0, parent=parent)
         elif isinstance(item, PageWidget):
             new_top = StackApplicationItem(application=item, parent=parent)
+        else:
+            msg = f'Unsupported type: {type(item)}'
+            raise TypeError(msg)
         self.stack = [*self.stack, new_top]
 
         self._switch_to(

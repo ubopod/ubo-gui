@@ -6,7 +6,7 @@ import threading
 from functools import cached_property
 from typing import Any, NotRequired, TypedDict
 
-from headless_kivy_pi import HeadlessWidget
+from headless_kivy import HeadlessWidget
 from kivy.clock import mainthread
 from kivy.uix.screenmanager import (
     NoTransition,

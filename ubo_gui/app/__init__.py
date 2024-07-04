@@ -6,7 +6,7 @@ import pathlib
 from functools import cached_property
 from typing import TYPE_CHECKING, cast
 
-from headless_kivy_pi import HeadlessWidget
+from headless_kivy import HeadlessWidget
 from kivy.app import App
 from kivy.core.text import DEFAULT_FONT, LabelBase
 from kivy.lang.builder import Builder
