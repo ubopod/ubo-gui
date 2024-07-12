@@ -709,12 +709,9 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         item: Menu | PageWidget,
     ) -> StackItem:
         """Replace the current menu or application."""
-        try:
-            item_index = self.stack.index(stack_item)
-        except ValueError:
+        if stack_item not in self.stack:
             msg = '`stack_item` not found in stack'
             raise ValueError(msg) from None
-        subscriptions = self.top.subscriptions.copy()
         if isinstance(item, Menu):
             new_item = StackMenuItem(
                 menu=item,
@@ -730,12 +727,13 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         else:
             msg = f'Unsupported type: {type(item)}'
             raise TypeError(msg)
-        self.stack[item_index] = new_item
-        self.top.subscriptions = subscriptions
-        self._switch_to(
-            self.current_screen,
-            transition=self._no_transition,
-        )
+        new_item.subscriptions = stack_item.subscriptions
+        self.stack[self.stack.index(stack_item)] = new_item
+        if self.top is new_item:
+            self._switch_to(
+                self.current_screen,
+                transition=self._no_transition,
+            )
         return new_item
 
     @overload
