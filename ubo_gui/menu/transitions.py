@@ -35,6 +35,7 @@ class TransitionsMixin:
     ]
     screen_manager: ScreenManager
     _is_transition_in_progress: bool = False
+    _is_preparation_in_progress: bool = False
     _transition_progress_lock: threading.Lock
 
     def __init__(self: TransitionsMixin, **kwargs: dict[str, Any]) -> None:
@@ -130,6 +131,7 @@ class TransitionsMixin:
             duration=duration,
             **({} if direction is None else {'direction': direction}),
         )
+        self._is_preparation_in_progress = False
 
     def _switch_to(
         self: TransitionsMixin,
@@ -150,6 +152,7 @@ class TransitionsMixin:
                     if headless_widget:
                         headless_widget.activate_high_fps_mode()
                 self._is_transition_in_progress = transition is not self._no_transition
+                self._is_preparation_in_progress = True
                 self._perform_switch(
                     screen,
                     transition=transition,

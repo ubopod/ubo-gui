@@ -3,6 +3,7 @@
 ## Version 0.11.17
 
 - feat: add `_visual_snapshot` to visualize the state of stack for debugging purposes
+- fix: avoid user selecting a second item while the screen is being transitioned
 
 ## Version 0.11.16
 

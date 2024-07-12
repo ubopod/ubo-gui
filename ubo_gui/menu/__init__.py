@@ -352,7 +352,9 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         if not self.screen_manager.current_screen:
             warnings.warn('`current_screen` is `None`', RuntimeWarning, stacklevel=1)
             return
-        current_page = cast(PageWidget, self.screen_manager.current_screen)
+        if self._is_preparation_in_progress:
+            return
+        current_page = cast(PageWidget, self.current_screen)
         item = current_page.get_item(index)
         if item:
             self.select_item(item)
