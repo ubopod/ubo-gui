@@ -14,7 +14,7 @@ import threading
 import uuid
 import warnings
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Callable, Self, Sequence, cast, overload
+from typing import TYPE_CHECKING, Callable, Self, Sequence, TypeVar, cast, overload
 
 from headless_kivy import HeadlessWidget
 from kivy.lang.builder import Builder
@@ -50,6 +50,8 @@ if TYPE_CHECKING:
 
     from ubo_gui.animated_slider import AnimatedSlider
 
+VISUAL_SNAPSHOT_WIDTH = 14
+
 
 @dataclass(kw_only=True)
 class BaseStackItem:
@@ -62,8 +64,8 @@ class BaseStackItem:
         """Clear all subscriptions."""
         subscriptions = self.subscriptions.copy()
         self.subscriptions.clear()
-        for subscription in subscriptions:
-            subscription()
+        for unsubscribe in subscriptions:
+            unsubscribe()
 
     @property
     def root(self: BaseStackItem) -> StackItem:
@@ -90,6 +92,35 @@ class StackMenuItem(BaseStackItem):
         """Return the title of the menu."""
         return self.menu.title() if callable(self.menu.title) else self.menu.title
 
+    @property
+    def visual_snapshot(self: StackMenuItem) -> list[str]:
+        """Return the snapshot of the menu."""
+        T = TypeVar('T')
+
+        def process_callable(object_: T | Callable[[], T]) -> T:
+            return object_() if callable(object_) else object_
+
+        items = process_callable(self.menu.items)
+        title = process_callable(self.menu.title)[: VISUAL_SNAPSHOT_WIDTH - 2]
+        padding = '─' * ((VISUAL_SNAPSHOT_WIDTH - len(title)) // 2)
+        return [
+            padding + title + padding + '─' * (len(title) % 2),
+            *(
+                (
+                    (process_callable(items[i].icon) or ' ')
+                    + ' '
+                    + process_callable(items[i].label)
+                ).ljust(
+                    VISUAL_SNAPSHOT_WIDTH,
+                    ' ',
+                )[:VISUAL_SNAPSHOT_WIDTH]
+                if len(items) > i
+                else ' ' * VISUAL_SNAPSHOT_WIDTH
+                for i in range(3)
+            ),
+            '─' * VISUAL_SNAPSHOT_WIDTH,
+        ]
+
 
 @dataclass(kw_only=True)
 class StackApplicationItem(BaseStackItem):
@@ -101,6 +132,20 @@ class StackApplicationItem(BaseStackItem):
     def title(self: StackApplicationItem) -> str:
         """Return the title of the application."""
         return self.application.name
+
+    @property
+    def visual_snapshot(self: StackApplicationItem) -> list[str]:
+        """Return the snapshot of the application."""
+        title = self.title[: VISUAL_SNAPSHOT_WIDTH - 2]
+        padding = '─' * ((VISUAL_SNAPSHOT_WIDTH - len(title)) // 2)
+        return [
+            padding + title + padding + '─' * (len(title) % 2),
+            ' ' * VISUAL_SNAPSHOT_WIDTH,
+            f""" {(self.application.title or '-').ljust(VISUAL_SNAPSHOT_WIDTH - 2, " ")
+            [:VISUAL_SNAPSHOT_WIDTH - 2]} """,
+            ' ' * VISUAL_SNAPSHOT_WIDTH,
+            '─' * VISUAL_SNAPSHOT_WIDTH,
+        ]
 
 
 StackItem = StackMenuItem | StackApplicationItem
@@ -200,37 +245,37 @@ class MenuWidget(BoxLayout, TransitionsMixin):
 
     def open_menu(self: MenuWidget, menu: Menu | Callable[[], Menu]) -> None:
         """Open a menu."""
-        last_item: StackMenuItem | None = None
+        stack_item: StackMenuItem | None = None
         subscription: Callable[[], None] | None = None
 
         def handle_menu_change(menu: Menu) -> None:
-            nonlocal last_item, subscription
+            nonlocal stack_item, subscription
             logger.debug(
                 'Handle `sub_menu` change...',
                 extra={
                     'new_sub_menu': menu,
-                    'old_sub_menu': last_item.menu if last_item else None,
+                    'old_sub_menu': stack_item.menu if stack_item else None,
                     'subscription_level': 'parent',
                 },
             )
             with self.stack_lock:
-                if last_item:
-                    last_item = self._replace(last_item, menu)
+                if stack_item:
+                    stack_item = self._replace(stack_item, menu)
                 else:
-                    last_item = self._push(
+                    stack_item = self._push(
                         menu,
                         transition=self._slide_transition,
                         direction='left',
                     )
                     if subscription:
-                        last_item.subscriptions.add(subscription)
+                        stack_item.subscriptions.add(subscription)
 
         subscription = process_subscribable_value(
             menu,
             handle_menu_change,
         )
-        if last_item:
-            last_item.subscriptions.add(subscription)
+        if stack_item:
+            stack_item.subscriptions.add(subscription)
 
     def select_action_item(self: MenuWidget, item: ActionItem) -> None:
         """Select an action item."""
@@ -482,6 +527,9 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         """Return the current screen page."""
         self._clear_screen_subscriptions()
 
+        for line in self._visual_snapshot:
+            logger.debug(line)
+
         if not self.stack:
             return
 
@@ -601,6 +649,45 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             msg = 'stack is empty'
             raise IndexError(msg)
         return self.stack[-1]
+
+    @property
+    def _visual_snapshot(self: MenuWidget) -> list[str]:
+        start = [
+            '╭',
+            '│',
+            '│',
+            '│',
+            '╰',
+        ]
+        end = [
+            '╮',
+            '│',
+            '│',
+            '│',
+            '╯',
+        ]
+
+        def append(item: list[str]) -> None:
+            for i in range(5):
+                output[-(5 - i)] += item[i]
+
+        output = []
+        for start_item in range(0, len(self.stack), 5):
+            output.extend([''] * 5)
+            for item in self.stack[start_item : min(start_item + 5, len(self.stack))]:
+                append(start)
+                append(item.visual_snapshot)
+            append(end)
+        if len(self.stack) % 5 != 0:
+            for _ in range(5 - (len(self.stack) % 5)):
+                append([' ' * (VISUAL_SNAPSHOT_WIDTH + 1)] * 5)
+
+        for i in range(len(self.stack)):
+            output[i] += (
+                f' {type(self.stack[i]).__name__} '
+                f'{self.stack[i].title[:VISUAL_SNAPSHOT_WIDTH]} '
+            )
+        return output
 
     @overload
     def _replace(
@@ -743,8 +830,8 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         with self.widget_subscriptions_lock:
             subscriptions = self.widget_subscriptions.copy()
             self.widget_subscriptions.clear()
-            for subscription in subscriptions:
-                subscription()
+            for unsubscribe in subscriptions:
+                unsubscribe()
 
     def _clear_screen_subscriptions(self: MenuWidget) -> None:
         """Clear screen subscriptions."""

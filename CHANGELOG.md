@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.11.17
+
+- feat: add `_visual_snapshot` to visualize the state of stack for debugging purposes
+
 ## Version 0.11.16
 
 - build: update `headless-kivy` to the latest version

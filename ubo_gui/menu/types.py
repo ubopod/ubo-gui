@@ -187,7 +187,7 @@ class Subscribable(Protocol, Generic[T]):
         ...
 
 
-def is_subscribeable(value: object) -> TypeGuard[Subscribable]:
+def is_subscribeable(value: T | Callable[[], T]) -> TypeGuard[Subscribable[T]]:
     """Check if the value is subscribable."""
     return callable(value) and hasattr(value, 'subscribe')
 
