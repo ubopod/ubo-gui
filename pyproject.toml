@@ -19,8 +19,8 @@ optional = true
 
 [tool.poetry.group.dev.dependencies]
 poethepoet = "^0.24.4"
-pyright = "^1.1.366"
-ruff = "^0.4.8"
+pyright = "^1.1.371"
+ruff = "^0.5.1"
 
 [build-system]
 requires = ["poetry-core"]

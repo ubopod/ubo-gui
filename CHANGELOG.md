@@ -5,6 +5,7 @@
 - feat: add `_visual_snapshot` to visualize the state of stack for debugging purposes
 - fix: avoid user selecting a second item while the screen is being transitioned
 - fix: improving the logic of replacing an item in the deep layers of stack
+- fix: no more blinking when the content is not changed
 
 ## Version 0.11.16
 

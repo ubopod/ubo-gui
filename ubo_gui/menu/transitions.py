@@ -70,9 +70,9 @@ class TransitionsMixin:
                 ):
                     duration = 0.08
                 switch_parameters: SwitchParameters = {}
-                if duration:
+                if duration is not None:
                     switch_parameters['duration'] = duration
-                if direction:
+                if direction is not None:
                     switch_parameters['direction'] = direction
                 self._perform_switch(
                     screen,
