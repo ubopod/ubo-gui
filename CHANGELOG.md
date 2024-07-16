@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.11.18
+
+- refactor: just change the items of the menu when items are changed, instead of creating a whole new menu widget
+
 ## Version 0.11.17
 
 - feat: add `_visual_snapshot` to visualize the state of stack for debugging purposes
@@ -17,8 +21,7 @@
 
 ## Version 0.11.14
 
-- fix: pass duration with value of `0` to `Screen`'s transition runner to avoid
-  flickering of the screen
+- fix: pass duration with value of `0` to `Screen`'s transition runner to avoid flickering of the screen
 
 ## Version 0.11.13
 
@@ -30,17 +33,12 @@
 
 ## Version 0.11.11
 
-- fix(MenuWidget): the menu doesn't override the top-most item whenever an arbitrary
-  sub-menu's subscription reports a change, instead, it updates the item in the stack
-  for which the change was reported
-- refactor(PromptWidget): `PromptWidget` now exposes an `items` list property to
-  be compatible with other subclasses of `PageWidget` so that tests can interact
-  with it easier
+- fix(MenuWidget): the menu doesn't override the top-most item whenever an arbitrary sub-menu's subscription reports a change, instead, it updates the item in the stack for which the change was reported
+- refactor(PromptWidget): `PromptWidget` now exposes an `items` list property to be compatible with other subclasses of `PageWidget` so that tests can interact with it easier
 
 ## Version 0.11.10
 
-- fix(MenuWidget): render placeholder when the menu is empty and `render_surroundings`
-  is `True`
+- fix(MenuWidget): render placeholder when the menu is empty and `render_surroundings` is `True`
 
 ## Version 0.11.9
 
@@ -52,23 +50,19 @@
 
 ## Version 0.11.7
 
-- feat(MenuWidget): add `go_home` method, resetting the stack to a single element
-  root menu
+- feat(MenuWidget): add `go_home` method, resetting the stack to a single element root menu
 
 ## Version 0.11.6
 
-- refactor(MenuWidget): dispatch `on_close` event on the `PageWidget` instance when
-  it is closed, to close a `PageWidget` instance, one should call `close_application`
+- refactor(MenuWidget): dispatch `on_close` event on the `PageWidget` instance when it is closed, to close a `PageWidget` instance, one should call `close_application`
 
 ## Version 0.11.5
 
-- fix(MenuWidget): avoid opening an `ActionItem`'s `action` return value twice if
-  it is a `PageWidget` class
+- fix(MenuWidget): avoid opening an `ActionItem`'s `action` return value twice if it is a `PageWidget` class
 - refactor(MenuWidget): improve opening/closing application logic to avoid race conditions
 - refactor(PageWidget): add `__repr__` to help debugging and logging `PageWidget`s
 - refactor(MenuWidget): use `mainthread` decorator in transitions only when necessary
-- refactor(ItemWidget): increase the length of non-short items (decrease the right
-  margin from 30 to 6)
+- refactor(ItemWidget): increase the length of non-short items (decrease the right margin from 30 to 6)
 
 ## Version 0.11.4
 
@@ -76,8 +70,7 @@
 
 ## Version 0.11.3
 
-- feat(Menu): action items can now return not only the application class, but also
-  instances of applications too
+- feat(Menu): action items can now return not only the application class, but also instances of applications too
 - fix(QRCodeWidget): set default value of `fit_mode` to `contain`
 
 ## Version 0.11.2
@@ -91,11 +84,9 @@
 
 ## Version 0.11.0
 
-- feat(Menu): render faded next and previous menu items to induce there are more
-  items in the menu and it can be scrolled
+- feat(Menu): render faded next and previous menu items to induce there are more items in the menu and it can be scrolled
 - refactor(core): add colors to list of global constants to avoid hardcoding
-- refactor(AnimatedSlider): not using the default look, replaced with the one designed
-  in figma
+- refactor(AnimatedSlider): not using the default look, replaced with the one designed in figma
 - refactor(ItemWidget): add `opacity` field
 - ci(github): add changelog to the release notes
 
@@ -106,8 +97,7 @@
 
 ## Version 0.10.7
 
-- fix(menu): not assume the return value of the action in `ActionItem` is a `Menu`
-  if it is not an `application`
+- fix(menu): not assume the return value of the action in `ActionItem` is a `Menu` if it is not an `application`
 
 ## Version 0.10.6
 
@@ -135,8 +125,7 @@
 
 ## Version 0.10.0
 
-- refactor: drop material symbols font and use `ArimoNerdFont` instead to bring
-  all the icons of fa, md, mdi, etc
+- refactor: drop material symbols font and use `ArimoNerdFont` instead to bring all the icons of fa, md, mdi, etc
 
 ## Version 0.9.9
 
@@ -172,8 +161,7 @@
 
 ## Version 0.9.2
 
-- fix: queue transitions instead of letting the last transition interrupt the active
-  one
+- fix: queue transitions instead of letting the last transition interrupt the active one
 
 ## Version 0.9.1
 
@@ -181,29 +169,14 @@
 
 ## Version 0.9.0
 
-- refactor: remove `current_application` and `current_menu` from `MenuWidget`, just
-  keep them as a proxy for the top item of the `stack`
+- refactor: remove `current_application` and `current_menu` from `MenuWidget`, just keep them as a proxy for the top item of the `stack`
 - refactor: clean subscriptions in different levels of screen, widget and item
 - feat: allow action items to return subscribable menus
 - feat: add `logger` and log subscriptions
 
 ## Version 0.8.0
 
-- feat: add a mechanism to sync properties with subscribable values (defined in python-redux).
-  applied for these properties:
-  - `MenuWidget`:
-    1. `application`
-    1. `sub_menu`
-    1. `heading` of headed menu
-    1. `sub_heading` of headed menu
-    1. `items` of menu
-    1. `title` of menu
-  - `ItemWidget`:
-    1. `label`
-    1. `is_short`
-    1. `color`
-    1. `background_color`
-    1. `icon`
+- feat: add a mechanism to sync properties with subscribable values (defined in python-redux). applied for these properties: - `MenuWidget`: 1. `application` 1. `sub_menu` 1. `heading` of headed menu 1. `sub_heading` of headed menu 1. `items` of menu 1. `title` of menu - `ItemWidget`: 1. `label` 1. `is_short` 1. `color` 1. `background_color` 1. `icon`
 
 ## Version 0.7.9
 
@@ -228,8 +201,7 @@
 
 ## Version 0.7.4
 
-- fix: avoid unnecessary property caching causing temporary inaccurate state for
-  `MenuWidget`
+- fix: avoid unnecessary property caching causing temporary inaccurate state for `MenuWidget`
 
 ## Version 0.7.2
 
@@ -244,8 +216,7 @@
 
 ## Version 0.7.0
 
-- refactor: migrate from `TypedDict` to `Immutable` of python-immutable for the
-  sake of better compatibility with python-redux
+- refactor: migrate from `TypedDict` to `Immutable` of python-immutable for the sake of better compatibility with python-redux
 - refactor: remove `NotificationManager` as it is beyond the scope of this package
 - refactor: minor improvements in typehints
 
@@ -255,8 +226,7 @@
 
 ## Version 0.6.4
 
-- feat: make `MenuWidget` subscribe to the items of the current menu if it provides
-  a `subscribe` property
+- feat: make `MenuWidget` subscribe to the items of the current menu if it provides a `subscribe` property
 
 ## Version 0.6.3
 
@@ -340,15 +310,13 @@
 
 ## Version 0.2.3
 
-- refactor: update code structure so that all packages are sub-packages of a single
-  package named ubo
+- refactor: update code structure so that all packages are sub-packages of a single package named ubo
 
 ## Version 0.2.2
 
 - fix: use dp for the radius of rounded rectangles
 - feat: implement notifications and add sample usage to menu demo app
-- feat: implement WifiPrompt in demo/menu.py as an example of PromptWidget usage
-  and as an example of application launcher menu item
+- feat: implement WifiPrompt in demo/menu.py as an example of PromptWidget usage and as an example of application launcher menu item
 - refactor: change Widgets with nested BoxLayouts to simple BoxLayouts
 - feat: implement application launcher menu items
 - feat: add prompt widget
@@ -360,14 +328,12 @@
 - fix: change header.text only when the default header label is in use
 - chore: add poethepoet to dependencies
 - docs: add basic information in README.md
-- feat: replace old icon_path, etc with new icon field for menu items, it uses material
-  symbols icon font to render icons
+- feat: replace old icon_path, etc with new icon field for menu items, it uses material symbols icon font to render icons
 - fix: don't render non-existing item widgets in a menu page
 - docs: update menu demo to use latest features
 - chore: add lint script entry to pyproject.toml
 - feat: allow setting is_short property of menu items from Item TypedDict class
-- feat: add HeadlessMenu for rendering menus without a heading in the first page,
-  it completes HeadedMenu which is the old Menu class
+- feat: add HeadlessMenu for rendering menus without a heading in the first page, it completes HeadedMenu which is the old Menu class
 - feat: support function values for items field of a menu
 - style: change default color of menu items to ubo blue
 - feat: add is_short property to items
@@ -383,8 +349,7 @@
 ## Version 0.2.0
 
 - feat: add app class providing a general layout for ubo gui applications
-- refactor: decouple demo application from the core functionality and use its provided
-  api instead
+- refactor: decouple demo application from the core functionality and use its provided api instead
 
 ## Version 0.1.0
 

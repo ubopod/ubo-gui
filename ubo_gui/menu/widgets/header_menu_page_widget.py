@@ -25,7 +25,7 @@ class HeaderMenuPageWidget(PageWidget):
 
     def __init__(
         self: HeaderMenuPageWidget,
-        items: Sequence[Item | None],
+        items: Sequence[Item | None] | None = None,
         **kwargs: Any,  # noqa: ANN401
     ) -> None:
         """Initialize a `HeaderMenuPageWidget`.
@@ -40,26 +40,27 @@ class HeaderMenuPageWidget(PageWidget):
         `Screen`.
 
         """
-        self.bind(on_kv_post=self.render)
+        self.bind(on_count=self.adjust_item_widgets)
         super().__init__(items, **kwargs)
-        if len(items) > self.count - 2:
-            msg = (
-                '`HeaderMenuPageWidget` is initialized with more than '
-                f'`{self.count - 2}` items'
-            )
-            raise ValueError(msg)
+        self.item_widgets: list[ItemWidget] = []
         self.bind(items=self.render)
+
+    def adjust_item_widgets(self: HeaderMenuPageWidget, *args: object) -> None:
+        """Initialize the widget."""
+        _ = args
+        for _ in range(len(self.item_widgets), self.count - 2):
+            self.item_widgets.append(ItemWidget())
+            self.ids.layout.add_widget(self.item_widgets[-1])
+        for _ in range(self.count - 2, len(self.item_widgets)):
+            self.ids.layout.remove_widgeT(self.item_widgets[-1])
+            del self.item_widgets[-1]
 
     def render(self: HeaderMenuPageWidget, *_: object) -> None:
         """Render the widget."""
-        self.ids.layout.clear_widgets()
+        if not self.item_widgets:
+            return
         for i in range(self.count - 2):
-            self.ids.layout.add_widget(
-                ItemWidget(
-                    item=self.items[i] if i < len(self.items) else None,
-                    size_hint=(1, None),
-                ),
-            )
+            self.item_widgets[i].item = self.items[i] if i < len(self.items) else None
 
     def get_item(self: HeaderMenuPageWidget, index: int) -> Item | None:
         """Get the item at the given index."""

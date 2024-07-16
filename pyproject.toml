@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ubo-gui"
-version = "0.11.17"
+version = "0.11.18"
 description = "GUI sdk for Ubo Pod"
 authors = ["Sassan Haradji <sassanh@gmail.com>"]
 license = "Apache-2.0"

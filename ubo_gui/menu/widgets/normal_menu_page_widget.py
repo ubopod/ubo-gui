@@ -25,20 +25,29 @@ class NormalMenuPageWidget(PageWidget):
         **kwargs: object,
     ) -> None:
         """Initialize `NormalMenuPageWidget`."""
-        self.bind(on_kv_post=self.render)
+        self.item_widgets: list[ItemWidget] = []
+        self.bind(on_kv_post=self.adjust_item_widgets)
         super().__init__(items, *args, **kwargs)
+        self.bind(on_count=self.adjust_item_widgets)
         self.bind(items=self.render)
+
+    def adjust_item_widgets(self: NormalMenuPageWidget, *args: object) -> None:
+        """Initialize the widget."""
+        _ = args
+        for _ in range(len(self.item_widgets), self.count):
+            self.item_widgets.append(ItemWidget(size_hint=(1, None)))
+            self.ids.layout.add_widget(self.item_widgets[-1])
+        for _ in range(self.count, len(self.item_widgets)):
+            self.ids.layout.remove_widgeT(self.item_widgets[-1])
+            del self.item_widgets[-1]
+        self.render()
 
     def render(self: NormalMenuPageWidget, *_: object) -> None:
         """Render the widget."""
-        self.ids.layout.clear_widgets()
+        if not self.item_widgets:
+            return
         for i in range(self.count):
-            self.ids.layout.add_widget(
-                ItemWidget(
-                    item=self.items[i] if i < len(self.items) else None,
-                    size_hint=(1, None),
-                ),
-            )
+            self.item_widgets[i].item = self.items[i] if i < len(self.items) else None
 
 
 Builder.load_file(

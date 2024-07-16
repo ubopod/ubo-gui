@@ -217,7 +217,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         if self.pages == 1:
             return
         self.page_index = (self.page_index + 1) % self.pages
-        self._render_items()
+        self._render_menu()
         self._switch_to(
             self.current_screen,
             transition=self._slide_transition,
@@ -236,7 +236,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         if self.pages == 1:
             return
         self.page_index = (self.page_index - 1) % self.pages
-        self._render_items()
+        self._render_menu()
         self._switch_to(
             self.current_screen,
             transition=self._slide_transition,
@@ -377,69 +377,10 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                 transition=self._rise_in_transition,
             )
 
-    def _render_header_menu(self: MenuWidget, menu: HeadedMenu) -> HeaderMenuPageWidget:
-        """Render a header menu."""
-        next_item = (
-            None
-            if self.page_index == self.pages - 1
-            else (padding_item := self.current_menu_items[PAGE_SIZE - 2])
-            and Item(
-                label=padding_item.label,
-                icon=padding_item.icon,
-                background_color=padding_item.background_color,
-                is_short=padding_item.is_short,
-                opacity=0.6,
-            )
-        )
-        list_widget = HeaderMenuPageWidget(
-            [*self.current_menu_items[: PAGE_SIZE - 2], next_item],
-            name=f'Page {self.get_depth()} 0',
-            count=PAGE_SIZE + 1 if self.render_surroundings else PAGE_SIZE,
-            offset=1 if self.render_surroundings else 0,
-            render_surroundings=self.render_surroundings,
-            padding_bottom=self.padding_bottom,
-            padding_top=self.padding_top,
-        )
-
-        def handle_heading_change(heading: str) -> None:
-            logger.debug(
-                'Handle `heading` change...',
-                extra={
-                    'new_heading': heading,
-                    'old_heading': list_widget.heading,
-                    'subscription_level': 'widget',
-                },
-            )
-            list_widget.heading = heading
-
-        self.widget_subscriptions.add(
-            process_subscribable_value(
-                menu.heading,
-                handle_heading_change,
-            ),
-        )
-
-        def handle_sub_heading_change(sub_heading: str) -> None:
-            logger.debug(
-                'Handle `sub_heading` change...',
-                extra={
-                    'new_sub_heading': sub_heading,
-                    'old_sub_heading': list_widget.sub_heading,
-                    'subscription_level': 'widget',
-                },
-            )
-            list_widget.sub_heading = sub_heading
-
-        self.widget_subscriptions.add(
-            process_subscribable_value(
-                menu.sub_heading,
-                handle_sub_heading_change,
-            ),
-        )
-
-        return list_widget
-
-    def _render_normal_menu(self: MenuWidget, menu: Menu) -> NormalMenuPageWidget:
+    def _menu_items(
+        self: MenuWidget,
+        menu: Menu,
+    ) -> Sequence[Item | None]:
         """Render a normal menu."""
         offset = -(PAGE_SIZE - 1) if isinstance(menu, HeadedMenu) else 0
         items: list[Item | None] = list(
@@ -483,27 +424,75 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                 )
             )
             items = [previous_item, *items, next_item]
-        return NormalMenuPageWidget(
-            items,
-            name=f'Page {self.get_depth()} 0',
-            count=PAGE_SIZE + 2 if self.render_surroundings else PAGE_SIZE,
-            offset=1 if self.render_surroundings else 0,
-            render_surroundings=self.render_surroundings,
-            padding_bottom=self.padding_bottom,
-            padding_top=self.padding_top,
-        )
+        return items
 
-    def _render_items(self: MenuWidget, *_: object) -> None:
+    def _render_menu(
+        self: MenuWidget,
+        *_: object,
+    ) -> HeaderMenuPageWidget | NormalMenuPageWidget | None:
         """Render the items of the current menu."""
         self._clear_widget_subscriptions()
         if self.page_index >= self.pages:
             self.page_index = self.pages - 1
         if not self.current_menu:
-            return
+            return None
+        items = self._menu_items(self.current_menu)
         if self.page_index == 0 and isinstance(self.current_menu, HeadedMenu):
-            list_widget = self._render_header_menu(self.current_menu)
+            list_widget = HeaderMenuPageWidget(
+                items,
+                name=f'Page {self.get_depth()} 0',
+                count=PAGE_SIZE + 1 if self.render_surroundings else PAGE_SIZE,
+                offset=1 if self.render_surroundings else 0,
+                render_surroundings=self.render_surroundings,
+                padding_bottom=self.padding_bottom,
+                padding_top=self.padding_top,
+            )
+
+            def handle_heading_change(heading: str) -> None:
+                logger.debug(
+                    'Handle `heading` change...',
+                    extra={
+                        'new_heading': heading,
+                        'old_heading': list_widget.heading,
+                        'subscription_level': 'widget',
+                    },
+                )
+                list_widget.heading = heading
+
+            self.widget_subscriptions.add(
+                process_subscribable_value(
+                    self.current_menu.heading,
+                    handle_heading_change,
+                ),
+            )
+
+            def handle_sub_heading_change(sub_heading: str) -> None:
+                logger.debug(
+                    'Handle `sub_heading` change...',
+                    extra={
+                        'new_sub_heading': sub_heading,
+                        'old_sub_heading': list_widget.sub_heading,
+                        'subscription_level': 'widget',
+                    },
+                )
+                list_widget.sub_heading = sub_heading
+
+            self.widget_subscriptions.add(
+                process_subscribable_value(
+                    self.current_menu.sub_heading,
+                    handle_sub_heading_change,
+                ),
+            )
         else:
-            list_widget = self._render_normal_menu(self.current_menu)
+            list_widget = NormalMenuPageWidget(
+                items,
+                name=f'Page {self.get_depth()} 0',
+                count=PAGE_SIZE + 2 if self.render_surroundings else PAGE_SIZE,
+                offset=1 if self.render_surroundings else 0,
+                render_surroundings=self.render_surroundings,
+                padding_bottom=self.padding_bottom,
+                padding_top=self.padding_top,
+            )
 
         self.current_screen = list_widget
 
@@ -525,6 +514,8 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             ),
         )
 
+        return list_widget
+
     def _render(self: MenuWidget, *_: object) -> None:
         """Return the current screen page."""
         self._clear_screen_subscriptions()
@@ -542,9 +533,10 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         if isinstance(self.top, StackMenuItem):
             menu = self.top.menu
             last_items = None
+            menu_widget = None
 
             def handle_items_change(items: Sequence[Item]) -> None:
-                nonlocal last_items
+                nonlocal last_items, menu_widget
                 logger.debug(
                     'Handle `items` change...',
                     extra={
@@ -554,12 +546,10 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                     },
                 )
                 self.current_menu_items = items
-                self._render_items()
-                if last_items is not None:
-                    self._switch_to(
-                        self.current_screen,
-                        transition=self._no_transition,
-                    )
+                if menu_widget is None:
+                    menu_widget = self._render_menu()
+                else:
+                    menu_widget.items = self._menu_items(menu)
                 last_items = items
 
             self.screen_subscriptions.add(

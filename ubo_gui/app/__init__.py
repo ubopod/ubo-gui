@@ -51,9 +51,6 @@ class UboApp(App):
             ),
         )
 
-        if self.root is None:
-            return None
-
         central_layout: BoxLayout = self.root.ids.central_layout
         if self.central:
             central_layout.add_widget(self.central)
@@ -73,17 +70,17 @@ class UboApp(App):
         """The central section of the app."""
         return None
 
-    def title_callback(self: UboApp, _: RootWidget, title: str) -> None:
+    def title_callback(self: UboApp, _: RootWidget, title: str | None) -> None:
         """Update the header label when the title changes."""
         if not self:
             return
         header_layout: BoxLayout = self.root.ids.header_layout
-        if title is not None:
-            self.header_label.text = title
-            header_layout.opacity = 1
-        else:
+        if title is None:
             self.header_label.text = ''
             header_layout.opacity = 0
+        else:
+            self.header_label.text = title
+            header_layout.opacity = 1
 
     @cached_property
     def header(self: UboApp) -> Widget | None:
