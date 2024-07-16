@@ -53,6 +53,10 @@ class ItemWidget(BoxLayout):
     is_short: bool = BooleanProperty(defaultvalue=False)
     item: Item | None = ObjectProperty(allownone=True)
     opacity: float = NumericProperty(default=1, min=0, max=1)
+    progress: float = NumericProperty(default=1, min=0, max=1)
+
+    _width: float = NumericProperty()
+    _progress: int = NumericProperty()
 
     def __init__(self: ItemWidget, item: Item | None = None, **kwargs: Any) -> None:  # noqa: ANN401
         """Initialize an `ItemWidget`."""
@@ -63,66 +67,67 @@ class ItemWidget(BoxLayout):
         """Unsubscribe from the item."""
         self.clear_subscriptions()
 
-    def on_item(self: ItemWidget, instance: ItemWidget, value: Item | None) -> None:
+    def on_item(self: ItemWidget, _: ItemWidget, value: Item | None) -> None:
         """Update the widget properties when the item changes."""
         self.clear_subscriptions()
-        if value is not None:
-            instance.is_set = True
-            instance.label = ''
+        if value is None:
+            self.is_set = False
+        else:
+            self.is_set = True
+            self.label = ''
             self._subscriptions.append(
                 process_subscribable_value(
                     value.label,
-                    lambda value: setattr(instance, 'label', value or ''),
+                    lambda value: setattr(self, 'label', value or ''),
                 ),
             )
 
-            instance.is_short = False
+            self.is_short = False
             self._subscriptions.append(
                 process_subscribable_value(
                     value.is_short,
                     lambda value: setattr(
-                        instance,
+                        self,
                         'is_short',
                         False if value is None else value,
                     ),
                 ),
             )
 
-            instance.color = ItemWidget.color.defaultvalue
+            self.color = ItemWidget.color.defaultvalue
             self._subscriptions.append(
                 process_subscribable_value(
                     value.color,
                     lambda value: setattr(
-                        instance,
+                        self,
                         'color',
                         value or ItemWidget.color.defaultvalue,
                     ),
                 ),
             )
 
-            instance.background_color = ItemWidget.background_color.defaultvalue
+            self.background_color = ItemWidget.background_color.defaultvalue
             self._subscriptions.append(
                 process_subscribable_value(
                     value.background_color,
                     lambda value: setattr(
-                        instance,
+                        self,
                         'background_color',
                         value or ItemWidget.background_color.defaultvalue,
                     ),
                 ),
             )
 
-            instance.icon = ''
+            self.icon = ''
             self._subscriptions.append(
                 process_subscribable_value(
                     value.icon,
-                    lambda value: setattr(instance, 'icon', value or ''),
+                    lambda value: setattr(self, 'icon', value or ''),
                 ),
             )
 
-            instance.opacity = value.opacity or 1
-        else:
-            instance.is_set = False
+            self.opacity = value.opacity or 1
+            self.progress = min(max(value.progress or 1, 0), 1)
 
     def clear_subscriptions(self: ItemWidget) -> None:
         """Clear the subscriptions."""

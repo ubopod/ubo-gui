@@ -2,16 +2,26 @@
 
 <ItemWidget>:
   orientation: 'horizontal'
+  _width: dp(UBO_GUI_SHORT_WIDTH) if self.is_short else self.width - dp(6)
+  _progress: 0 if self.progress is None else int(self._width * self.progress)
   height: dp(UBO_GUI_MENU_ITEM_HEIGHT)
   opacity: root.opacity if root.is_set else 0
 
   canvas.before:
     Color:
-      rgba: root.background_color if root.is_set else (0, 0, 0, 0)
+      rgb: root.background_color[0] + (-0.2 if root.background_color[0] > 0.5 else 0.2), root.background_color[1] + (-0.2 if root.background_color[1] > 0.5 else 0.2), root.background_color[2] + (-0.2 if root.background_color[2] > 0.5 else 0.2)
 
     RoundedRectangle:
       pos: self.pos
-      size: (dp(UBO_GUI_SHORT_WIDTH) if self.is_short else self.width - dp(6), self.height) if root.is_set else (0, 0)
+      size: (self._width, self.height) if root.is_set else (0, 0)
+      radius: (0, 0), (dp(26), dp(26)), (dp(26), dp(26)), (0, 0)
+
+    Color:
+      rgba: root.background_color if root.is_set else (0, 0, 0, 0)
+
+    RoundedRectangle:
+      pos: self.pos[0], self.pos[1]
+      size: self._progress, self.height
       radius: (0, 0), (dp(26), dp(26)), (dp(26), dp(26)), (0, 0)
 
   orientation: 'horizontal'

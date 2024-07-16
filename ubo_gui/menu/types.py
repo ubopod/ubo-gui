@@ -127,6 +127,7 @@ class Item(Immutable):
     icon: str | None | Callable[[], str | None] = None
     is_short: bool | Callable[[], bool] = False
     opacity: float | None = None
+    progress: float | None = None
 
 
 class ActionItem(Item):
