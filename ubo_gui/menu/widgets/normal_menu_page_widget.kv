@@ -9,8 +9,7 @@
 
     Label:
       text: ('Nothing here yet' if root.placeholder is None else root.placeholder) if root.is_empty else ''
-      text_size: self.texture_size if root.is_empty else (0, 0)
-      size_hint_y: self.texture_size[1] if root.is_empty else 0
+      text_size: self.size
       font_size: dp(20)
       halign: 'center'
       valign: 'middle'

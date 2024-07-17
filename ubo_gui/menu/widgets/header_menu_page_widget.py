@@ -40,27 +40,31 @@ class HeaderMenuPageWidget(PageWidget):
         `Screen`.
 
         """
-        self.bind(on_count=self.adjust_item_widgets)
-        super().__init__(items, **kwargs)
         self.item_widgets: list[ItemWidget] = []
+        self.bind(on_kv_post=self.adjust_item_widgets)
+        super().__init__(items, **kwargs)
+        self.bind(on_count=self.adjust_item_widgets)
         self.bind(items=self.render)
 
     def adjust_item_widgets(self: HeaderMenuPageWidget, *args: object) -> None:
         """Initialize the widget."""
         _ = args
         for _ in range(len(self.item_widgets), self.count - 2):
-            self.item_widgets.append(ItemWidget())
+            self.item_widgets.append(ItemWidget(size_hint=(1, None)))
             self.ids.layout.add_widget(self.item_widgets[-1])
         for _ in range(self.count - 2, len(self.item_widgets)):
-            self.ids.layout.remove_widgeT(self.item_widgets[-1])
+            self.ids.layout.remove_widget(self.item_widgets[-1])
             del self.item_widgets[-1]
+        self.render()
 
     def render(self: HeaderMenuPageWidget, *_: object) -> None:
         """Render the widget."""
         if not self.item_widgets:
             return
         for i in range(self.count - 2):
-            self.item_widgets[i].item = self.items[i] if i < len(self.items) else None
+            self.item_widgets[i].item = (
+                self.items[i + 1] if i <= len(self.items) else None
+            )
 
     def get_item(self: HeaderMenuPageWidget, index: int) -> Item | None:
         """Get the item at the given index."""
@@ -72,7 +76,7 @@ class HeaderMenuPageWidget(PageWidget):
             )
             return None
         try:
-            return self.items[index - PAGE_SIZE + 1]
+            return self.items[index - PAGE_SIZE]
         except IndexError:
             return None
 

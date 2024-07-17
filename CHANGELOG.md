@@ -1,9 +1,10 @@
 # Changelog
 
-## Version 0.11.18
+## Version 0.12.0
 
 - refactor: just change the items of the menu when items are changed, instead of creating a whole new menu widget
 - feat: add progress to `ItemWidget`, reflect it in its look and optimize its rendering for rapid re-renders
+- feat: add `ProgressRingWidget` widget
 
 ## Version 0.11.17
 

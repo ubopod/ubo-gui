@@ -52,8 +52,8 @@ class ItemWidget(BoxLayout):
     icon: str = StringProperty(defaultvalue='')
     is_short: bool = BooleanProperty(defaultvalue=False)
     item: Item | None = ObjectProperty(allownone=True)
-    opacity: float = NumericProperty(default=1, min=0, max=1)
-    progress: float = NumericProperty(default=1, min=0, max=1)
+    opacity: float = NumericProperty(defaultvalue=1, min=0, max=1)
+    progress: float = NumericProperty(defaultvalue=1, min=0, max=1)
 
     _width: float = NumericProperty()
     _progress: int = NumericProperty()

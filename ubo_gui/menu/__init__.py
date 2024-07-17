@@ -426,10 +426,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             items = [previous_item, *items, next_item]
         return items
 
-    def _render_menu(
-        self: MenuWidget,
-        *_: object,
-    ) -> HeaderMenuPageWidget | NormalMenuPageWidget | None:
+    def _render_menu(self: MenuWidget, *_: object) -> PageWidget | None:
         """Render the items of the current menu."""
         self._clear_widget_subscriptions()
         if self.page_index >= self.pages:
@@ -918,11 +915,11 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         cache=True,
     )
     render_surroundings = BooleanProperty(
-        default=False,
+        defaultvalue=False,
         cache=True,
     )
-    padding_bottom = NumericProperty(default=0)
-    padding_top = NumericProperty(default=0)
+    padding_bottom = NumericProperty(defaultvalue=0)
+    padding_top = NumericProperty(defaultvalue=0)
 
 
 Builder.load_file(

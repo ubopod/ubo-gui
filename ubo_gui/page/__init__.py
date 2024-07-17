@@ -32,11 +32,11 @@ class PageWidget(Screen):
     offset: int = NumericProperty(defaultvalue=0)
     placeholder: str | None = StringProperty(allownone=True)
     render_surroundings: bool = BooleanProperty(
-        default=False,
+        defaultvalue=False,
         cache=True,
     )
-    padding_top: int = NumericProperty(default=0)
-    padding_bottom: int = NumericProperty(default=0)
+    padding_top: int = NumericProperty(defaultvalue=0)
+    padding_bottom: int = NumericProperty(defaultvalue=0)
 
     def get_is_empty(self: PageWidget) -> bool:
         """Check if there is no item in items or all of them are `None`."""
