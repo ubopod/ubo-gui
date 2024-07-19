@@ -1,4 +1,4 @@
-"""Notification widget."""
+"""ProgressRing widget."""
 
 from __future__ import annotations
 
@@ -14,6 +14,7 @@ class ProgressRingWidget(Widget):
     """renders a progress ring."""
 
     progress: float = NumericProperty(defaultvalue=0, min=0, max=1)
+    background_band_width: int = NumericProperty(defaultvalue=dp(1))
     band_width: int = NumericProperty(defaultvalue=dp(4))
     background_color = ColorProperty()
     color = ColorProperty()

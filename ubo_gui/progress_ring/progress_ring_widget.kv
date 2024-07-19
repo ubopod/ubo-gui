@@ -19,8 +19,8 @@
       rgba: self.color
 
     Ellipse:
-      pos: [i + dp(1) for i in self.pos]
-      size: [i - dp(2) for i in self.size]
+      pos: [i + self.background_band_width for i in self.pos]
+      size: [i - 2 * self.background_band_width for i in self.size]
       angle_start: 0
       angle_end: self._progress
 
@@ -28,8 +28,8 @@
       rgba: self.background_color
 
     Ellipse:
-      pos: [i + dp(1) + self.band_width for i in self.pos]
-      size: [i - dp(2) - 2 * self.band_width for i in self.size]
+      pos: [i + self.background_band_width + self.band_width for i in self.pos]
+      size: [i - 2 * self.background_band_width - 2 * self.band_width for i in self.size]
       angle_start: 0
       angle_end: 360
 
@@ -37,7 +37,7 @@
       rgb: 0, 0 ,0
 
     Ellipse:
-      pos: [i + dp(2) + self.band_width for i in self.pos]
-      size: [i - dp(4) - 2 * self.band_width for i in self.size]
+      pos: [i + 2 * self.background_band_width + self.band_width for i in self.pos]
+      size: [i - 4 * self.background_band_width - 2 * self.band_width for i in self.size]
       angle_start: 0
       angle_end: 360

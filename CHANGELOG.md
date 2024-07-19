@@ -3,6 +3,7 @@
 ## Version 0.12.1
 
 - fix: headed menu item selection logic
+- refactor: make the background band width of the `ProgressRingWidget` configurable via `background_band_width` property
 
 ## Version 0.12.0
 
