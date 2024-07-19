@@ -51,10 +51,10 @@ class HeaderMenuPageWidget(PageWidget):
     def adjust_item_widgets(self: HeaderMenuPageWidget, *args: object) -> None:
         """Initialize the widget."""
         _ = args
-        for _ in range(len(self.item_widgets), self.count - 2):
+        for _ in range(len(self.item_widgets), self._count - self._offset):
             self.item_widgets.append(ItemWidget(size_hint=(1, None)))
             self.ids.layout.add_widget(self.item_widgets[-1])
-        for _ in range(self.count - 2, len(self.item_widgets)):
+        for _ in range(self._count - self._offset, len(self.item_widgets)):
             self.ids.layout.remove_widget(self.item_widgets[-1])
             del self.item_widgets[-1]
         self.render()
@@ -63,15 +63,13 @@ class HeaderMenuPageWidget(PageWidget):
         """Render the widget."""
         if not self.item_widgets:
             return
-        offset = 1 if self.render_surroundings else 0
-        for i in range(self.count - 2):
-            self.item_widgets[i].item = (
-                self.items[i + offset] if i + offset < len(self.items) else None
+        for i in range(self._offset, self._count):
+            self.item_widgets[i - self._offset].item = (
+                self.items[i] if i < len(self.items) else None
             )
 
     def get_item(self: HeaderMenuPageWidget, index: int) -> Item | None:
         """Get the item at the given index."""
-        offset = 1 if self.render_surroundings else 0
         if index < HEADER_SIZE:
             warnings.warn(
                 f'index must be greater than or equal to {HEADER_SIZE}',
@@ -80,7 +78,7 @@ class HeaderMenuPageWidget(PageWidget):
             )
             return None
         try:
-            return self.items[index - HEADER_SIZE + offset]
+            return self.items[index + self.offset - HEADER_SIZE]
         except IndexError:
             return None
 

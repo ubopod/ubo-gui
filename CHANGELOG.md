@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.12.2
+
+- fix: headed menu item presentation logic
+
 ## Version 0.12.1
 
 - fix: headed menu item selection logic

@@ -29,7 +29,6 @@ class PageWidget(Screen):
     items: Sequence[Item | None] = ListProperty([])
     title: str | None = StringProperty(allownone=True, defaultvalue=None)
     count: int = NumericProperty(defaultvalue=PAGE_MAX_ITEMS)
-    offset: int = NumericProperty(defaultvalue=0)
     placeholder: str | None = StringProperty(allownone=True)
     render_surroundings: bool = BooleanProperty(
         defaultvalue=False,
@@ -43,6 +42,14 @@ class PageWidget(Screen):
         return all(i is None for i in self.items)
 
     is_empty: bool = AliasProperty(getter=get_is_empty, bind=('items',))
+
+    @property
+    def _count(self: PageWidget) -> int:
+        return self.count + (2 if self.render_surroundings else 0)
+
+    @property
+    def _offset(self: PageWidget) -> int:
+        return 1 if self.render_surroundings else 0
 
     def go_up(self: Self) -> None:
         """Implement this method to provide custom logic for up key."""
@@ -83,14 +90,14 @@ class PageWidget(Screen):
         """
         self.items = items or []
         super().__init__(*args, **kwargs)
-        if items and len(items) > self.count:
-            msg = f"""`PageWidget` is initialized with more than `MAX_ITEMS`={
+        if items and len(items) > self._count:
+            msg = f"""`PageWidget` is initialized with more than `count`={
             self.count} items"""
             raise ValueError(msg)
 
     def get_item(self: PageWidget, index: int) -> Item | None:
         """Get the page item at the given index."""
-        index += self.offset
+        index += self._offset
         if not 0 <= index < len(self.items):
             msg = f"""index must be greater than or equal to 0 and less than {
             len(self.items)}"""

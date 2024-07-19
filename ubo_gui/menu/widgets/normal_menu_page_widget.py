@@ -34,11 +34,11 @@ class NormalMenuPageWidget(PageWidget):
     def adjust_item_widgets(self: NormalMenuPageWidget, *args: object) -> None:
         """Initialize the widget."""
         _ = args
-        for _ in range(len(self.item_widgets), self.count):
+        for _ in range(len(self.item_widgets), self._count):
             self.item_widgets.append(ItemWidget(size_hint=(1, None)))
             self.ids.layout.add_widget(self.item_widgets[-1])
-        for _ in range(self.count, len(self.item_widgets)):
-            self.ids.layout.remove_widgeT(self.item_widgets[-1])
+        for _ in range(self._count, len(self.item_widgets)):
+            self.ids.layout.remove_widget(self.item_widgets[-1])
             del self.item_widgets[-1]
         self.render()
 
@@ -46,7 +46,7 @@ class NormalMenuPageWidget(PageWidget):
         """Render the widget."""
         if not self.item_widgets:
             return
-        for i in range(self.count):
+        for i in range(self._count):
             self.item_widgets[i].item = self.items[i] if i < len(self.items) else None
 
 

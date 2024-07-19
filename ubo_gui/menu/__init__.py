@@ -385,7 +385,8 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         offset = -(PAGE_SIZE - 1) if isinstance(menu, HeadedMenu) else 0
         items: list[Item | None] = list(
             self.current_menu_items[
-                self.page_index * PAGE_SIZE + offset : self.page_index * PAGE_SIZE
+                max(self.page_index * PAGE_SIZE + offset, 0) : self.page_index
+                * PAGE_SIZE
                 + PAGE_SIZE
                 + offset
             ],
@@ -438,8 +439,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             list_widget = HeaderMenuPageWidget(
                 items,
                 name=f'Page {self.get_depth()} 0',
-                count=PAGE_SIZE + 1 if self.render_surroundings else PAGE_SIZE,
-                offset=1 if self.render_surroundings else 0,
+                count=PAGE_SIZE - 2,
                 render_surroundings=self.render_surroundings,
                 padding_bottom=self.padding_bottom,
                 padding_top=self.padding_top,
@@ -484,8 +484,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             list_widget = NormalMenuPageWidget(
                 items,
                 name=f'Page {self.get_depth()} 0',
-                count=PAGE_SIZE + 2 if self.render_surroundings else PAGE_SIZE,
-                offset=1 if self.render_surroundings else 0,
+                count=PAGE_SIZE,
                 render_surroundings=self.render_surroundings,
                 padding_bottom=self.padding_bottom,
                 padding_top=self.padding_top,
