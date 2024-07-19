@@ -9,12 +9,14 @@ from typing import TYPE_CHECKING, Any, Sequence
 from kivy.lang.builder import Builder
 from kivy.properties import StringProperty
 
-from ubo_gui.menu.constants import PAGE_SIZE
 from ubo_gui.menu.widgets.item_widget import ItemWidget
 from ubo_gui.page import PageWidget
 
 if TYPE_CHECKING:
     from ubo_gui.menu.types import Item
+
+
+HEADER_SIZE = 2
 
 
 class HeaderMenuPageWidget(PageWidget):
@@ -61,22 +63,24 @@ class HeaderMenuPageWidget(PageWidget):
         """Render the widget."""
         if not self.item_widgets:
             return
+        offset = 1 if self.render_surroundings else 0
         for i in range(self.count - 2):
             self.item_widgets[i].item = (
-                self.items[i + 1] if i <= len(self.items) else None
+                self.items[i + offset] if i + offset < len(self.items) else None
             )
 
     def get_item(self: HeaderMenuPageWidget, index: int) -> Item | None:
         """Get the item at the given index."""
-        if index != PAGE_SIZE - 1:
+        offset = 1 if self.render_surroundings else 0
+        if index < HEADER_SIZE:
             warnings.warn(
-                f'index must be {PAGE_SIZE - 1}',
+                f'index must be greater than or equal to {HEADER_SIZE}',
                 ResourceWarning,
                 stacklevel=1,
             )
             return None
         try:
-            return self.items[index - PAGE_SIZE]
+            return self.items[index - HEADER_SIZE + offset]
         except IndexError:
             return None
 

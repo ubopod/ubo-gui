@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.12.1
+
+- fix: headed menu item selection logic
+
 ## Version 0.12.0
 
 - refactor: just change the items of the menu when items are changed, instead of creating a whole new menu widget
