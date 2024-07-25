@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.12.3
+
+- feat: keep track of the selections, so that we can replace all the deep selections of an item when it's replaced
+
 ## Version 0.12.2
 
 - fix: headed menu item presentation logic

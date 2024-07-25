@@ -78,7 +78,7 @@ class HeaderMenuPageWidget(PageWidget):
             )
             return None
         try:
-            return self.items[index + self.offset - HEADER_SIZE]
+            return self.items[index + self._offset - HEADER_SIZE]
         except IndexError:
             return None
 

@@ -121,6 +121,7 @@ class Item(Immutable):
 
     """
 
+    key: str | None = None
     label: str | Callable[[], str] = ''
     color: Color | Callable[[], Color] = (1, 1, 1, 1)
     background_color: Color | Callable[[], Color] = PRIMARY_COLOR
