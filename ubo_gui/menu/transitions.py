@@ -143,6 +143,8 @@ class TransitionsMixin:
         direction: str | None = None,
     ) -> None:
         """Switch to a new screen."""
+        if screen is self.screen_manager.current_screen:
+            return
         if duration is None:
             duration = 0 if transition is self._no_transition else 0.3
         with self._transition_progress_lock:
