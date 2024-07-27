@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.12.5
+
+- fix: `go_home` should clear the selection of root before setting `stack`
+
 ## Version 0.12.4
 
 - fix: going home from home caused a bad state
