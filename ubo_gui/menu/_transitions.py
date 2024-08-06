@@ -114,6 +114,7 @@ class TransitionsMixin:
         self._setup_transition(transition)
         return transition
 
+    @mainthread
     def _perform_switch(
         self: TransitionsMixin,
         screen: Screen | None,
@@ -125,7 +126,7 @@ class TransitionsMixin:
     ) -> None:
         if duration is None:
             duration = 0.2
-        mainthread(self.screen_manager.switch_to)(
+        self.screen_manager.switch_to(
             screen,
             transition=transition,
             duration=duration,
@@ -148,7 +149,12 @@ class TransitionsMixin:
         if duration is None:
             duration = 0 if transition is self._no_transition else 0.3
         with self._transition_progress_lock:
-            if not self._is_transition_in_progress:
+            if self._is_transition_in_progress:
+                self.transition_queue = [
+                    *self.transition_queue,
+                    (screen, transition, direction, duration),
+                ]
+            else:
                 if isinstance(self, Widget):
                     headless_widget = HeadlessWidget.get_instance(self)
                     if headless_widget:
@@ -161,8 +167,3 @@ class TransitionsMixin:
                     duration=duration,
                     direction=direction,
                 )
-            else:
-                self.transition_queue = [
-                    *self.transition_queue,
-                    (screen, transition, direction, duration),
-                ]
