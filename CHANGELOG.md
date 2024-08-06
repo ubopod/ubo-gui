@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.13.0
+
+- fix: updating items of the pages after the first page not being visible
+- refactor: merge `HeaderMenuPageWidget` and `NormalMenuPageWidget` into `MenuPageWidget`
+- refactor: keep a clone of menu-page widget as Kivy needs the source and target widgets to be different for transitions while going up and down in a menu needs a transition of the same widget to itself as we just change its items and don't recreate it
+
 ## Version 0.12.5
 
 - fix: `go_home` should clear the selection of root before setting `stack`
