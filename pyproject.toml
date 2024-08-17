@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ubo-gui"
-version = "0.13.0"
+version = "0.13.1"
 description = "GUI sdk for Ubo Pod"
 authors = ["Sassan Haradji <sassanh@gmail.com>"]
 license = "Apache-2.0"
@@ -9,7 +9,7 @@ packages = [{ include = "ubo_gui" }]
 include = ['ubo_gui/assets/fonts/*']
 
 [tool.poetry.dependencies]
-headless-kivy = "^0.9.0"
+headless-kivy = "^0.9.7"
 python = "^3.11"
 python-immutable = "^1.0.2"
 qrcode = "^7.4.2"
@@ -19,8 +19,8 @@ optional = true
 
 [tool.poetry.group.dev.dependencies]
 poethepoet = "^0.24.4"
-pyright = "^1.1.374"
-ruff = "^0.5.6"
+pyright = "^1.1.376"
+ruff = "^0.6.1"
 
 [build-system]
 requires = ["poetry-core"]

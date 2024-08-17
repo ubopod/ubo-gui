@@ -199,17 +199,13 @@ def process_subscribable_value(
     value: T | Callable[[], T],
     callback: Callable[[T], None],
 ) -> Callable[[], None]: ...
-
-
 @overload
-def process_subscribable_value(  # pyright: ignore[reportOverlappingOverload]
+def process_subscribable_value(
     value: T | None | Callable[[], T | None],
     callback: Callable[[T | None], None],
 ) -> Callable[[], None]: ...
-
-
 def process_subscribable_value(
-    value: T | Callable[[], T],
+    value: T | None | Callable[[], T],
     callback: Callable[[T], None],
 ) -> Callable[[], None]:
     """Return the attribute of the menu or item.
@@ -217,7 +213,7 @@ def process_subscribable_value(
     in case it's a function, the return value of the function is called.
     """
     if is_subscribeable(value):
-        return value.subscribe(callback)
+        return cast(Subscribable[T], value).subscribe(callback)
     processed_value = cast(
         T,
         value() if callable(value) and not isinstance(value, type) else value,

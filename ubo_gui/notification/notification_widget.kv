@@ -8,7 +8,7 @@
 
     BoxLayout:
       size_hint: None, 1
-      width: dp(UBO_GUI_SHORT_WIDTH)
+      width: dp(UBO_GUI_SHORT_WIDTH) if [item for item in root.items if item] else dp(20)
       orientation: 'vertical'
       spacing: dp(UBO_GUI_MENU_ITEM_GAP)
 
@@ -75,8 +75,8 @@
           height: max(container.height - scrollable_widget.minimum_height, 0)
 
     AnchorLayout:
-      size_hint: (None, 1) if scrollable_widget.height - container.height else (None, None)
-      width: dp(UBO_GUI_SHORT_WIDTH)
+      size_hint: (None, 1) if not slider.disabled else (None, None)
+      width: dp(UBO_GUI_SHORT_WIDTH) if [item for item in root.items if item] else dp(20)
 
       AnimatedSlider:
         id: slider

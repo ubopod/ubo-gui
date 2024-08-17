@@ -195,7 +195,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             with self.stack_lock:
                 if stack_item:
                     stack_item = self._replace_menu(stack_item, menu)
-                else:
+                elif menu:
                     stack_item = self._push(
                         menu,
                         parent=parent,

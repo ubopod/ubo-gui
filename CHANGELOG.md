@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.13.1
+
+- feat: widen the notification text horizontally if it doesn't have any actions on the left
+
 ## Version 0.13.0
 
 - fix: updating items of the pages after the first page not being visible
