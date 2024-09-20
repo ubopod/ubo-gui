@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import pathlib
 import warnings
-from abc import ABC, abstractmethod
+from abc import ABC, ABCMeta, abstractmethod
 from typing import TYPE_CHECKING, Sequence
 
 from kivy.lang.builder import Builder
@@ -17,22 +17,23 @@ from kivy.properties import (
     ColorProperty,
     StringProperty,
 )
+from kivy.uix.widget import WidgetMetaclass
 
 from ubo_gui.constants import DANGER_COLOR, SUCCESS_COLOR
 from ubo_gui.menu.types import ActionItem
-from ubo_gui.page import PageWidget
 
 if TYPE_CHECKING:
     from ubo_gui.menu.types import Item, Menu
+    from ubo_gui.page import PageWidget
 
 PROMPT_OPTIONS = 2
 
 
-class PromptWidgetMetaClass(type(ABC), type(PageWidget)):
+class PromptWidgetMetaClass(ABCMeta, WidgetMetaclass):
     """Metaclass merging `ABC` and `PageWidget` for `PromptWidget` class."""
 
 
-class PromptWidget(PageWidget, ABC, metaclass=PromptWidgetMetaClass):
+class PromptWidget(ABC, metaclass=PromptWidgetMetaClass):
     """A widget that renders a prompt."""
 
     icon: str = StringProperty()

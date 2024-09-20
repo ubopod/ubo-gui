@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.13.2
+
+- refactor: avoid loading kivy when constants are imported
+
 ## Version 0.13.1
 
 - feat: widen the notification text horizontally if it doesn't have any actions on the left

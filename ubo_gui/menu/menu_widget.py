@@ -218,14 +218,18 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         result = item.action()
         if not result:
             return
-        if isinstance(result, type) and issubclass(result, PageWidget):
-            self.open_application(result())
+        if isinstance(result, type):
+            if issubclass(result, PageWidget):
+                self.open_application(result())
+            else:
+                msg = f'Unsupported returned value by `ActionItem`: {result}'
+                raise TypeError(msg)
         elif isinstance(result, PageWidget):
             self.open_application(result)
         elif isinstance(result, Menu) or callable(result):
             self.open_menu(result)
         else:
-            msg = f'Unsupported returned value by `ActionItem`: {type(result)}'
+            msg = f'Unsupported returned value by `ActionItem`: {result}'
             raise TypeError(msg)
 
     def select_application_item(self: MenuWidget, item: ApplicationItem) -> None:
