@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.13.3
+
+- fix: make `PromptWidget` inherit `PageWidget`
+
 ## Version 0.13.2
 
 - refactor: avoid loading kivy when constants are imported
