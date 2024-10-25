@@ -3,6 +3,7 @@
 ## Upcoming
 
 - chore: migrate from poetry to uv for the sake of improving performance and dealing with conflicting sub-dependencies
+- feat: add spinner widget which doesn't trigger whole screen renders and uses new local renders of headless-kivy
 
 ## Version 0.13.3
 
