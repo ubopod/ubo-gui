@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Callable, Self, TypeVar, cast
+from typing import TYPE_CHECKING, Self, TypeVar, cast
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from ubo_gui.page import PageWidget
 
     from .types import Menu
@@ -64,7 +67,7 @@ class StackMenuItem(BaseStackItem):
     @property
     def visual_snapshot(self: StackMenuItem) -> list[str]:
         """Return the snapshot of the menu."""
-        T = TypeVar('T')
+        T = TypeVar('T', bound=str | Sequence | None)
 
         def process_callable(object_: T | Callable[[], T]) -> T:
             return object_() if callable(object_) else object_

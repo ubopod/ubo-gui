@@ -2,7 +2,7 @@
 
 set -e -o errexit
 
-poetry build
+uv build
 
 LATEST_VERSION=$(basename $(ls -rt dist/*.whl | tail -n 1))
 

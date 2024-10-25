@@ -5,10 +5,8 @@ from __future__ import annotations
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     Generic,
     Protocol,
-    Sequence,
     TypeAlias,
     TypeGuard,
     cast,
@@ -21,6 +19,8 @@ from typing_extensions import TypeVar
 from ubo_gui.constants import PRIMARY_COLOR
 
 if TYPE_CHECKING:
+    from collections.abc import Callable, Sequence
+
     from kivy.graphics.context_instructions import Color
 
     from ubo_gui.page import PageWidget

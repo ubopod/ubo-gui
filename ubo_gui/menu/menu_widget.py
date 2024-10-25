@@ -13,7 +13,7 @@ import pathlib
 import threading
 import uuid
 import warnings
-from typing import TYPE_CHECKING, Callable, Sequence, cast, overload
+from typing import TYPE_CHECKING, cast, overload
 
 from headless_kivy import HeadlessWidget
 from kivy.clock import mainthread
@@ -52,6 +52,8 @@ from .types import (
 from .widgets.menu_page_widget import MenuPageWidget
 
 if TYPE_CHECKING:
+    from collections.abc import Callable, Sequence
+
     from kivy.uix.widget import Widget
 
     from ubo_gui.animated_slider import AnimatedSlider
@@ -216,6 +218,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
     def select_action_item(self: MenuWidget, item: ActionItem) -> None:
         """Select an action item."""
         result = item.action()
+        logger.debug('Action item returned...', extra={'result': result})
         if not result:
             return
         if isinstance(result, type):
@@ -299,6 +302,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             return
         current_page = cast(PageWidget, self.current_screen)
         item = current_page.get_item(index)
+        logger.debug('Selecting menu item...', extra={'item': item})
         if item:
             self.select_item(item)
 

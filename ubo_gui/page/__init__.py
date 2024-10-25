@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import TYPE_CHECKING, Self, Sequence
+from typing import TYPE_CHECKING, Self
 
 from kivy.properties import (
     AliasProperty,
@@ -15,6 +15,8 @@ from kivy.properties import (
 from kivy.uix.screenmanager import Screen
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from ubo_gui.menu.types import Item
 
 

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import pathlib
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any
 
 from kivy.lang.builder import Builder
 from kivy.properties import (
@@ -19,6 +19,8 @@ from ubo_gui.constants import PRIMARY_COLOR
 from ubo_gui.menu.types import process_subscribable_value
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from kivy.graphics.context_instructions import Color
 
     from ubo_gui.menu.types import Item

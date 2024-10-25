@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pathlib
 import warnings
-from typing import TYPE_CHECKING, Any, Sequence
+from typing import TYPE_CHECKING, Any
 
 from kivy.lang.builder import Builder
 from kivy.properties import AliasProperty, NumericProperty, StringProperty
@@ -13,6 +13,8 @@ from ubo_gui.menu.widgets.item_widget import ItemWidget
 from ubo_gui.page import PageWidget
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from ubo_gui.menu.types import Item
 
 

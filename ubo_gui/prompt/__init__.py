@@ -8,7 +8,7 @@ from __future__ import annotations
 import pathlib
 import warnings
 from abc import ABC, ABCMeta, abstractmethod
-from typing import TYPE_CHECKING, Sequence
+from typing import TYPE_CHECKING
 
 from kivy.lang.builder import Builder
 from kivy.properties import (
@@ -24,6 +24,8 @@ from ubo_gui.menu.types import ActionItem
 from ubo_gui.page import PageWidget
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from ubo_gui.menu.types import Item, Menu
 
 PROMPT_OPTIONS = 2
