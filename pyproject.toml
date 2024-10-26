@@ -9,7 +9,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 keywords = ['ubo', 'kivy', 'components', 'widgets']
 dependencies = [
-  "headless-kivy >= 0.10.1",
+  "headless-kivy >= 0.12.1",
   "python-immutable >= 1.0.2",
   "qrcode >= 7.4.2",
 ]

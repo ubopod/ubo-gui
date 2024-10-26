@@ -2,47 +2,27 @@
 
 from __future__ import annotations
 
-import math
-from typing import Any, cast
+import pathlib
 
-from headless_kivy import HeadlessWidget
-from kivy.clock import Clock
-from kivy.graphics.context_instructions import Rotate
+from kivy.animation import Animation
+from kivy.lang.builder import Builder
 from kivy.properties import NumericProperty
 from kivy.uix.label import Label
 
 
-class SpinnerWidget(HeadlessWidget):
+class SpinnerWidget(Label):
     """Spinner widget for loading indication."""
 
     angle = NumericProperty(0)
 
-    def __init__(self: SpinnerWidget, **kwargs: object) -> None:
-        """Initialize the SpinnerWidget class."""
-        super().__init__(**cast(Any, kwargs))
-        self.interval = Clock.schedule_interval(self.rotate_spinner, 1 / 40)
-        self.label = Label(
-            text='',
-            color=(1, 1, 1),
-        )
-        self.label.bind(texture_size=self.label.setter('size'))
-        self.bind(
-            size=lambda *_: self.label.setter('center')(
-                self.label,
-                (self.width / 2, self.height / 2),
-            ),
-        )
-        self.add_widget(self.label)
+    def on_kv_post(self: SpinnerWidget, base_widget: SpinnerWidget) -> None:
+        """Start the spinner animation."""
+        _ = base_widget
+        rotation = Animation(angle=-360, duration=0.5) + Animation(angle=0, duration=0)
+        rotation.repeat = True
+        rotation.start(self)
 
-    def __del__(self: SpinnerWidget) -> None:
-        """Remove the spinner widget."""
-        self.interval.cancel()
 
-    def rotate_spinner(self: SpinnerWidget, dt: float) -> None:
-        """Rotate the spinner."""
-        self.angle = (self.angle + dt) % math.tau
-        with self.label.canvas.before:
-            Rotate(
-                angle=-dt * 400,
-                origin=self.label.center,
-            )
+Builder.load_file(
+    pathlib.Path(__file__).parent.joinpath('spinner_widget.kv').resolve().as_posix(),
+)

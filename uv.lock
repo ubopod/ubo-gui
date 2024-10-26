@@ -84,16 +84,16 @@ wheels = [
 
 [[package]]
 name = "headless-kivy"
-version = "0.10.1"
+version = "0.12.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "kivy" },
     { name = "numpy" },
     { name = "python-strtobool" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a1/e6/d4f954ac070a1997b7acc61de59712b097ab50393081be5b1793625d9897/headless_kivy-0.10.1.tar.gz", hash = "sha256:ef52fe6f9d6e7bcf925a4147a0e1a8e2f759aac80de13738909e6d4fa1170ab0", size = 14030 }
+sdist = { url = "https://files.pythonhosted.org/packages/a8/8a/8a6ad4efc4aa717868da1ca23cbe73b133d760fbeff595ab891da5f81c1b/headless_kivy-0.12.1.tar.gz", hash = "sha256:f8ca69235d28098d28037d76a6a46b128240a5cedb44ed233550035a9cd0b807", size = 16286 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0e/2c/cce088cfc4ccf3fae0c350c9252452d871776913708522d8c70cabc75d20/headless_kivy-0.10.1-py3-none-any.whl", hash = "sha256:a0c548b335e971c873215fa529a82faa115f127c05d6cf46a3a93d32d826f56c", size = 16590 },
+    { url = "https://files.pythonhosted.org/packages/ec/bd/bac2f7fa173aed21aa14328b23acc528b7e5e63345a8513483d8a03fffc4/headless_kivy-0.12.1-py3-none-any.whl", hash = "sha256:89a78367b003a591ec94c619b1a8dd37dc9dead1ae80618a3b6e8e8f1bb994af", size = 19932 },
 ]
 
 [[package]]
@@ -424,7 +424,7 @@ wheels = [
 
 [[package]]
 name = "ubo-gui"
-version = "0.13.4.dev0+unknown"
+version = "0.13.4.dev3+unknown"
 source = { editable = "." }
 dependencies = [
     { name = "headless-kivy" },
@@ -441,7 +441,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "headless-kivy", specifier = ">=0.10.1" },
+    { name = "headless-kivy", specifier = ">=0.12.1" },
     { name = "python-immutable", specifier = ">=1.0.2" },
     { name = "qrcode", specifier = ">=7.4.2" },
 ]

@@ -1,0 +1,14 @@
+#:kivy 2.3.0
+
+<SpinnerWidget>:
+  text: ''
+
+  canvas.before:
+    PushMatrix
+
+    Rotate:
+      angle: self.angle
+      origin: self.center
+
+  canvas.after:
+    PopMatrix

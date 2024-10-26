@@ -6,7 +6,6 @@ import threading
 from functools import cached_property
 from typing import Any, NotRequired, TypedDict
 
-from headless_kivy import HeadlessWidget
 from kivy.clock import mainthread
 from kivy.uix.screenmanager import (
     NoTransition,
@@ -17,7 +16,6 @@ from kivy.uix.screenmanager import (
     SwapTransition,
     TransitionBase,
 )
-from kivy.uix.widget import Widget
 
 
 class SwitchParameters(TypedDict):
@@ -80,10 +78,6 @@ class TransitionsMixin:
                     **switch_parameters,
                 )
             else:
-                if isinstance(self, Widget):
-                    headless_widget = HeadlessWidget.get_instance(self)
-                    if headless_widget:
-                        headless_widget.activate_low_fps_mode()
                 self._is_transition_in_progress = False
 
     def _setup_transition(self: TransitionsMixin, transition: TransitionBase) -> None:
@@ -155,10 +149,6 @@ class TransitionsMixin:
                     (screen, transition, direction, duration),
                 ]
             else:
-                if isinstance(self, Widget):
-                    headless_widget = HeadlessWidget.get_instance(self)
-                    if headless_widget:
-                        headless_widget.activate_high_fps_mode()
                 self._is_transition_in_progress = transition is not self._no_transition
                 self._is_preparation_in_progress = True
                 self._perform_switch(

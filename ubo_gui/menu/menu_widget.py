@@ -15,7 +15,6 @@ import uuid
 import warnings
 from typing import TYPE_CHECKING, cast, overload
 
-from headless_kivy import HeadlessWidget
 from kivy.clock import mainthread
 from kivy.lang.builder import Builder
 from kivy.properties import (
@@ -544,9 +543,6 @@ class MenuWidget(BoxLayout, TransitionsMixin):
     def open_application(self: MenuWidget, application: PageWidget) -> None:
         """Open an application."""
         with self.stack_lock:
-            headless_widget = HeadlessWidget.get_instance(self)
-            if headless_widget:
-                headless_widget.activate_high_fps_mode()
             application.name = uuid.uuid4().hex
             application.padding_bottom = self.padding_bottom
             application.padding_top = self.padding_top
