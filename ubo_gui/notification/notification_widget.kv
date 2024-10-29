@@ -35,7 +35,7 @@
         width: container.width
         id: scrollable_widget
 
-        Label:
+        SpinnerWidget:
           padding: dp(20), 0, dp(20), 0
           font_size: dp(42)
           text: root.icon
@@ -46,7 +46,7 @@
           height: dp(42) if root.icon else 0
           markup: True
 
-        Label:
+        SpinnerWidget:
           font_size: dp(22)
           text: root.notification_title
           size_hint: None, None if root.notification_title else 0
@@ -58,7 +58,7 @@
           strip: True
           markup: True
 
-        Label:
+        SpinnerWidget:
           font_size: dp(16)
           text: root.content
           text_size: self.size[0], None

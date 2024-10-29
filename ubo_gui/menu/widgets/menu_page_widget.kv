@@ -11,7 +11,7 @@
       size_hint: 1, None
       height: dp(14) if root.has_heading else 0
 
-    Label:
+    SpinnerWidget:
       text: root.heading
       text_size: self.size
       halign: 'center'
@@ -25,7 +25,7 @@
       shorten_from: 'right'
       markup: True
 
-    Label:
+    SpinnerWidget:
       text: root.sub_heading
       text_size: self.size
       font_size: dp(16)
@@ -42,7 +42,7 @@
       size_hint: 1, None
       height: dp(10) if root.has_heading else 0
 
-    Label:
+    SpinnerWidget:
       text: ('Nothing here yet' if root.placeholder is None else root.placeholder) if root.is_empty else ''
       text_size: self.size
       font_size: dp(20)

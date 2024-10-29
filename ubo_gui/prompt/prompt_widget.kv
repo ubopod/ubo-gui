@@ -7,7 +7,7 @@
     orientation: 'vertical'
     spacing: dp(UBO_GUI_MENU_ITEM_GAP)
 
-    Label:
+    SpinnerWidget:
       padding: dp(10), 0, dp(10), 0
       text_size: self.size
       halign: 'center'
@@ -19,7 +19,7 @@
       text: root.icon if root.icon is not None else ''
       markup: True
 
-    Label:
+    SpinnerWidget:
       padding: dp(10), 0, dp(10), 0
       text: root.prompt
       text_size: self.size[0], None

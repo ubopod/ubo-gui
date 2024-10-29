@@ -18,7 +18,10 @@ class SpinnerWidget(Label):
     def on_kv_post(self: SpinnerWidget, base_widget: SpinnerWidget) -> None:
         """Start the spinner animation."""
         _ = base_widget
-        rotation = Animation(angle=-360, duration=0.5) + Animation(angle=0, duration=0)
+        rotation = Animation(angle=-360 * 100, duration=0.5 * 100) + Animation(
+            angle=0,
+            duration=0,
+        )
         rotation.repeat = True
         rotation.start(self)
 

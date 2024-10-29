@@ -31,7 +31,7 @@
     width: dp(2)
     size_hint: None, 1
 
-  Label:
+  SpinnerWidget:
     color: root.color
     font_size: dp(26)
     text: root.icon if root.icon is not None else ''
@@ -40,7 +40,7 @@
     valign: 'middle'
     markup: True
 
-  Label:
+  SpinnerWidget:
     color: root.color
     font_size: dp(18)
     text: '' if root.is_short else root.label

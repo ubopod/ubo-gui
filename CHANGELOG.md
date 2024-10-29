@@ -1,5 +1,9 @@
 # Changelog
 
+## Upcoming
+
+- refactor: use `SpinnerWidget` in place of `Label` for all dynamic contents labels, setting its `text` to `` will spin it, otherwise it behaves like a `Label`
+
 ## Version 0.13.4
 
 - chore: migrate from poetry to uv for the sake of improving performance and dealing with conflicting sub-dependencies

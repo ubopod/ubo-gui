@@ -7,7 +7,7 @@
     PushMatrix
 
     Rotate:
-      angle: self.angle
+      angle: self.angle if root.text == '' else 0
       origin: self.center
 
   canvas.after:
