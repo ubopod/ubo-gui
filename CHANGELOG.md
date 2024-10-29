@@ -1,6 +1,6 @@
 # Changelog
 
-## Upcoming
+## Version 0.13.5
 
 - refactor: use `SpinnerWidget` in place of `Label` for all dynamic contents labels, setting its `text` to `` will spin it, otherwise it behaves like a `Label`
 
