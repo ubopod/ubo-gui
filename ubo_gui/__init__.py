@@ -44,5 +44,6 @@ def setup() -> None:
     Factory.register('NotificationWidget', module='ubo_gui.notification')
     Factory.register('ProgressRingWidget', module='ubo_gui.progress_ring')
     Factory.register('PromptWidget', module='ubo_gui.prompt')
+    Factory.register('SpinnerWidget', module='ubo_gui.spinner')
     Factory.register('QRCodeWidget', module='ubo_gui.qrcode')
     Factory.register('VolumeWidget', module='ubo_gui.volume')
