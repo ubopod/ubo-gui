@@ -1,5 +1,9 @@
 # Changelog
 
+## Upcoming
+
+- refactor: handle `text` field of `SpinnerWidget` when it contains kivy markup but yet reduces to `` when markup is removed
+
 ## Version 0.13.6
 
 - fix: add `SpinnerWidget` to kivy factory

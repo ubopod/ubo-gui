@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import pathlib
+import re
 
 from kivy.animation import Animation
 from kivy.lang.builder import Builder
@@ -18,12 +19,24 @@ class SpinnerWidget(Label):
     def on_kv_post(self: SpinnerWidget, base_widget: SpinnerWidget) -> None:
         """Start the spinner animation."""
         _ = base_widget
-        rotation = Animation(angle=-360 * 100, duration=0.5 * 100) + Animation(
+        self.rotation_animation = Animation(
+            angle=-360 * 100,
+            duration=0.5 * 100,
+        ) + Animation(
             angle=0,
             duration=0,
         )
-        rotation.repeat = True
-        rotation.start(self)
+        self.rotation_animation.repeat = True
+        self.bind(text=self.handle_text_change)
+        self.handle_text_change(self, self.text)
+
+    def handle_text_change(self: SpinnerWidget, _: SpinnerWidget, text: str) -> None:
+        """Decide whether to show the spinner or not."""
+        text = re.sub(r'\[(?P<tag>\w+)=.*?\](?P<text>.*?)\[/\1\]', r'\g<text>', text)
+        if text == '':
+            self.rotation_animation.start(self)
+        else:
+            self.rotation_animation.cancel(self)
 
 
 Builder.load_file(
