@@ -1,5 +1,9 @@
 # Changelog
 
+## Upcoming
+
+- refactor: set key of menu items returned by the action of `ActionItem` if the `ActionItem` itself has a key
+
 ## Version 0.13.7
 
 - refactor: handle `text` field of `SpinnerWidget` when it contains kivy markup but yet reduces to `` when markup is removed

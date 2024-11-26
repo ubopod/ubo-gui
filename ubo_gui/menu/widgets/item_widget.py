@@ -77,56 +77,56 @@ class ItemWidget(BoxLayout):
         else:
             self.is_set = True
             self.label = ''
-            self._subscriptions.append(
-                process_subscribable_value(
-                    value.label,
-                    lambda value: setattr(self, 'label', value or ''),
-                ),
+            subscription = process_subscribable_value(
+                value.label,
+                lambda value: setattr(self, 'label', value or ''),
             )
+            if subscription:
+                self._subscriptions.append(subscription)
 
             self.is_short = False
-            self._subscriptions.append(
-                process_subscribable_value(
-                    value.is_short,
-                    lambda value: setattr(
-                        self,
-                        'is_short',
-                        False if value is None else value,
-                    ),
+            subscription = process_subscribable_value(
+                value.is_short,
+                lambda value: setattr(
+                    self,
+                    'is_short',
+                    False if value is None else value,
                 ),
             )
+            if subscription:
+                self._subscriptions.append(subscription)
 
             self.color = ItemWidget.color.defaultvalue
-            self._subscriptions.append(
-                process_subscribable_value(
-                    value.color,
-                    lambda value: setattr(
-                        self,
-                        'color',
-                        value or ItemWidget.color.defaultvalue,
-                    ),
+            subscription = process_subscribable_value(
+                value.color,
+                lambda value: setattr(
+                    self,
+                    'color',
+                    value or ItemWidget.color.defaultvalue,
                 ),
             )
+            if subscription:
+                self._subscriptions.append(subscription)
 
             self.background_color = ItemWidget.background_color.defaultvalue
-            self._subscriptions.append(
-                process_subscribable_value(
-                    value.background_color,
-                    lambda value: setattr(
-                        self,
-                        'background_color',
-                        value or ItemWidget.background_color.defaultvalue,
-                    ),
+            subscription = process_subscribable_value(
+                value.background_color,
+                lambda value: setattr(
+                    self,
+                    'background_color',
+                    value or ItemWidget.background_color.defaultvalue,
                 ),
             )
+            if subscription:
+                self._subscriptions.append(subscription)
 
             self.icon = ''
-            self._subscriptions.append(
-                process_subscribable_value(
-                    value.icon,
-                    lambda value: setattr(self, 'icon', value or ''),
-                ),
+            subscription = process_subscribable_value(
+                value.icon,
+                lambda value: setattr(self, 'icon', value or ''),
             )
+            if subscription:
+                self._subscriptions.append(subscription)
 
             self.opacity = value.opacity or 1
             self.progress = min(max(value.progress or 1, 0), 1)

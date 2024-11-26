@@ -211,7 +211,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             menu,
             handle_menu_change,
         )
-        if stack_item:
+        if stack_item and subscription:
             stack_item.subscriptions.add(subscription)
 
     def select_action_item(self: MenuWidget, item: ActionItem) -> None:
@@ -229,7 +229,10 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         elif isinstance(result, PageWidget):
             self.open_application(result)
         elif isinstance(result, Menu) or callable(result):
-            self.open_menu(result)
+            if item.key:
+                self.open_menu(result, key=item.key)
+            else:
+                self.open_menu(result)
         else:
             msg = f'Unsupported returned value by `ActionItem`: {result}'
             raise TypeError(msg)
@@ -254,12 +257,12 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             application_instance = application()
             self.open_application(application_instance)
 
-        self.top.subscriptions.add(
-            process_subscribable_value(
-                item.application,
-                handle_application_change,
-            ),
+        subscription = process_subscribable_value(
+            item.application,
+            handle_application_change,
         )
+        if subscription:
+            self.top.subscriptions.add(subscription)
 
     def select_submenu_item(self: MenuWidget, item: SubMenuItem) -> None:
         """Select a submenu item."""
@@ -409,12 +412,12 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                 )
                 list_widget.heading = heading
 
-            self.menu_subscriptions.add(
-                process_subscribable_value(
-                    self.current_menu.heading,
-                    handle_heading_change,
-                ),
+            subscription = process_subscribable_value(
+                self.current_menu.heading,
+                handle_heading_change,
             )
+            if subscription:
+                self.menu_subscriptions.add(subscription)
 
             def handle_sub_heading_change(sub_heading: str) -> None:
                 logger.debug(
@@ -427,14 +430,80 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                 )
                 list_widget.sub_heading = sub_heading
 
-            self.menu_subscriptions.add(
-                process_subscribable_value(
-                    self.current_menu.sub_heading,
-                    handle_sub_heading_change,
-                ),
+            subscription = process_subscribable_value(
+                self.current_menu.sub_heading,
+                handle_sub_heading_change,
             )
+            if subscription:
+                self.menu_subscriptions.add(subscription)
 
         return list_widget
+
+    def _render_menu_item(self: MenuWidget) -> None:
+        if not isinstance(self.top, StackMenuItem):
+            return
+
+        menu = self.top.menu
+        last_items = None
+        menu_page: MenuPageWidget | None = None
+        placeholder = None
+
+        def handle_items_change(items: Sequence[Item]) -> None:
+            nonlocal last_items, menu_page
+            logger.debug(
+                'Handle `items` change...',
+                extra={
+                    'new_items': items,
+                    'old_items': last_items,
+                    'subscription_level': 'screen',
+                },
+            )
+            self.current_menu_items = items
+            if menu_page is None:
+                self._clear_menu_subscriptions()
+                menu_page = self._render_menu(menu)
+                # The clone here is solely needed for the visual transitions between
+                # menu pages, when `page_index` increases or decreases, the slide
+                # down/up transition needs a source and a target. So a clone of the
+                # original page is needed. If `ScreenManager` supported transition
+                # from a screen to itself we probably wouldn't need this.
+                menu_page.clone = self._render_menu(menu)
+                menu_page.clone.clone = menu_page
+                self.current_screen = menu_page
+            else:
+                if self.page_index >= self.pages:
+                    menu_page.page_index = self.page_index = self.pages - 1
+                    menu_page.clone.page_index = self.page_index = self.pages - 1
+                menu_page.items = self._menu_items(menu)
+                menu_page.clone.items = self._menu_items(menu)
+            menu_page.placeholder = placeholder
+            menu_page.clone.placeholder = placeholder
+            last_items = items
+
+        subscription = process_subscribable_value(menu.items, handle_items_change)
+        if subscription:
+            self.screen_subscriptions.add(subscription)
+
+        def handle_placeholder_change(new_placeholder: str | None) -> None:
+            nonlocal placeholder
+            logger.debug(
+                'Handle `placeholder` change...',
+                extra={
+                    'new_placeholder': new_placeholder,
+                    'old_placeholder': placeholder,
+                    'subscription_level': 'widget',
+                },
+            )
+            placeholder = new_placeholder
+            if menu_page:
+                menu_page.placeholder = placeholder
+
+        subscription = process_subscribable_value(
+            menu.placeholder,
+            handle_placeholder_change,
+        )
+        if subscription:
+            self.menu_subscriptions.add(subscription)
 
     def _render(self: MenuWidget, *_: object) -> None:
         """Return the current screen page."""
@@ -448,69 +517,9 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             self.current_screen = self.top.application
             title = self.top.application.title
         if isinstance(self.top, StackMenuItem):
-            menu = self.top.menu
-            last_items = None
-            menu_page: MenuPageWidget | None = None
-            placeholder = None
+            self._render_menu_item()
 
-            def handle_items_change(items: Sequence[Item]) -> None:
-                nonlocal last_items, menu_page
-                logger.debug(
-                    'Handle `items` change...',
-                    extra={
-                        'new_items': items,
-                        'old_items': last_items,
-                        'subscription_level': 'screen',
-                    },
-                )
-                self.current_menu_items = items
-                if menu_page is None:
-                    self._clear_menu_subscriptions()
-                    menu_page = self._render_menu(menu)
-                    # The clone here is solely needed for the visual transitions between
-                    # menu pages, when `page_index` increases or decreases, the slide
-                    # down/up transition needs a source and a target. So a clone of the
-                    # original page is needed. If `ScreenManager` supported transition
-                    # from a screen to itself we probably wouldn't need this.
-                    menu_page.clone = self._render_menu(menu)
-                    menu_page.clone.clone = menu_page
-                    self.current_screen = menu_page
-                else:
-                    if self.page_index >= self.pages:
-                        menu_page.page_index = self.page_index = self.pages - 1
-                        menu_page.clone.page_index = self.page_index = self.pages - 1
-                    menu_page.items = self._menu_items(menu)
-                    menu_page.clone.items = self._menu_items(menu)
-                menu_page.placeholder = placeholder
-                menu_page.clone.placeholder = placeholder
-                last_items = items
-
-            self.screen_subscriptions.add(
-                process_subscribable_value(menu.items, handle_items_change),
-            )
-
-            def handle_placeholder_change(new_placeholder: str | None) -> None:
-                nonlocal placeholder
-                logger.debug(
-                    'Handle `placeholder` change...',
-                    extra={
-                        'new_placeholder': new_placeholder,
-                        'old_placeholder': placeholder,
-                        'subscription_level': 'widget',
-                    },
-                )
-                placeholder = new_placeholder
-                if menu_page:
-                    menu_page.placeholder = placeholder
-
-            self.menu_subscriptions.add(
-                process_subscribable_value(
-                    menu.placeholder,
-                    handle_placeholder_change,
-                ),
-            )
-
-            title = menu.title
+            title = self.top.menu.title
 
         def handle_title_change(title: str | None) -> None:
             logger.debug(
@@ -523,9 +532,9 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             )
             self.title = title
 
-        self.screen_subscriptions.add(
-            process_subscribable_value(title, handle_title_change),
-        )
+        subscription = process_subscribable_value(title, handle_title_change)
+        if subscription:
+            self.screen_subscriptions.add(subscription)
 
     def get_current_screen(self: MenuWidget) -> Screen | None:
         """Return current screen."""

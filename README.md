@@ -14,8 +14,6 @@ You can install it using this handle: headless-kivy-pi@git+<https://github.com/u
 ```sh
 # pip:
 pip install headless-kivy-pi@git+https://github.com/ubopod/ubo-gui.git
-# poetry:
-poetry add headless-kivy-pi@git+https://github.com/ubopod/ubo-gui.git
 ```
 
 ## 🛠 Usage
@@ -24,32 +22,18 @@ Checkout [Ubo App](https://github.com/ubopod/ubo-app) to see a sample implementa
 
 ## 🤝 Contributing
 
-You need to have [Poetry](https://python-poetry.org/) installed on your machine.
+You need to have [uv](https://github.com/astral-sh/uv) installed on your machine.
 
-To install poetry in Raspbian you need to follow these instructions to install rust compiler, this is temporary until [this issue](https://github.com/python-poetry/poetry/issues/7645) is resolved:
-
-```sh
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-sudo apt-get install pkg-config libssl-dev
-curl -sSL https://install.python-poetry.org | python3 -
-```
-
-After having poetry, to install the required dependencies, run the following command:
+To install the required dependencies, run the following command in the root directory of the project:
 
 ```sh
-poetry install --with dev
-```
-
-Also be aware of [this issue](https://github.com/python-poetry/poetry/issues/1917) and until it is resolved you can manually disable keyring by prefixing your poetry commands like this:
-
-```sh
-PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring poetry install
+uv sync
 ```
 
 You can run linter over whole codebase by running this command:
 
 ```sh
-poetry run poe lint
+uv run poe lint
 ```
 
 ### Subscriptions
@@ -74,7 +58,7 @@ The subscriptions are divided into three groups:
 
 ### ⚠️ Important Note
 
-Make sure to run `poetry run poe download_font` to download Material Symbols font.
+Make sure to run `uv run poe download_font` to download Material Symbols font.
 
 ## 🔒 License
 

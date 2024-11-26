@@ -198,16 +198,16 @@ def is_subscribeable(value: T | Callable[[], T]) -> TypeGuard[Subscribable[T]]:
 def process_subscribable_value(
     value: T | Callable[[], T],
     callback: Callable[[T], None],
-) -> Callable[[], None]: ...
+) -> Callable[[], None] | None: ...
 @overload
 def process_subscribable_value(
     value: T | None | Callable[[], T | None],
     callback: Callable[[T | None], None],
-) -> Callable[[], None]: ...
+) -> Callable[[], None] | None: ...
 def process_subscribable_value(
     value: T | None | Callable[[], T],
     callback: Callable[[T], None],
-) -> Callable[[], None]:
+) -> Callable[[], None] | None:
     """Return the attribute of the menu or item.
 
     in case it's a function, the return value of the function is called.
@@ -219,4 +219,4 @@ def process_subscribable_value(
         value() if callable(value) and not isinstance(value, type) else value,
     )
     callback(processed_value)
-    return lambda: None
+    return None
