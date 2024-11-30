@@ -177,9 +177,9 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         menu: Menu | Callable[[], Menu],
         *,
         key: str = '',
+        parent: StackItem | None = None,
     ) -> None:
         """Open a menu."""
-        parent = self.top
         stack_item: StackMenuItem | None = None
         subscription: Callable[[], None] | None = None
 
@@ -214,7 +214,12 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         if stack_item and subscription:
             stack_item.subscriptions.add(subscription)
 
-    def select_action_item(self: MenuWidget, item: ActionItem) -> None:
+    def select_action_item(
+        self: MenuWidget,
+        item: ActionItem,
+        *,
+        parent: StackItem,
+    ) -> None:
         """Select an action item."""
         result = item.action()
         logger.debug('Action item returned...', extra={'result': result})
@@ -222,22 +227,28 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             return
         if isinstance(result, type):
             if issubclass(result, PageWidget):
-                self.open_application(result())
+                self.open_application(result(), parent=parent)
             else:
                 msg = f'Unsupported returned value by `ActionItem`: {result}'
                 raise TypeError(msg)
         elif isinstance(result, PageWidget):
-            self.open_application(result)
+            self.open_application(result, parent=parent)
         elif isinstance(result, Menu) or callable(result):
-            if item.key:
-                self.open_menu(result, key=item.key)
-            else:
-                self.open_menu(result)
+            self.open_menu(
+                result,
+                parent=parent,
+                **{'key': item.key} if item.key else {},
+            )
         else:
             msg = f'Unsupported returned value by `ActionItem`: {result}'
             raise TypeError(msg)
 
-    def select_application_item(self: MenuWidget, item: ApplicationItem) -> None:
+    def select_application_item(
+        self: MenuWidget,
+        item: ApplicationItem,
+        *,
+        parent: StackItem,
+    ) -> None:
         """Select an application item."""
         application_instance: PageWidget | None = None
 
@@ -255,7 +266,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             if application_instance:
                 self.close_application(application_instance)
             application_instance = application()
-            self.open_application(application_instance)
+            self.open_application(application_instance, parent=parent)
 
         subscription = process_subscribable_value(
             item.application,
@@ -264,14 +275,25 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         if subscription:
             self.top.subscriptions.add(subscription)
 
-    def select_submenu_item(self: MenuWidget, item: SubMenuItem) -> None:
+    def select_submenu_item(
+        self: MenuWidget,
+        item: SubMenuItem,
+        *,
+        parent: StackItem,
+    ) -> None:
         """Select a submenu item."""
-        if item.key:
-            self.open_menu(item.sub_menu, key=item.key)
-        else:
-            self.open_menu(item.sub_menu)
+        self.open_menu(
+            item.sub_menu,
+            parent=parent,
+            **{'key': item.key} if item.key else {},
+        )
 
-    def select_item(self: MenuWidget, item: Item) -> None:
+    def select_item(
+        self: MenuWidget,
+        item: Item,
+        *,
+        parent: StackItem,
+    ) -> None:
         """Select an item.
 
         Parameters
@@ -279,13 +301,16 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         item: `Item`
             The item to select
 
+        parent: `StackItem`
+            The parent of the item
+
         """
         if isinstance(item, ActionItem):
-            self.select_action_item(item)
+            self.select_action_item(item, parent=parent)
         if isinstance(item, ApplicationItem):
-            self.select_application_item(item)
+            self.select_application_item(item, parent=parent)
         if isinstance(item, SubMenuItem):
-            self.select_submenu_item(item)
+            self.select_submenu_item(item, parent=parent)
 
     def select(self: MenuWidget, index: int) -> None:
         """Select one of the items currently visible on the screen based on its index.
@@ -302,11 +327,12 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             return
         if self._is_preparation_in_progress:
             return
+        parent = self.top
         current_page = cast(PageWidget, self.current_screen)
         item = current_page.get_item(index)
         logger.debug('Selecting menu item...', extra={'item': item})
         if item:
-            self.select_item(item)
+            self.select_item(item, parent=parent)
 
     def go_back(self: MenuWidget) -> None:
         """Go back to the previous menu."""
@@ -549,7 +575,12 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         self._current_screen = screen
         return True
 
-    def open_application(self: MenuWidget, application: PageWidget) -> None:
+    def open_application(
+        self: MenuWidget,
+        application: PageWidget,
+        *,
+        parent: StackItem | None = None,
+    ) -> None:
         """Open an application."""
         with self.stack_lock:
             application.name = uuid.uuid4().hex
@@ -557,6 +588,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             application.padding_top = self.padding_top
             self._push(
                 application,
+                parent=parent,
                 transition=self._swap_transition,
                 duration=0.2,
                 direction='left',

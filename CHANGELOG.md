@@ -1,5 +1,9 @@
 # Changelog
 
+## Upcoming
+
+- refactor: set parent of `StackApplicationItem`s like `StackMenuItem`s
+
 ## Version 0.13.8
 
 - refactor: set key of menu items returned by the action of `ActionItem` if the `ActionItem` itself has a key
