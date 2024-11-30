@@ -1,6 +1,6 @@
 # Changelog
 
-## Upcoming
+## Version 0.13.9
 
 - refactor: set parent of `StackApplicationItem`s like `StackMenuItem`s
 
