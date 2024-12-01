@@ -601,30 +601,29 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         # If any of these applications are the top of the stack, remove it with `pop` to
         # ensure the animation is played.
         with self.stack_lock:
-            if any(
-                isinstance(item.root, StackApplicationItem)
-                and item.root.application is application
+            to_be_removed = [
+                cast(StackApplicationItem, item)
                 for item in self.stack
-            ):
-                to_be_removed = [
-                    cast(StackApplicationItem, item)
-                    for item in self.stack
-                    if isinstance(item.root, StackApplicationItem)
-                    and item.root.application is application
-                    and item is not self.top
-                ]
+                if any(
+                    isinstance(item, StackApplicationItem)
+                    and item.application is application
+                    for item in item.lineage
+                )
+            ]
 
-                for item in to_be_removed:
+            for item in to_be_removed:
+                if item is not self.top:
                     item.clear_subscriptions()
                     item.application.dispatch('on_close')
 
-                self.stack = [item for item in self.stack if item not in to_be_removed]
+            self.stack = [
+                item
+                for item in self.stack
+                if item not in to_be_removed or item is self.top
+            ]
 
-                if (
-                    isinstance(self.top.root, StackApplicationItem)
-                    and self.top.root.application is application
-                ):
-                    self._pop()
+            if self.top in to_be_removed:
+                self._pop()
 
     @property
     def root(self: MenuWidget) -> StackMenuItem:

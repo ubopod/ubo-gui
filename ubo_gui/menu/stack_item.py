@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Generator, Sequence
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Self, TypeVar, cast
+from typing import TYPE_CHECKING, Self, TypeVar
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -31,11 +31,19 @@ class BaseStackItem:
             unsubscribe()
 
     @property
-    def root(self: BaseStackItem) -> StackMenuItem:
+    def root(self: BaseStackItem) -> BaseStackItem:
         """Return the root item."""
         if self.parent:
             return self.parent.root
-        return cast(StackMenuItem, self)
+        return self
+
+    @property
+    def lineage(self: BaseStackItem) -> Generator[BaseStackItem, None, None]:
+        """A generator iterating from the current item to its root."""
+        current = self
+        while current:
+            yield current
+            current = current.parent
 
     @property
     def title(self: Self) -> str:

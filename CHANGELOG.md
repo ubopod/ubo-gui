@@ -1,5 +1,9 @@
 # Changelog
 
+## Upcoming
+
+- fix: closing an application now works even if the application is not the root of its hierarchy
+
 ## Version 0.13.9
 
 - refactor: set parent of `StackApplicationItem`s like `StackMenuItem`s
