@@ -1,5 +1,9 @@
 # Changelog
 
+## Upcoming
+
+- refactor: wrap subscriptions done by `process_subscribable_value` in `kivy.clock.mainthread` as they may be coming from other threads
+
 ## Version 0.13.10
 
 - fix: closing an application now works even if the application is not the root of its hierarchy

@@ -14,6 +14,7 @@ from typing import (
 )
 
 from immutable import Immutable
+from kivy.clock import mainthread
 from typing_extensions import TypeVar
 
 from ubo_gui.constants import PRIMARY_COLOR
@@ -213,9 +214,9 @@ def process_subscribable_value(
     in case it's a function, the return value of the function is called.
     """
     if is_subscribeable(value):
-        return cast(Subscribable[T], value).subscribe(callback)
+        return cast('Subscribable[T]', value).subscribe(mainthread(callback))
     processed_value = cast(
-        T,
+        'T',
         value() if callable(value) and not isinstance(value, type) else value,
     )
     callback(processed_value)

@@ -45,7 +45,7 @@ class UboApp(App):
         The app can have a header, central section, and a footer.
         """
         self.root: RootWidget = cast(
-            RootWidget,
+            'RootWidget',
             Builder.load_file(
                 pathlib.Path(__file__).parent.joinpath('app.kv').resolve().as_posix(),
             ),

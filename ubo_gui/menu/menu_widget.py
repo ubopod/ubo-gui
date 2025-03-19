@@ -24,7 +24,6 @@ from kivy.properties import (
     NumericProperty,
 )
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.screenmanager import Screen, ScreenManager, TransitionBase
 
 from ubo_gui.logger import logger
 from ubo_gui.menu._transitions import TransitionsMixin
@@ -53,6 +52,7 @@ from .widgets.menu_page_widget import MenuPageWidget
 if TYPE_CHECKING:
     from collections.abc import Callable, Sequence
 
+    from kivy.uix.screenmanager import Screen, ScreenManager, TransitionBase
     from kivy.uix.widget import Widget
 
     from ubo_gui.animated_slider import AnimatedSlider
@@ -130,7 +130,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             return
 
         if self.current_menu:
-            menu_page = cast(PageWidget, self.current_screen)
+            menu_page = cast('PageWidget', self.current_screen)
 
             menu_page.clone.page_index = self.page_index = (
                 self.page_index + 1
@@ -158,7 +158,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             return
 
         if self.current_menu:
-            menu_page = cast(PageWidget, self.current_screen)
+            menu_page = cast('PageWidget', self.current_screen)
 
             menu_page.clone.page_index = self.page_index = (
                 self.page_index - 1
@@ -328,7 +328,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         if self._is_preparation_in_progress:
             return
         parent = self.top
-        current_page = cast(PageWidget, self.current_screen)
+        current_page = cast('PageWidget', self.current_screen)
         item = current_page.get_item(index)
         logger.debug('Selecting menu item...', extra={'item': item})
         if item:
@@ -602,7 +602,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         # ensure the animation is played.
         with self.stack_lock:
             to_be_removed = [
-                cast(StackApplicationItem, item)
+                cast('StackApplicationItem', item)
                 for item in self.stack
                 if any(
                     isinstance(item, StackApplicationItem)
@@ -742,12 +742,14 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             parent=parent or stack_item.parent,
             subscriptions=stack_item.subscriptions,
         )
-        new_item.selection = (
-            None
-            if selection is None
+        if (
+            selection is None
             or stack_item.selection is None
             or not isinstance(selection.sub_menu, Menu)
-            else StackMenuItemSelection(
+        ):
+            new_item.selection = None
+        else:
+            new_item.selection = StackMenuItemSelection(
                 key=stack_item.selection.key,
                 item=self._replace_menu(
                     stack_item.selection.item,
@@ -755,7 +757,6 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                     parent=new_item,
                 ),
             )
-        )
 
         if new_item is self.top:
             self._switch_to(self.current_screen, transition=self._no_transition)
@@ -860,7 +861,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
     def on_kv_post(self: MenuWidget, base_widget: Widget) -> None:
         """Run after the widget is fully constructed."""
         _ = base_widget
-        self.screen_manager = cast(ScreenManager, self.ids.screen_manager)
+        self.screen_manager = cast('ScreenManager', self.ids.screen_manager)
         self.slider = self.ids.slider
 
     def _clear_menu_subscriptions(self: MenuWidget) -> None:
