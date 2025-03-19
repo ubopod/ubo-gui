@@ -1,6 +1,6 @@
 # Changelog
 
-## Upcoming
+## Version 0.13.11
 
 - refactor: wrap subscriptions done by `process_subscribable_value` in `kivy.clock.mainthread` as they may be coming from other threads
 
