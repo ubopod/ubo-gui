@@ -1,6 +1,6 @@
 # Changelog
 
-## Upcoming
+## Version 0.13.12
 
 - refactor: use `kivy.clock.mainthread` wherever needed instead of blindly wrapping all subscriptions of `process_subscribable_value`
 
