@@ -27,6 +27,7 @@ from kivy.uix.boxlayout import BoxLayout
 
 from ubo_gui.logger import logger
 from ubo_gui.menu._transitions import TransitionsMixin
+from ubo_gui.menu.utils import process_subscribable_value
 from ubo_gui.page import PageWidget
 
 from .constants import PAGE_SIZE
@@ -45,7 +46,6 @@ from .types import (
     Item,
     Menu,
     SubMenuItem,
-    process_subscribable_value,
 )
 from .widgets.menu_page_widget import MenuPageWidget
 
@@ -91,6 +91,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         for item in self.stack:
             item.clear_subscriptions()
 
+    @mainthread
     def set_root_menu(self: MenuWidget, root_menu: Menu) -> None:
         """Set the root menu."""
         with self.stack_lock:
@@ -183,6 +184,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         stack_item: StackMenuItem | None = None
         subscription: Callable[[], None] | None = None
 
+        @mainthread
         def handle_menu_change(menu: Menu) -> None:
             nonlocal stack_item, subscription
             logger.debug(
@@ -334,6 +336,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         if item:
             self.select_item(item, parent=parent)
 
+    @mainthread
     def go_back(self: MenuWidget) -> None:
         """Go back to the previous menu."""
         if self.current_application:
@@ -343,6 +346,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             with self.stack_lock:
                 self._pop()
 
+    @mainthread
     def go_home(self: MenuWidget) -> None:
         """Go back to the root menu."""
         with self.stack_lock:
@@ -427,6 +431,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
 
         if isinstance(self.current_menu, HeadedMenu):
 
+            @mainthread
             def handle_heading_change(heading: str) -> None:
                 logger.debug(
                     'Handle `heading` change...',
@@ -445,6 +450,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             if subscription:
                 self.menu_subscriptions.add(subscription)
 
+            @mainthread
             def handle_sub_heading_change(sub_heading: str) -> None:
                 logger.debug(
                     'Handle `sub_heading` change...',
@@ -474,6 +480,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         menu_page: MenuPageWidget | None = None
         placeholder = None
 
+        @mainthread
         def handle_items_change(items: Sequence[Item]) -> None:
             nonlocal last_items, menu_page
             logger.debug(
@@ -510,6 +517,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         if subscription:
             self.screen_subscriptions.add(subscription)
 
+        @mainthread
         def handle_placeholder_change(new_placeholder: str | None) -> None:
             nonlocal placeholder
             logger.debug(
@@ -547,6 +555,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
 
             title = self.top.menu.title
 
+        @mainthread
         def handle_title_change(title: str | None) -> None:
             logger.debug(
                 'Handle `title` change...',
@@ -575,6 +584,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         self._current_screen = screen
         return True
 
+    @mainthread
     def open_application(
         self: MenuWidget,
         application: PageWidget,
@@ -594,6 +604,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                 direction='left',
             )
 
+    @mainthread
     def close_application(self: MenuWidget, application: PageWidget) -> None:
         """Close an application after its `on_close` event is fired."""
         # Remove `application` and all applications in the stack with their `root` being
