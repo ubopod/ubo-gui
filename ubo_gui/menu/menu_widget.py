@@ -15,7 +15,6 @@ import uuid
 import warnings
 from typing import TYPE_CHECKING, cast, overload
 
-from kivy.clock import mainthread
 from kivy.lang.builder import Builder
 from kivy.properties import (
     AliasProperty,
@@ -27,8 +26,8 @@ from kivy.uix.boxlayout import BoxLayout
 
 from ubo_gui.logger import logger
 from ubo_gui.menu._transitions import TransitionsMixin
-from ubo_gui.menu.utils import process_subscribable_value
 from ubo_gui.page import PageWidget
+from ubo_gui.utils import mainthread_if_needed, process_subscribable_value
 
 from .constants import PAGE_SIZE
 from .stack_item import (
@@ -91,7 +90,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         for item in self.stack:
             item.clear_subscriptions()
 
-    @mainthread
+    @mainthread_if_needed
     def set_root_menu(self: MenuWidget, root_menu: Menu) -> None:
         """Set the root menu."""
         with self.stack_lock:
@@ -117,7 +116,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             return self._title
         return None
 
-    @mainthread
+    @mainthread_if_needed
     def go_down(self: MenuWidget) -> None:
         """Go to the next page.
 
@@ -145,7 +144,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             )
             self.current_screen = menu_page.clone
 
-    @mainthread
+    @mainthread_if_needed
     def go_up(self: MenuWidget) -> None:
         """Go to the previous page.
 
@@ -184,7 +183,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         stack_item: StackMenuItem | None = None
         subscription: Callable[[], None] | None = None
 
-        @mainthread
+        @mainthread_if_needed
         def handle_menu_change(menu: Menu) -> None:
             nonlocal stack_item, subscription
             logger.debug(
@@ -336,7 +335,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         if item:
             self.select_item(item, parent=parent)
 
-    @mainthread
+    @mainthread_if_needed
     def go_back(self: MenuWidget) -> None:
         """Go back to the previous menu."""
         if self.current_application:
@@ -346,7 +345,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             with self.stack_lock:
                 self._pop()
 
-    @mainthread
+    @mainthread_if_needed
     def go_home(self: MenuWidget) -> None:
         """Go back to the root menu."""
         with self.stack_lock:
@@ -431,7 +430,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
 
         if isinstance(self.current_menu, HeadedMenu):
 
-            @mainthread
+            @mainthread_if_needed
             def handle_heading_change(heading: str) -> None:
                 logger.debug(
                     'Handle `heading` change...',
@@ -450,7 +449,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             if subscription:
                 self.menu_subscriptions.add(subscription)
 
-            @mainthread
+            @mainthread_if_needed
             def handle_sub_heading_change(sub_heading: str) -> None:
                 logger.debug(
                     'Handle `sub_heading` change...',
@@ -480,7 +479,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         menu_page: MenuPageWidget | None = None
         placeholder = None
 
-        @mainthread
+        @mainthread_if_needed
         def handle_items_change(items: Sequence[Item]) -> None:
             nonlocal last_items, menu_page
             logger.debug(
@@ -517,7 +516,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         if subscription:
             self.screen_subscriptions.add(subscription)
 
-        @mainthread
+        @mainthread_if_needed
         def handle_placeholder_change(new_placeholder: str | None) -> None:
             nonlocal placeholder
             logger.debug(
@@ -531,6 +530,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             placeholder = new_placeholder
             if menu_page:
                 menu_page.placeholder = placeholder
+                menu_page.clone.placeholder = placeholder
 
         subscription = process_subscribable_value(
             menu.placeholder,
@@ -555,7 +555,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
 
             title = self.top.menu.title
 
-        @mainthread
+        @mainthread_if_needed
         def handle_title_change(title: str | None) -> None:
             logger.debug(
                 'Handle `title` change...',
@@ -584,7 +584,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         self._current_screen = screen
         return True
 
-    @mainthread
+    @mainthread_if_needed
     def open_application(
         self: MenuWidget,
         application: PageWidget,
@@ -604,7 +604,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
                 direction='left',
             )
 
-    @mainthread
+    @mainthread_if_needed
     def close_application(self: MenuWidget, application: PageWidget) -> None:
         """Close an application after its `on_close` event is fired."""
         # Remove `application` and all applications in the stack with their `root` being

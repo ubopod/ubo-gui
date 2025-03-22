@@ -6,6 +6,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Generic,
+    ParamSpec,
     Protocol,
     TypeGuard,
     cast,
@@ -62,3 +63,30 @@ def process_subscribable_value(
     )
     callback(processed_value)
     return None
+
+
+_Args = ParamSpec('_Args')
+_ReturnType = TypeVar('_ReturnType')
+
+
+def mainthread_if_needed(
+    func: Callable[_Args, _ReturnType],
+) -> Callable[_Args, _ReturnType]:
+    """Run the function in the main thread if it's not already."""
+    import inspect
+    import threading
+
+    from kivy.clock import mainthread
+
+    def func_(*args: _Args.args, **kwargs: _Args.kwargs) -> _ReturnType:
+        if threading.current_thread() is threading.main_thread():
+            return func(*args, **kwargs)
+        return mainthread(func)(*args, **kwargs)
+
+    func_.__signature__ = inspect.signature(func)  # pyright: ignore [reportFunctionMemberAccess]
+    func_.__name__ = func.__name__
+    func_.__doc__ = func.__doc__
+    func_.__qualname__ = func.__qualname__
+    func_.__dict__.update(func.__dict__)
+
+    return func_

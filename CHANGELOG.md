@@ -1,5 +1,9 @@
 # Changelog
 
+## Upcoming
+
+- refactor: replace all `kivy.clock.mainthread` decorators with in-house `mainthread_if_needed` which checks the current thread and applies `mainthread` only if not already in the main thread, this is to fix the weird render delay introduced by chain of unnecessary scheduled `mainthread`s
+
 ## Version 0.13.12
 
 - refactor: use `kivy.clock.mainthread` wherever needed instead of blindly wrapping all subscriptions of `process_subscribable_value`

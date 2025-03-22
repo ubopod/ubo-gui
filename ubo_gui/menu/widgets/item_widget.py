@@ -5,7 +5,6 @@ from __future__ import annotations
 import pathlib
 from typing import TYPE_CHECKING, Any
 
-from kivy.clock import mainthread
 from kivy.lang.builder import Builder
 from kivy.properties import (
     BooleanProperty,
@@ -17,7 +16,7 @@ from kivy.properties import (
 from kivy.uix.boxlayout import BoxLayout
 
 from ubo_gui.constants import PRIMARY_COLOR
-from ubo_gui.menu.utils import process_subscribable_value
+from ubo_gui.utils import mainthread_if_needed, process_subscribable_value
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -80,7 +79,7 @@ class ItemWidget(BoxLayout):
             self.label = ''
             subscription = process_subscribable_value(
                 value.label,
-                mainthread(lambda value: setattr(self, 'label', value or '')),
+                mainthread_if_needed(lambda value: setattr(self, 'label', value or '')),
             )
             if subscription:
                 self._subscriptions.append(subscription)
@@ -88,7 +87,7 @@ class ItemWidget(BoxLayout):
             self.is_short = False
             subscription = process_subscribable_value(
                 value.is_short,
-                mainthread(
+                mainthread_if_needed(
                     lambda value: setattr(
                         self,
                         'is_short',
@@ -102,7 +101,7 @@ class ItemWidget(BoxLayout):
             self.color = ItemWidget.color.defaultvalue
             subscription = process_subscribable_value(
                 value.color,
-                mainthread(
+                mainthread_if_needed(
                     lambda value: setattr(
                         self,
                         'color',
@@ -116,7 +115,7 @@ class ItemWidget(BoxLayout):
             self.background_color = ItemWidget.background_color.defaultvalue
             subscription = process_subscribable_value(
                 value.background_color,
-                mainthread(
+                mainthread_if_needed(
                     lambda value: setattr(
                         self,
                         'background_color',
@@ -130,7 +129,7 @@ class ItemWidget(BoxLayout):
             self.icon = ''
             subscription = process_subscribable_value(
                 value.icon,
-                mainthread(lambda value: setattr(self, 'icon', value or '')),
+                mainthread_if_needed(lambda value: setattr(self, 'icon', value or '')),
             )
             if subscription:
                 self._subscriptions.append(subscription)
