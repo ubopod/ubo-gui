@@ -1,6 +1,6 @@
 # Changelog
 
-## Upcoming
+## Version 0.13.14
 
 - fix: add `mainthread_if_needed` decorator to the remaining subscription handler and item selectors
 
