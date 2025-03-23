@@ -215,6 +215,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         if stack_item and subscription:
             stack_item.subscriptions.add(subscription)
 
+    @mainthread_if_needed
     def select_action_item(
         self: MenuWidget,
         item: ActionItem,
@@ -244,6 +245,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             msg = f'Unsupported returned value by `ActionItem`: {result}'
             raise TypeError(msg)
 
+    @mainthread_if_needed
     def select_application_item(
         self: MenuWidget,
         item: ApplicationItem,
@@ -253,6 +255,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         """Select an application item."""
         application_instance: PageWidget | None = None
 
+        @mainthread_if_needed
         def handle_application_change(application: type[PageWidget]) -> None:
             nonlocal application_instance
             logger.debug(
@@ -276,6 +279,7 @@ class MenuWidget(BoxLayout, TransitionsMixin):
         if subscription:
             self.top.subscriptions.add(subscription)
 
+    @mainthread_if_needed
     def select_submenu_item(
         self: MenuWidget,
         item: SubMenuItem,
