@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import threading
+import time
 from functools import cached_property
 from typing import Any, NotRequired, TypedDict
 
-from kivy.clock import mainthread
+from kivy.clock import Clock, mainthread
 from kivy.uix.screenmanager import (
     NoTransition,
     RiseInTransition,
@@ -32,7 +33,7 @@ class TransitionsMixin:
         tuple[Screen | None, TransitionBase, str | None, float | None]
     ]
     screen_manager: ScreenManager
-    _is_transition_in_progress: bool = False
+    _running_transition_end_time: float | None = None
     _is_preparation_in_progress: bool = False
     _transition_progress_lock: threading.Lock
 
@@ -62,10 +63,7 @@ class TransitionsMixin:
                     (screen, transition, direction, duration),
                     *self.transition_queue,
                 ) = self.transition_queue
-                if (
-                    len(self.transition_queue) > 1
-                    and transition is not self._no_transition
-                ):
+                if self.transition_queue and transition is not self._no_transition:
                     duration = 0.08
                 switch_parameters: SwitchParameters = {}
                 if duration is not None:
@@ -78,7 +76,7 @@ class TransitionsMixin:
                     **switch_parameters,
                 )
             else:
-                self._is_transition_in_progress = False
+                self._running_transition_end_time = None
 
     def _setup_transition(self: TransitionsMixin, transition: TransitionBase) -> None:
         transition.bind(on_progress=self._handle_transition_progress)
@@ -143,13 +141,23 @@ class TransitionsMixin:
         if duration is None:
             duration = 0 if transition is self._no_transition else 0.3
         with self._transition_progress_lock:
-            if self._is_transition_in_progress:
+            if self._running_transition_end_time is not None:
                 self.transition_queue = [
                     *self.transition_queue,
                     (screen, transition, direction, duration),
                 ]
+                if self._running_transition_end_time < time.time():
+                    Clock.schedule_once(
+                        lambda _: self._handle_transition_complete(
+                            self.transition_queue[0][1],
+                        ),
+                    )
             else:
-                self._is_transition_in_progress = transition is not self._no_transition
+                self._running_transition_end_time = (
+                    time.time() + duration + 2
+                    if transition is not self._no_transition
+                    else None
+                )
                 self._is_preparation_in_progress = True
                 self._perform_switch(
                     screen,

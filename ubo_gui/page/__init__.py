@@ -94,7 +94,8 @@ class PageWidget(Screen):
         super().__init__(*args, **kwargs)
         if items and len(items) > self._count:
             msg = f"""`PageWidget` is initialized with more than `count`={
-            self.count} items"""
+                self.count
+            } items"""
             raise ValueError(msg)
 
     def get_item(self: PageWidget, index: int) -> Item | None:
@@ -102,7 +103,8 @@ class PageWidget(Screen):
         index += self._offset
         if not 0 <= index < len(self.items):
             msg = f"""index must be greater than or equal to 0 and less than {
-            len(self.items)}"""
+                len(self.items)
+            }"""
             warnings.warn(msg, ResourceWarning, stacklevel=1)
             return None
         return self.items[index]
