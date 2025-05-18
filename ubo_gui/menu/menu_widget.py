@@ -269,7 +269,9 @@ class MenuWidget(BoxLayout, TransitionsMixin):
             )
             if application_instance:
                 self.close_application(application_instance)
-            application_instance = application()
+            application_instance = (
+                application() if callable(application) else application
+            )
             self.open_application(application_instance, parent=parent)
 
         subscription = process_subscribable_value(

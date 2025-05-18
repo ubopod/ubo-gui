@@ -1,5 +1,9 @@
 # Changelog
 
+## Upcoming
+
+- refactor: support `PageWidget` and `Callable[[], PageWidget]` for the `application` field of `ApplicationItem`
+
 ## Version 0.13.16
 
 - refactor: make menu transition logic more error-prone in case a transition completion callback call is missed

@@ -148,7 +148,12 @@ class ApplicationItem(Item):
 
     """
 
-    application: type[PageWidget] | Callable[[], type[PageWidget]]
+    application: (
+        PageWidget
+        | type[PageWidget]
+        | Callable[[], PageWidget]
+        | Callable[[], type[PageWidget]]
+    )
 
 
 class SubMenuItem(Item):

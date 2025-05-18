@@ -8,6 +8,7 @@ import qrcode
 from kivy.core.image import Image as CoreImage
 from kivy.properties import OptionProperty, StringProperty
 from kivy.uix.image import Image
+from qrcode.image.pure import PyPNGImage
 
 
 class QRCodeWidget(Image):
@@ -21,7 +22,7 @@ class QRCodeWidget(Image):
 
     def on_content(self: QRCodeWidget, _: QRCodeWidget, value: str) -> None:
         """Handle the `content` property change."""
-        img = qrcode.make(value, version=1, border=1)
+        img = qrcode.make(value, version=1, border=1, image_factory=PyPNGImage)
 
         data = io.BytesIO()
         img.save(data)
