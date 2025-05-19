@@ -1,6 +1,6 @@
 # Changelog
 
-## Upcoming
+## Version 0.13.17
 
 - refactor: support `PageWidget` and `Callable[[], PageWidget]` for the `application` field of `ApplicationItem`
 
